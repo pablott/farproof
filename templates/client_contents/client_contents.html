@@ -1,14 +1,15 @@
 <h1>{{ client_name }}</h1>
 <h2>{{ item_contents }}</h2>
 
-{% if client_contents %}
+{% if jobs %}
     <ul>
-    {% for client in client_contents %}
+    {% for job in jobs %}
         <li>
-			dd
+			{{ job.job_name }}
+			<a href="/client_list/{{client_name}}/client_contents/{{ job.job_name }}/">{{ job.job_name }}</a>
 		</li>
     {% endfor %}
     </ul>
 {% else %}
-    <p>No clients are available.</p>
+    <p>No jobs are available.</p>
 {% endif %}

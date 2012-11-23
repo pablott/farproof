@@ -14,9 +14,10 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
-    #(r'^main/$', 'client_list'), # ESTÁ MAL VER TUTORIAL 3 (AL FINAL)
-    (r'^client_list/$', client_index), # EST`MAL VER TUTORIAL 3 (AL FINAL)
-    #(r'^client_contents/$', client_contents), # EST`MAL VER TUTORIAL 3 (AL FINAL)
-    #(r'^client_list/()/$', client_contents), # EST`MAL VER TUTORIAL 3 (AL FINAL)
-    (r'^client_list/([\w]+)/$', client_contents), # EST`MAL VER TUTORIAL 3 (AL FINAL)
+
+	# http://www.djangobook.com/en/2.0/chapter08.html
+	# 
+    (r'^client_list/$', client_index),
+    (r'^client_list/([\w, ,-]+)/$', client_contents),
+    #(r'^client_list/[\w, ,-]+/client_contents/([\w, ,-]+)/$', job_contents)
 )
