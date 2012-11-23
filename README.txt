@@ -11,3 +11,5 @@ paper based "proofs".
 
 It is based on Django (the Python web framework) on the server side,
 and mainly HTML5+CSS3+JScript on the client side.
+
+Released under GPL v2 (see LICENSE file for more details).
