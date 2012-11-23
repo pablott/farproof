@@ -18,5 +18,5 @@ urlpatterns = patterns('',
     (r'^client_list/$', client_index), # EST`MAL VER TUTORIAL 3 (AL FINAL)
     #(r'^client_contents/$', client_contents), # EST`MAL VER TUTORIAL 3 (AL FINAL)
     #(r'^client_list/()/$', client_contents), # EST`MAL VER TUTORIAL 3 (AL FINAL)
-    (r'^client_list/(\w*[a-z _0-9-])/$', client_contents), # EST`MAL VER TUTORIAL 3 (AL FINAL)
+    (r'^client_list/([\w]+)/$', client_contents), # EST`MAL VER TUTORIAL 3 (AL FINAL)
 )
