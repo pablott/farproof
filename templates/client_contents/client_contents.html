@@ -5,7 +5,6 @@
     <ul>
     {% for job in jobs %}
         <li>
-			{{ job.job_name }}
 			<a href="/client_list/{{client_name}}/client_contents/{{ job.job_name }}/">{{ job.job_name }}</a>
 		</li>
     {% endfor %}

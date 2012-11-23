@@ -21,13 +21,13 @@ def client_contents(request, client):
 	})
 	
 
-def job_contents(request, client):
+def job_contents(request, job):
 	# client_contents = Job.objects.all()
-	jobs = Job.objects.filter(client__client_name__exact=client)
+	items = Item.objects.filter(job__job_name__exact=job)
 	item_contents = 8 # placeholder
 	return render_to_response('job_contents/job_contents.html', {
-		'client_name': client, 
-		'jobs': jobs,
+		'job_name': job, 
+		'item': items,
 		'item_contents': item_contents
 	})
 	

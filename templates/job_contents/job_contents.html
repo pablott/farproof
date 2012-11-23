@@ -1,0 +1,14 @@
+<h1>{{ job_name }}</h1>
+<h2>{{ item_contents }}</h2>
+
+{% if item %}
+    <ul>
+    {% for item in item %}
+        <li>
+			<a href="/client_list/{{client_name}}/client_contents/{{ item.item_name }}/">{{ item.item_name }}</a>
+		</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No items are available.</p>
+{% endif %}
