@@ -1,0 +1,14 @@
+<h1>{{ client_name }}</h1>
+<h2>{{ item_contents }}</h2>
+
+{% if client_contents %}
+    <ul>
+    {% for client in client_contents %}
+        <li>
+			dd
+		</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No clients are available.</p>
+{% endif %}

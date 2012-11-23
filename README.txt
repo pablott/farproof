@@ -1,0 +1,13 @@
+FARPROOF (C) 2012 Pablo Trabajos Tamayo
+---------------------------------------
+
+A browser-based software for displaying book-like 
+presentations of books, magazines and brochures 
+with a set of tools coverings the needs of pre-press
+technicians and printshop customers.
+
+FARPROOF delivers presentations similar to old-fashioned
+paper based "proofs".
+
+It is based on Django (the Python web framework) on the server side,
+and mainly HTML5+CSS3+JScript on the client side.
