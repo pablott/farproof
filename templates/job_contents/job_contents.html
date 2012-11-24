@@ -5,7 +5,7 @@
     <ul>
     {% for item in item %}
         <li>
-			<a href="/client_list/{{client_name}}/client_contents/{{ item.item_name }}/">{{ item.item_name }}</a>
+			<a href="/{{client_name}}/{{ item.item_name }}/">{{ item.item_name }}</a>
 		</li>
     {% endfor %}
     </ul>

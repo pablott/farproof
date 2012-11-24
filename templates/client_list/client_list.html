@@ -4,7 +4,7 @@
     <ul>
     {% for client in client_list %}
         <li>
-			<a href="/client_list/{{ client.client_name }}/">{{ client.client_name }}</a>
+			<a href="/{{ client.client_name }}/">{{ client.client_name }}</a>
 		</li>
     {% endfor %}
     </ul>

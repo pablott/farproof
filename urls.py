@@ -17,7 +17,7 @@ urlpatterns = patterns('',
 
 	# http://www.djangobook.com/en/2.0/chapter08.html
 	# 
-    (r'^client_list/$', client_index),
-    (r'^client_list/([\w, ,-]+)/$', client_contents),
-    (r'^client_list/[\w, ,-]+/client_contents/([\w, ,-]+)/$', job_contents)
+    (r'^$', client_index),
+    (r'^([\w, ,-]+)/$', client_contents),
+    (r'^[\w, ,-]+/([\w, ,-]+)/$', job_contents)
 )
