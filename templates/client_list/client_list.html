@@ -1,10 +1,10 @@
-<h1>aaaah</h1>
+<h1>All clients</h1>
 
 {% if client_list %}
     <ul>
     {% for client in client_list %}
         <li>
-			<a href="/{{ client.client_name }}/">{{ client.client_name }}</a>
+			<a href="/{{ client.name }}/">{{ client.name }}</a>
 		</li>
     {% endfor %}
     </ul>

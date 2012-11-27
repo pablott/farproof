@@ -3,35 +3,36 @@ from django.db import models
 
 
 class Client(models.Model):
-	client_name = models.CharField(max_length=256)
+	name = models.CharField(max_length=256)
 	email = models.CharField(max_length=256)
 	active = models.BooleanField(default=True)
 	creation = models.DateTimeField(default="", auto_now_add=True)
 	modified = models.DateTimeField(default="", auto_now=True)
 	def __unicode__(self):
-		return self.client_name + " " + str(self.creation) + " " + str(self.modified)
+		return self.name + " " + str(self.creation) + " " + str(self.modified)
 
 class Job(models.Model):
 	client = models.ForeignKey(Client)
-	job_name = models.CharField(max_length=256)
+	name = models.CharField(max_length=256)
 	active = models.BooleanField(default=True)
 	# Return "Job name - Client"
 	def __unicode__(self):
-		return self.job_name + " - " + str(self.client)
+		return self.name + " - " + str(self.client)
 
 class Item(models.Model):
 	job = models.ForeignKey(Job)
-	pages = models.IntegerField()
-	item_name = models.CharField(max_length=256)
+	#pages = models.IntegerField()
+	desc = models.CharField(max_length=256)
+	name = models.CharField(max_length=256)
 	def __unicode__(self):
-		return self.item_name + " - " + self.job.job_name + " - " + str(self.job.client)
+		return self.name + " - " + self.job.name + " - " + str(self.job.client)
 
 class Page(models.Model):
 	item = models.ForeignKey(Item)
-	page_number = models.IntegerField() #.unique
+	number = models.IntegerField() #.unique
 #	page_status = models.List()     accepted, rejected, pending (i.e. not yet evaluated), Here or in Revision?
 	def __unicode__(self):
-		return str(self.page_number)
+		return str(self.number)
 
 class Revision(models.Model):
 	rev_number = models.IntegerField()

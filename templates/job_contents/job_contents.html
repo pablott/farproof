@@ -1,11 +1,16 @@
 <h1>{{ job_name }}</h1>
-<h2>{{ item_contents }}</h2>
 
-{% if item %}
+{% if items %}
     <ul>
-    {% for item in item %}
+    {% for item in items %}
         <li>
-			<a href="/{{client_name}}/{{ item.item_name }}/">{{ item.item_name }}</a>
+			<a href="/{{item.job.client.name}}/{{item.job.name}}/{{ item.name }}/">{{ item.name }}</a> <br>
+			<a href="/{{client_name}}/">Back to client</a> <br>
+			Pages: {{ item.page_set.count }} <br>
+			Job it belongs to: {{ item.job.name }} <br>
+			Client it belongs to: {{ item.job.client.name }} <br>
+			Desc: {{ item.desc }}
+		
 		</li>
     {% endfor %}
     </ul>

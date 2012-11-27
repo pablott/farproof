@@ -19,5 +19,5 @@ urlpatterns = patterns('',
 	# 
     (r'^$', client_index),
     (r'^([\w, ,-]+)/$', client_contents),
-    (r'^[\w, ,-]+/([\w, ,-]+)/$', job_contents)
+    (r'^([\w, ,-]+)/([\w, ,-]+)/$', job_contents)
 )

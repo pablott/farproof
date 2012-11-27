@@ -1,11 +1,10 @@
 <h1>{{ client_name }}</h1>
-<h2>{{ item_contents }}</h2>
 
 {% if jobs %}
     <ul>
     {% for job in jobs %}
         <li>
-			<a href="/{{client_name}}/{{ job.job_name }}/">{{ job.job_name }}</a>
+			<a href="/{{job.client.name}}/{{ job.name }}/">{{ job.name }}</a>
 		</li>
     {% endfor %}
     </ul>

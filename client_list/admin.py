@@ -14,8 +14,7 @@ from django.contrib import admin
 class ItemAdmin(admin.ModelAdmin):
     fieldsets = [
         (None,               {'fields': ['job']}),
-        (None,               {'fields': ['item_name']}),
-        ('Prepress info', {'fields': ['pages']}),
+        (None,               {'fields': ['name']}),
     ]
 
 #admin.site.register(Poll)
