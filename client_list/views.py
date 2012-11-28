@@ -8,7 +8,7 @@ from farproof.client_list.models import Client, Job, Item, Page
 #def serve(request, path, document_root, show_indexes=False)
 
 def main(request):
-	clients = Client.objects.all()
+	clients = Client.objects.all().order_by('name') #TODO: make it case insensitive
 	return render_to_response('main.html', {'clients': clients})
 
 def client_view(request, client):

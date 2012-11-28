@@ -61,7 +61,7 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(FARPROOF_DIR, 'media') #.replace('\\', '/'),
+MEDIA_ROOT = os.path.join(ROOT_DIR, 'farproof-html') #.replace('\\', '/'),
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -75,6 +75,15 @@ ADMIN_MEDIA_PREFIX = '/media/admin/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'u%8g^o)8b+%xxa-1j^8i@zkv!&0(a8h!pg7j(8lrlc-n1t88dz'
+
+ROOT_URLCONF = 'farproof.urls'
+
+TEMPLATE_DIRS = (
+	os.path.join(FARPROOF_DIR, 'templates')#.replace('\\', '/'),
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -91,14 +100,15 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'farproof.urls'
-
-TEMPLATE_DIRS = (
-	os.path.join(FARPROOF_DIR, 'templates').replace('\\', '/'),
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
+# https://docs.djangoproject.com/en/1.3/howto/static-files/#with-a-context-processor
+#TEMPLATE_CONTEXT_PROCESSORS = (
+#    'django.core.context_processors.debug',
+#    'django.core.context_processors.i18n',
+#    'django.core.context_processors.media',
+#    'django.core.context_processors.static',
+#    'django.contrib.auth.context_processors.auth',
+#    'django.contrib.messages.context_processors.messages',
+#)
 
 INSTALLED_APPS = (
     'django.contrib.auth',

@@ -2,7 +2,8 @@ from django.db import models
 
 class User(models.Model):
 	name = models.CharField(max_length=256)
-	email = models.CharField(max_length=256)
+	email = models.CharField(max_length=256, default='xx@xx.com')
+	admin = models.BooleanField(default=False)
 	def __unicode__(self):
 		return self.name
 	
@@ -18,7 +19,7 @@ class Client(models.Model):
 class Job(models.Model):
 	client = models.ForeignKey(Client)
 	name = models.CharField(max_length=256)
-	desc = models.CharField(max_length=256, default='description')
+	desc = models.CharField(max_length=256)
 	active = models.BooleanField(default=True)
 	# Return "Job name - Client"
 	def __unicode__(self):
@@ -28,6 +29,7 @@ class Item(models.Model):
 	job = models.ForeignKey(Job)
 	name = models.CharField(max_length=256)
 	desc = models.CharField(max_length=256)
+	#active = models.BooleanField(default=True)
 	def __unicode__(self):
 		return self.name + " - " + self.job.name + " - " + str(self.job.client)
 

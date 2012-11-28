@@ -1,17 +1,55 @@
+{% load i18n %}{% load i18n %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
-<link href="/media/common.css" rel="stylesheet">
+	<meta charset="utf-8">
+	<link href="/media/css/common.css" rel="stylesheet" type="text/css">
+	<link href="/media/css/widgets/buttons.css" rel="stylesheet" type="text/css">
+	<link href="/media/css/main.css" rel="stylesheet" type="text/css">
+	<link href="/media/favicon.ico" rel="shortcut icon">
+	<title>FP - Client List</title>
 </head>
 
-<h1>All clients</h1>
+	
+<body>
+	<div id="topbar">
+		<ul>
+			<li> FP </li>
+			<li> Client List </li>
+		</ul>
+	</div>
 
-{% if clients %}
-    <ul>
-    {% for client in clients %}
-        <li>
-			<a href="/{{ client.name }}/">{{ client.name }}</a>
-		</li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No clients are available.</p>
-{% endif %}
+	<div id="sidebar">
+		<div class="btn_box_top">
+			<div class="btn btnM btnV top"> Client List </div>
+			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure FP </div>
+			<div class="btn btnM"> <div class="icon icon2"> + </div> Add Client </div>
+		</div>
+		<div class="btn_box_bottom">
+			<div class="btn btnM delete"> <div class="icon icon1">X</div> Delete Client </div>
+		</div>
+	</div>
+	
+	<div id="view">
+	{% if clients %}
+		{% for client in clients %}
+			<div class="client">
+				<div class="client_icon">  </div>
+				<div class="title"> <a href="/{{ client.name }}/">{{ client.name }}</a> </div>
+				<div class="mini_summary">
+					XX person(s) will get notified </br>
+					{{ client.job_set.count }} total jobs </br>
+					<span class="unactive">( {{ client.job_set.count }} hidden jobs)</span>
+				</div>
+				<div class="summary">
+					<span class="rejected"> XX jobs with problems </span> </br>
+					<span class="pending"> XX jobs with pages pending </span> </br>
+					<span class="accepted"> XX approved jobs </span> </br>
+				</div>
+			</div>
+		{% endfor %}
+	{% else %}
+		<p>No clients are available.</p>
+	{% endif %}
+	</div>	
+</body>
+</html>

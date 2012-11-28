@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
 	
+	#TODO Add 404 templates when a client, job, item or page is not found
     (r'^$', main),
     (r'^([\w, ,-]+)/$', client_view),
     (r'^([\w, ,-]+)/([\w, ,-]+)/$', job_view),
