@@ -1,8 +1,12 @@
+<head>
+<link href="/media/common.css" rel="stylesheet">
+</head>
+
 <h1>All clients</h1>
 
-{% if client_list %}
+{% if clients %}
     <ul>
-    {% for client in client_list %}
+    {% for client in clients %}
         <li>
 			<a href="/{{ client.name }}/">{{ client.name }}</a>
 		</li>

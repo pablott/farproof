@@ -14,10 +14,23 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
-
-	# http://www.djangobook.com/en/2.0/chapter08.html
-	# 
-    (r'^$', client_index),
-    (r'^([\w, ,-]+)/$', client_contents),
-    (r'^([\w, ,-]+)/([\w, ,-]+)/$', job_contents)
+	
+    (r'^$', main),
+    (r'^([\w, ,-]+)/$', client_view),
+    (r'^([\w, ,-]+)/([\w, ,-]+)/$', job_view),
+    (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/$', item_view),
+    (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/([\d]+)/$', page_view)
 )
+
+
+import settings
+if settings.DEBUG:
+    from django.views.static import serve
+    _media_url = settings.MEDIA_URL
+    if _media_url.startswith('/'):
+        _media_url = _media_url[1:]
+        urlpatterns += patterns('',
+                                (r'^%s(?P<path>.*)$' % _media_url,
+                                serve,
+                                {'document_root': settings.MEDIA_ROOT}))
+    del _media_url, serve

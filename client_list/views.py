@@ -5,26 +5,42 @@
 from django.shortcuts import render_to_response # Add get_object_or_404
 from farproof.client_list.models import Client, Job, Item, Page
 
+#def serve(request, path, document_root, show_indexes=False)
 
-def client_index(request):
-	client_list = Client.objects.all()
-	return render_to_response('client_list/client_list.html', {'client_list': client_list})
+def main(request):
+	clients = Client.objects.all()
+	return render_to_response('main.html', {'clients': clients})
 
-def client_contents(request, client):
+def client_view(request, client):
 	jobs = Job.objects.filter(client__name__exact=client)
-	return render_to_response('client_contents/client_contents.html', {
+	return render_to_response('client_view.html', {
 		'client_name': client, 
 		'jobs': jobs,
 	})
 	
-def job_contents(request, client, job):
+def job_view(request, client, job):
 	items = Item.objects.filter(job__name__exact=job)
-	return render_to_response('job_contents/job_contents.html', {
-		'job_name': job, 
+	return render_to_response('job_view.html', {
 		'client_name': client,
+		'job_name': job, 
 		'items': items
 	})
 	
+def item_view(request, client, job, item):
+	pages = Page.objects.filter(item__name__exact=item)
+	return render_to_response('item_view.html', {
+		'client_name': client,
+		'job_name': job, 
+		'item_name': item,
+		'pages': pages
+	})
 	
+def page_view(request, client, job, item, page):
+	return render_to_response('page_view.html', {
+		'client_name': client,
+		'job_name': job, 
+		'item_name': item,
+		'page_num': page
+	})
 	
 	

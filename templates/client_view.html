@@ -1,0 +1,22 @@
+<h1>{{ client_name }}</h1>
+<a href="/">Back to index</a> <br>
+
+{% if jobs %}
+    <ul>
+    {% for job in jobs %}
+        <li>
+			<a href="/{{job.client.name}}/{{ job.name }}/">{{ job.name }}</a> <br>
+			Items inside: {{ job.item_set.count }} <br>
+			Desc: {{ job.desc }}
+			    {% for item in job.item_set.all %}
+					<ul><li> 
+						<a href="/{{ job.client.name }}/{{ job.name }}/{{ item.name }}/">{{ item.name }}</a> 
+					</li></ul>
+				{% endfor %}
+
+		</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No jobs are available.</p>
+{% endif %}

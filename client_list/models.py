@@ -1,7 +1,11 @@
 from django.db import models
 
-
-
+class User(models.Model):
+	name = models.CharField(max_length=256)
+	email = models.CharField(max_length=256)
+	def __unicode__(self):
+		return self.name
+	
 class Client(models.Model):
 	name = models.CharField(max_length=256)
 	email = models.CharField(max_length=256)
@@ -14,6 +18,7 @@ class Client(models.Model):
 class Job(models.Model):
 	client = models.ForeignKey(Client)
 	name = models.CharField(max_length=256)
+	desc = models.CharField(max_length=256, default='description')
 	active = models.BooleanField(default=True)
 	# Return "Job name - Client"
 	def __unicode__(self):
@@ -21,16 +26,14 @@ class Job(models.Model):
 
 class Item(models.Model):
 	job = models.ForeignKey(Job)
-	#pages = models.IntegerField()
-	desc = models.CharField(max_length=256)
 	name = models.CharField(max_length=256)
+	desc = models.CharField(max_length=256)
 	def __unicode__(self):
 		return self.name + " - " + self.job.name + " - " + str(self.job.client)
 
 class Page(models.Model):
 	item = models.ForeignKey(Item)
 	number = models.IntegerField() #.unique
-#	page_status = models.List()     accepted, rejected, pending (i.e. not yet evaluated), Here or in Revision?
 	def __unicode__(self):
 		return str(self.number)
 

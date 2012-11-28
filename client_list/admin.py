@@ -15,6 +15,7 @@ class ItemAdmin(admin.ModelAdmin):
     fieldsets = [
         (None,               {'fields': ['job']}),
         (None,               {'fields': ['name']}),
+        (None,               {'fields': ['desc']}),
     ]
 
 #admin.site.register(Poll)
