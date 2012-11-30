@@ -12,28 +12,37 @@ def main(request):
 	return render_to_response('main.html', {'clients': clients})
 
 def client_view(request, client):
-	jobs = Job.objects.filter(client__name__exact=client)
+	jobs = Job.objects.filter(client__name__exact=client).order_by('name')
 	return render_to_response('client_view.html', {
 		'client_name': client, 
 		'jobs': jobs,
 	})
 	
 def job_view(request, client, job):
-	items = Item.objects.filter(job__name__exact=job)
+	items = Item.objects.filter(job__name__exact=job).order_by('name')
 	return render_to_response('job_view.html', {
 		'client_name': client,
 		'job_name': job, 
 		'items': items
 	})
 	
-def item_view(request, client, job, item):
-	pages = Page.objects.filter(item__name__exact=item)
-	return render_to_response('item_view.html', {
+def item_view_list(request, client, job, item):
+	pages = Page.objects.filter(item__name__exact=item).order_by('number')
+	return render_to_response('item_view_list.html', {
 		'client_name': client,
 		'job_name': job, 
 		'item_name': item,
 		'pages': pages
 	})
+
+def item_view_thumbs(request, client, job, item):
+	pages = Page.objects.filter(item__name__exact=item).order_by('number')
+	return render_to_response('item_view_thumbs.html', {
+		'client_name': client,
+		'job_name': job, 
+		'item_name': item,
+		'pages': pages
+	})	
 	
 def page_view(request, client, job, item, page):
 	return render_to_response('page_view.html', {

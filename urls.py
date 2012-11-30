@@ -19,7 +19,8 @@ urlpatterns = patterns('',
     (r'^$', main),
     (r'^([\w, ,-]+)/$', client_view),
     (r'^([\w, ,-]+)/([\w, ,-]+)/$', job_view),
-    (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/$', item_view),
+    (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/list/$', item_view_list),
+    (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/thumbs/$', item_view_thumbs),
     (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/([\d]+)/$', page_view)
 )
 

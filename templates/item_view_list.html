@@ -1,0 +1,82 @@
+{% load i18n %}{% load i18n %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+	<meta charset="utf-8">
+	<script src="/media/js/jquery-1.8.1.js"></script>
+	<script src="/media/js/fixbar.js"></script>
+	<script src="/media/js/checkbox.js"></script>
+	<link href="/media/css/common.css" rel="stylesheet" type="text/css">
+	<link href="/media/css/widgets/buttons.css" rel="stylesheet" type="text/css">
+	<link href="/media/css/widgets/lists.css" rel="stylesheet" type="text/css">
+	<link href="/media/css/item_view_list.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
+	<link href="/media/favicon.ico" rel="shortcut icon">
+	<title>FP - {{ client_name }} - {{ job_name}} - {{item_name}} - Page List</title>
+</head>
+
+
+<body>
+	<div class="debug">--</div>
+	<div id="topbar">
+		<ul>
+			<li> <a href="/">FP</a> </li>
+			<li> <a href="/{{ client_name }}/">{{ client_name }}</a> </li>
+			<li> <a href="/{{ client_name }}/{{ job_name }}/">{{ job_name }}</a> </li>
+			<li> <a href="/{{ client_name }}/{{ job_name }}/{{ item_name }}/list/">{{ item_name }}</a> </li>
+			<li> <div class="icon icon1">5</div> Page List </li>
+		</ul>
+	</div>
+
+	<div id="sidebar">
+		<div class="btn_box_top">
+			<div class="btn btnM btnV top"> <div class="icon icon2">k</div> Thumbs </div>
+			<div class="btn btnM btnV middle pushed"> <div class="icon icon1">5</div> List </div>
+			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure </div>
+			<div class="btn btnM"> <div class="icon icon2">+</div> Update Pages </div>
+			<div class="help">
+				Click pages to view them in a new window.<br>
+				Mark checboxes to select pages for deletion.
+			</div>
+		</div>
+		
+		<div class="btn_box_bottom">
+			<div class="btn btnM delete"> <div class="icon icon1">X</div> Delete Pages </div>
+		</div>
+	</div>
+	
+	<div id="view">
+		<div class="list_header black">
+			<ul>  
+				<li class="checkbox"><input type="checkbox" class="checkall" name="option1" value="ALL"></li>
+				<li class="page">Page</li>
+				<li class="comments">Comments (new)</li>
+				<li class="revisions">Revisions (new)</li>
+				<li class="status">Status</li>
+				<li class="pdf">PDFs</li>
+				<li class="updated">Updated on</li>
+				<li class="added">First added on</li>
+			</ul>
+		</div>
+		
+		<div class="list_container">
+			{% if pages %}
+				{% for page in pages %}
+				<ul>
+					<li class="checkbox"><input type="checkbox" name="option1" value="page1"></li>
+					<li class="page"> <a href="/{{ page.item.job.client.name }}/{{ page.item.job.name }}/{{ page.item.name }}/{{ page.number }}/">{{ page.number }}</a> </li>
+					<li class="comments">XX</li>
+					<li class="revisions">{{ page.revision_set.count }}</li>
+					<li class="status accepted">??</li>
+					<li class="pdf">??.pdf</li>
+					<li class="updated">??-??-????</li>
+					<li class="added">??-??-????</li>
+				</ul>
+			{% endfor %}
+			{% else %}
+				<p>No pages are available.</p>
+			{% endif %}
+		</div>			
+	</div>
+</body>
+</html>

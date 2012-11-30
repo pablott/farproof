@@ -1,22 +1,60 @@
-<h1>{{ client_name }}</h1>
-<a href="/">Back to index</a> <br>
+{% load i18n %}{% load i18n %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+	<meta charset="utf-8">
+	<link href="/media/css/common.css" rel="stylesheet" type="text/css">
+	<link href="/media/css/widgets/buttons.css" rel="stylesheet" type="text/css">
+	<link href="/media/css/main.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
+	<link href="/media/favicon.ico" rel="shortcut icon">
+	<title>FP - {{ client_name }} - Job List</title>
+</head>
 
-{% if jobs %}
-    <ul>
-    {% for job in jobs %}
-        <li>
-			<a href="/{{job.client.name}}/{{ job.name }}/">{{ job.name }}</a> <br>
-			Items inside: {{ job.item_set.count }} <br>
-			Desc: {{ job.desc }}
-			    {% for item in job.item_set.all %}
-					<ul><li> 
-						<a href="/{{ job.client.name }}/{{ job.name }}/{{ item.name }}/">{{ item.name }}</a> 
-					</li></ul>
-				{% endfor %}
 
-		</li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No jobs are available.</p>
-{% endif %}
+<body>
+	<div id="topbar">
+		<ul>
+			<li> <a href="/">FP</a> </li>
+			<li> <a href="/{{ client_name }}/">{{ client_name }}</a> </li>
+			<li> Job List </li>
+		</ul>
+	</div>
+
+	<div id="sidebar">
+		<div class="btn_box_top">
+			<div class="btn btnM btnV top"> Job List </div>
+			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure </div>
+			<div class="btn btnM"> <div class="icon icon2"> + </div> Add Job </div>
+		</div>
+		<div class="btn_box_bottom">
+			<div class="btn btnM delete"> <div class="icon icon1">X</div> Delete Job </div>
+		</div>
+	</div>
+	
+	<div id="view">
+	{% if jobs %}
+		{% for job in jobs %}
+			<div class="client">
+				<div class="client_icon">  </div>
+				<div class="title"> <a href="/{{ job.client.name }}/{{ job.name }}/">{{ job.name }}</a> </div>
+				<div class="mini_summary"> 
+					{{ job.item_set.count }} total items / {{ job.item.page_set.count }} total pages 
+				</div>
+				<div class="summary">
+					{{ job.desc }} <br>
+					{% for item in job.item_set.all %}
+							<a href="/{{ job.client.name }}/{{ job.name }}/{{ item.name }}/list/">{{ item.name }}</a> 
+					{% endfor %} <br>
+					<span class="rejected"> XX items with problems </span> </br>
+					<span class="pending"> XX items pending </span> </br>
+					<span class="accepted"> XX approved items </span> </br>
+				</div>
+			</div>
+		{% endfor %}
+	{% else %}
+		<p>No jobs are available.</p>
+	{% endif %}
+	</div>
+</body>
+</html>

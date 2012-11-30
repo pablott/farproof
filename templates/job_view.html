@@ -1,17 +1,51 @@
-<h1>{{ job_name }}</h1>
-<a href="/{{ client_name }}/">Back to client</a> <br>
-{% if items %}
-    <ul>
-    {% for item in items %}
-        <li>
-			<a href="/{{ item.job.client.name }}/{{ item.job.name }}/{{ item.name }}/">{{ item.name }}</a> <br>
-			Pages: {{ item.page_set.count }} <br>
-			Job it belongs to: {{ item.job.name }} <br>
-			Client it belongs to: {{ item.job.client.name }} <br>
-			Desc: {{ item.desc }}
-		</li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No items are available.</p>
-{% endif %}
+{% load i18n %}{% load i18n %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+	<meta charset="utf-8">
+	<link href="/media/css/common.css" rel="stylesheet" type="text/css">
+	<link href="/media/css/widgets/buttons.css" rel="stylesheet" type="text/css">
+	<link href="/media/css/job_view.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
+	<link href="/media/favicon.ico" rel="shortcut icon">
+	<title>FP - {{ client_name }} - {{ job_name}} - Item List</title>
+</head>
+
+
+<body>
+	<div id="topbar">
+		<ul>
+			<li> <a href="/">FP</a> </li>
+			<li> <a href="/{{ client_name }}/">{{ client_name }}</a> </li>
+			<li> <a href="/{{ client_name }}/{{ job_name }}/">{{ job_name }}</a> </li>
+			<li> Item List </li>
+		</ul>
+	</div>
+
+	<div id="sidebar">
+		<div class="btn_box_top">
+			<div class="btn btnM btnV top"> Item List </div>
+			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure </div>
+			<div class="btn btnM btn"> <div class="icon icon2">+</div> Add Item </div>
+		</div>
+		<div class="btn_box_bottom">
+			<div class="btn btnM delete"> <div class="icon icon1">X</div> Delete Item </div>
+		</div>
+	</div>
+	
+	<div id="view">
+	{% if items %}
+	    {% for item in items %}
+			<div class="item">
+				<div class="tab"> <a href="/{{ client_name }}/{{ job_name }}/{{ item.name }}/list">{{ item.name }}</a> </div>
+				<div class="preview"></div>
+				Pages: {{ item.page_set.count }} <br>
+				Desc: {{ item.desc }}
+			</div>
+		{% endfor %}
+		{% else %}
+			<p>No items are available.</p>
+		{% endif %}
+	</div>
+</body>
+</html>
