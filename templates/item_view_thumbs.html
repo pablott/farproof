@@ -9,42 +9,12 @@
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
 	<link href="/media/favicon.ico" rel="shortcut icon">
-	<title>FP - {{ client_name }} - {{ job_name}} - {{item_name}} - Page List</title>
+	<title>FP - {{ client_name }} - {{ job_name}} - {{item_name}} - Page Thumbs</title>
 </head>
 
 
 <body>
 	<div class="debug">--</div>
-	<div id="topbar">
-		<ul>
-			<li> <a href="/">FP</a> </li>
-			<li> <a href="/{{ client_name }}/">{{ client_name }}</a> </li>
-			<li> <a href="/{{ client_name }}/{{ job_name }}/">{{ job_name }}</a> </li>
-			<li> <a href="/{{ client_name }}/{{ job_name }}/{{ item_name }}/list">{{ item_name }}</a> </li>
-			<li> <div class="icon icon1">5</div> Page Thumbs </li>
-		</ul>
-	</div>
-
-	<div id="sidebar">
-		<div class="btn_box_top">
-			<div class="btn btnM btnV top pushed"> <div class="icon icon2">k</div> Thumbs </div>
-			<div class="btn btnM btnV middle"> <div class="icon icon1">5</div> List </div>
-			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure </div>
-			<div class="btn btnM"> <div class="icon icon2">+</div> Update Pages </div>
-			<div class="help">
-				Click pages to view them in a new window.<br>
-				Mark checkboxes to select pages for deletion.
-			</div>
-		</div>
-		
-		<div class="btn_box_bottom">
-			<div class="btn btnM delete"> <div class="icon icon1">X</div> Delete Pages </div>
-		</div>
-	</div>
-	
-	
-	
-<body>
 	<div id="topbar">
 		<ul>
 			<li> <a href="/">FP</a> </li>
@@ -63,7 +33,9 @@
 			<div class="btn btnM"> <div class="icon icon2">+</div> Update Pages </div>
 			<div class="help">
 				Click pages to view them in a new window.<br>
-				Mark checboxes to select pages for deletion.
+				Mark checkboxes to select pages for deletion.<br>
+				<br>
+				{% if first_page.number|divisibleby:2 %}even{% else %}odd{% endif %}
 			</div>
 		</div>
 		
@@ -73,33 +45,63 @@
 	</div>
 	
 	<div id="view">
+<!--first two pages of pages[] are evaluated differently:
+	1) first_page=odd, then use thumb_container(even+dummy + odd)
+	2) first_page=even, then use thumb_container(even + odd)
+	Rest are evaluated always like this: thumb_container(even + odd).
+	-->
+	
 		{% if pages %}
 			{% for page in pages %}
-
-			
-		<div class="thumb_container">
-			<div class="page_thumb even">
-				<div class="page_number">{{ page.number }}</div>
-				<div class="page_status pending"> ?? </div>
-				<div class="page_info">
-					XX comments <br>
-					XX revisions
-				</div>
-			</div>
-			<div class="page_thumb odd">
-				<div class="page_number"> {{ page.number }} </div>
-				<div class="page_status rejected"> FAIL </div>
-				<div class="page_info">
-					XX comments <br>
-					XX revisions
-				</div>
-			</div>
-		</div>			
-		
-		{% endfor %}
+				{% if forloop.counter == 1 %} 
+					<div class="thumb_container">
+					{% if first_page.number|divisibleby:2 %}
+						<div class="page_thumb even">
+							<div class="page_number">{{ page.number }}</div>
+							<div class="page_status pending"> {{ page.revision.status }} </div>
+							<div class="page_info">
+								XX comments <br>
+								{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
+							</div>
+						</div>
+					{% else %}
+						<div class="page_thumb even dummy"></div>
+					{% endif %}
+					</div>
+				{% else %}
+				<div class="thumb_container">
+					<div class="page_thumb even">
+						<div class="page_number">{{ page.number }}</div>
+						<div class="page_status pending"> {{ page.revision.status }} </div>
+						<div class="page_info">
+							XX comments <br>
+							{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
+						</div>
+					</div>
+					<div class="page_thumb odd">
+						{{forloop.counter }} 
+						<div class="page_number"> {{ page.number }} </div>
+						<div class="page_status rejected"> {{ page.revision.status }} </div>
+						<div class="page_info">
+							XX comments <br>
+							{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
+						</div>
+					</div>
+					</div>
+				{% endif %}
+				
+				
+				
+				
+				
+			{% endfor %}
 		{% else %}
 			<p>No pages are available.</p>
 		{% endif %}
+
+
+
+		
 
 	</div>
 </body>

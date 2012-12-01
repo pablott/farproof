@@ -37,11 +37,21 @@ def item_view_list(request, client, job, item):
 
 def item_view_thumbs(request, client, job, item):
 	pages = Page.objects.filter(item__name__exact=item).order_by('number')
+	first_page = pages[0]
+	#first_page = pages[0]
+	#if first_page == 1:
+	#	first_page = 'odd'
+	#else:
+	#	first_page = 'even'
+	
+	
+	
 	return render_to_response('item_view_thumbs.html', {
 		'client_name': client,
 		'job_name': job, 
 		'item_name': item,
-		'pages': pages
+		'pages': pages,
+		'first_page': first_page
 	})	
 	
 def page_view(request, client, job, item, page):

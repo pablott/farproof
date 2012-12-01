@@ -1,3 +1,4 @@
+#from datetime import datetime
 from django.db import models
 
 class User(models.Model):
@@ -21,9 +22,11 @@ class Job(models.Model):
 	name = models.CharField(max_length=256)
 	desc = models.CharField(max_length=256)
 	active = models.BooleanField(default=True)
+	creation = models.DateTimeField(default="", auto_now_add=True)
+	modified = models.DateTimeField(default="", auto_now=True)
 	# Return "Job name - Client"
 	def __unicode__(self):
-		return self.name + " - " + str(self.client)
+		return self.name + " - " + self.client.name
 
 class Item(models.Model):
 	job = models.ForeignKey(Job)
@@ -31,15 +34,16 @@ class Item(models.Model):
 	desc = models.CharField(max_length=256)
 	#active = models.BooleanField(default=True)
 	def __unicode__(self):
-		return self.name + " - " + self.job.name + " - " + str(self.job.client)
+		return self.name + " - " + self.job.name + " - " + self.job.client.name
 
 class Page(models.Model):
 	item = models.ForeignKey(Item)
 	number = models.IntegerField() #.unique
 	def __unicode__(self):
-		return str(self.number)
+		return str(self.number) + " - " + self.item.name
 
 class Revision(models.Model):
+	creation = models.DateTimeField(auto_now_add=True)
 	rev_number = models.IntegerField()
 	page = models.ForeignKey(Page)
 	STATUS_CHOICES = (
