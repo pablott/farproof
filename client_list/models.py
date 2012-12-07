@@ -53,7 +53,7 @@ class Revision(models.Model):
     )
 	status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='PENDING')
 	def __unicode__(self):
-		return str(self.rev_number)
+		return str(self.rev_number) + " - " + "page: " + str(self.page.number) + " - " + self.page.item.name
 
 class Comment(models.Model):
 	revision = models.ForeignKey(Revision)

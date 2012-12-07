@@ -45,11 +45,14 @@
 	</div>
 	
 	<div id="view">
-<!--first two pages of pages[] are evaluated differently:
-	1) first_page=odd, then use thumb_container(even+dummy + odd)
-	2) first_page=even, then use thumb_container(even + odd)
-	Rest are evaluated always like this: thumb_container(even + odd).
-	http://stackoverflow.com/questions/11964972/django-template-for-tag-add-li-every-4th-element
+<!--each page of pages[] gets evaluated differently:
+	1) if page is even numbered, then use "page_thumb even"
+	2) if page is odd numbered, then use "page_thumb odd", but:
+		2a) if this happens in the first iteration, add a dummy odd page too, else
+		2b) following iterations get only an odd page (no dummy)
+	At the same time (in a separate loop), it checks where to group pages 
+	in pairs based on "page.number".
+	Thanks to: http://stackoverflow.com/questions/11964972/django-template-for-tag-add-li-every-4th-element
 	-->
 		{% if pages %}
 			<div class="thumb_container">
@@ -66,7 +69,7 @@
 					{% else %}
 						{% if forloop.counter == 1 %}
 							<div class="page_thumb even dummy"></div>
-								<div class="page_thumb odd">
+							<div class="page_thumb odd">
 								<div class="page_number">{{ page.number }}</div>
 								<div class="page_status pending"> {{ page.revision.status }} </div>
 								<div class="page_info">
