@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
 	<link href="/media/favicon.ico" rel="shortcut icon">
-	<title>FP - Add Client</title>
+	<title>FP - {{client_name}} - Add Job</title>
 </head>
 
 	
@@ -17,14 +17,15 @@
 	<div id="topbar">
 		<ul>
 			<li> FP </li>
-			<li> Add Client </li>
+			<li> {{ client_name }} </li>
+			<li> Add Job </li>
 		</ul>
 	</div>
 
 	<div id="sidebar">
 		<div class="btn_box_top">
 			<div class="btn btnM btnV top"> Client List </div>
-			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure FP </div>
+			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure Client </div>
 			<div class="btn btnM"> <div class="icon icon2"> + </div> Submit </div>
 		</div>
 		<div class="btn_box_bottom">
@@ -34,7 +35,7 @@
 	
 	<div id="view">
 	
-		<form action="/client_add/" method="post">
+		<form action="/{{ client_name }}/job_add/" method="post">
 			{% csrf_token %}
 			{{ form.as_ul }}
 			<input type="submit" value="Add Client">

@@ -1,8 +1,9 @@
 ﻿#from django.template import Context, loader
 
 from django.shortcuts import render_to_response # Add get_object_or_404
-from django.http import HttpResponse #, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from farproof.client_list.models import Client, Job, Item, Page
+from farproof.client_list.models import ClientForm, JobForm, ItemForm
 #from django.template import RequestContext
 #def serve(request, path, document_root, show_indexes=False)
 
@@ -11,47 +12,40 @@ def main(request):
 	return render_to_response('main.html', {'clients': clients})
 
 def client_add(request):
-	return render_to_response('client_add.html', {
-	})
-	
-def client_added(request):
-    errors = []
-    if request.method == 'POST':
-        if not request.POST.get('name', ''):
-            errors.append('Enter a name.')
-        if not request.POST.get('email') or '@' not in request.POST['email']:
-            errors.append('Enter a valid e-mail address.')
-        if not errors:
-            #send_mail(
-            #    request.POST['subject'],
-            #    request.POST['message'],
-            #    request.POST.get('email', 'noreply@example.com'),
-            #    ['siteowner@example.com'],
-            #)
-            message = 'You added %r' % request.POST['name'] + ' - %r' % request.POST['email']
-            errors.append(message)
-    return render_to_response('client_add.html',
-        {'errors': errors}) #see http://stackoverflow.com/questions/10388033/csrf-verification-failed-request-aborted
+	if request.method == 'POST': # If the form has been submitted...
+		form = ClientForm(request.POST) # A form bound to the POST data
+		if form.is_valid(): # All validation rules pass
+			# Process the data in form.cleaned_data
+			form.save()
+			added = 'You added %r' % request.POST['name'] + ' - %r' % request.POST['email']
+			return render_to_response('client_add.html',
+				{'form': form, 'added': added})
+	else:
+		form = ClientForm(
+		initial={'desc': 'dd'}) # An unbound form
 
+	return render_to_response('client_add.html', {
+		'form': form,
+	})
+
+
+
+
+		
+		
+		
 def client_search(request):
 	return render_to_response('client_search.html', {
 	})
 
 def client_result(request):
-    if 'name' in request.GET:
-        message = 'You searched for: %r' % request.GET['name']
-    else:
-        message = 'You submitted an empty form.'
-    return HttpResponse(message)
+	if 'name' in request.GET:
+		message = 'You searched for: %r' % request.GET['name']
+	else:
+		message = 'You submitted an empty form.'
+	return HttpResponse(message)
 	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	
 def client_view(request, client):
@@ -66,8 +60,36 @@ def job_view(request, client, job):
 	return render_to_response('job_view.html', {
 		'client_name': client,
 		'job_name': job, 
-		'items': items
+		'items': items,
 	})
+
+def job_add(request, client):
+	if request.method == 'POST': # If the form has been submitted...
+		form = JobForm(request.POST) # A form bound to the POST data
+		 # Modify POST data to reflect client's name
+		if form.is_valid(): # Validate resulting form
+			# Save form.cleaned_data to DB and inform
+			form.save()
+			added = 'You added a Job'
+			
+			return render_to_response('job_add.html',
+				{'form': form, 'added': added, 'client': client,})
+	else:
+		# An unbound form
+		client_id = Client.objects.filter(name=client)
+		form = JobForm() 
+
+	return render_to_response('job_add.html', {
+		'form': form,
+		'client_name': client,
+	})
+	
+	
+	
+	
+	
+	
+	
 	
 def item_view_list(request, client, job, item):
 	pages = Page.objects.filter(item__name__exact=item).order_by('number')

@@ -17,12 +17,18 @@ urlpatterns = patterns('',
 	
 	#TODO Add 404 templates when a client, job, item or page is not found
     (r'^$', main),
+	
 	(r'^client_add/$', client_add),
-	(r'^client_added/$', client_added),
+	#(r'^client_added/$', client_added),
 	(r'^client_search/$', client_search),
 	(r'^client_result/$', client_result),
     (r'^([\w, ,-]+)/$', client_view),
+	
+	(r'^([\w, ,-]+)/job_add/$', job_add),
+	#(r'^job_search/$', job_search),
+	#(r'^job_result/$', job_result),
     (r'^([\w, ,-]+)/([\w, ,-]+)/$', job_view),
+	
     (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/list/$', item_view_list),
     (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/thumbs/$', item_view_thumbs),
     (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/([\d]+)/$', page_view)

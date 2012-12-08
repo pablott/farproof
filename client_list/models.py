@@ -1,5 +1,6 @@
 #from datetime import datetime
 from django.db import models
+from django.forms import ModelForm
 
 class User(models.Model):
 	name = models.CharField(max_length=256)
@@ -17,6 +18,12 @@ class Client(models.Model):
 	def __unicode__(self):
 		return self.name + " " + str(self.creation) + " " + str(self.modified)
 
+class ClientForm(ModelForm):
+	class Meta:
+		model = Client		
+		fields = ('name', 'email')
+		
+		
 class Job(models.Model):
 	client = models.ForeignKey(Client)
 	name = models.CharField(max_length=256)
@@ -27,7 +34,14 @@ class Job(models.Model):
 	# Return "Job name - Client"
 	def __unicode__(self):
 		return self.name + " - " + self.client.name
-
+		
+class JobForm(ModelForm):
+	class Meta:
+		model = Job	
+		fields = ('name', 'desc')
+		
+		
+		
 class Item(models.Model):
 	job = models.ForeignKey(Job)
 	name = models.CharField(max_length=256)
@@ -36,6 +50,11 @@ class Item(models.Model):
 	def __unicode__(self):
 		return self.name + " - " + self.job.name + " - " + self.job.client.name
 
+class ItemForm(ModelForm):
+	class Meta:
+		model = Item				
+		
+		
 class Page(models.Model):
 	item = models.ForeignKey(Item)
 	number = models.IntegerField() #.unique
@@ -47,10 +66,10 @@ class Revision(models.Model):
 	rev_number = models.IntegerField()
 	page = models.ForeignKey(Page)
 	STATUS_CHOICES = (
-        ('OK', 'Ok'),
-        ('FAIL', 'Fail'),
-        ('PENDING', 'Pending'),
-    )
+		('OK', 'Ok'),
+		('FAIL', 'Fail'),
+		('PENDING', 'Pending'),
+	)
 	status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='PENDING')
 	def __unicode__(self):
 		return str(self.rev_number) + " - " + "page: " + str(self.page.number) + " - " + self.page.item.name
