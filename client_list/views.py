@@ -63,32 +63,31 @@ def job_view(request, client, job):
 		'items': items,
 	})
 
+	
+	
 def job_add(request, client):
-	if request.method == 'POST': # If the form has been submitted...
-		form = JobForm(request.POST) # A form bound to the POST data
-		 # Modify POST data to reflect client's name
+	client_id = Client.objects.get(name__exact=client).id
+	if request.method == 'POST': # Form's been submitted
+		post = request.POST.copy() # Make POST mutable, see: http://stackoverflow.com/questions/7572537/modifying-django-model-forms-after-post?rq=1
+		post['client'] = client_id # Modify POST data to reflect client's name
+		form = JobForm(post) # A form bound to the POST data
 		if form.is_valid(): # Validate resulting form
-			# Save form.cleaned_data to DB and inform
-			form.save()
+			form.save() # Save form.cleaned_data to DB and inform user
 			added = 'You added a Job'
-			
 			return render_to_response('job_add.html',
-				{'form': form, 'added': added, 'client': client,})
+				{'added': added, 'client_name': client,})
 	else:
-		# An unbound form
-		client_id = Client.objects.filter(name=client)
-		form = JobForm() 
-
+		# First time called: an unbound form
+		form = JobForm(initial={'client': client_id})  #JobForm(initial={'client': '2'})
 	return render_to_response('job_add.html', {
 		'form': form,
 		'client_name': client,
 	})
 	
-	
-	
-	
-	
-	
+
+#+		form = ClientForm(
+#+		initial={'desc': 'dd'}) # An unbound form
+
 	
 	
 def item_view_list(request, client, job, item):
