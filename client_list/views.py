@@ -17,13 +17,12 @@ def client_add(request):
 		if form.is_valid(): # All validation rules pass
 			# Process the data in form.cleaned_data
 			form.save()
-			added = 'You added %r' % request.POST['name'] + ' - %r' % request.POST['email']
+			message = 'You added Client: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['email'])
+			form = ClientForm() # Reset form after saving
 			return render_to_response('client_add.html',
-				{'form': form, 'added': added})
+				{'form': form, 'message': message})
 	else:
-		form = ClientForm(
-		initial={'desc': 'dd'}) # An unbound form
-
+		form = ClientForm() # An unbound form
 	return render_to_response('client_add.html', {
 		'form': form,
 	})
@@ -34,16 +33,19 @@ def client_add(request):
 		
 		
 		
-def client_search(request):
-	return render_to_response('client_search.html', {
-	})
+def client_search(request): # TODO Consider using a ClientSearchForm or such
+	query = 0 # Initialize
+	if request.method == 'GET': # If this view gets a search query...
+		if 'name' in request.GET: # Check if a 'name' was given
+			name = request.GET['name']
+			query = Client.objects.filter(name__icontains=name) # TODO Checks if it exists
+			message = 'You searched for: %r' % str(name) 
+		else:
+			message = 'You submitted an empty form.'
+		return render_to_response('client_search.html', {'message': message, 'query': query})
+	else: # If not, show empty form
+		return render_to_response('client_search.html', {'query': query})
 
-def client_result(request):
-	if 'name' in request.GET:
-		message = 'You searched for: %r' % request.GET['name']
-	else:
-		message = 'You submitted an empty form.'
-	return HttpResponse(message)
 	
 
 	
@@ -73,21 +75,18 @@ def job_add(request, client):
 		form = JobForm(post) # A form bound to the POST data
 		if form.is_valid(): # Validate resulting form
 			form.save() # Save form.cleaned_data to DB and inform user
-			added = 'You added a Job'
+			message = 'You added Job: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['desc'])
+			form = JobForm() # Reset form after saving
 			return render_to_response('job_add.html',
-				{'added': added, 'client_name': client,})
+				{'form': form, 'message': message, 'client_name': client,})
 	else:
 		# First time called: an unbound form
-		form = JobForm(initial={'client': client_id})  #JobForm(initial={'client': '2'})
+		form = JobForm() 
 	return render_to_response('job_add.html', {
 		'form': form,
 		'client_name': client,
 	})
 	
-
-#+		form = ClientForm(
-#+		initial={'desc': 'dd'}) # An unbound form
-
 	
 	
 def item_view_list(request, client, job, item):

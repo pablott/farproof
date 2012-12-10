@@ -17,7 +17,7 @@ class Client(models.Model):
 	creation = models.DateTimeField(default="", auto_now_add=True)
 	modified = models.DateTimeField(default="", auto_now=True)
 	def __unicode__(self):
-		return self.name + " - " + str(self.creation) + " - " + str(self.modified) + " - " + str(self.pk)
+		return self.name + " - " + str(self.creation) + " - " + str(self.modified) + " - " + str(self.id)
 
 class ClientForm(ModelForm):
 	class Meta:
@@ -25,6 +25,7 @@ class ClientForm(ModelForm):
 		fields = ('name', 'email')
 		
 		
+
 class Job(models.Model):
 	client = models.ForeignKey(Client)
 	name = models.CharField(max_length=256)
@@ -40,10 +41,10 @@ class JobForm(ModelForm):
 	class Meta:
 		model = Job	
 		# "exclude" won't allow JobForm to render a 'client' field
-		# in the template, thus it will throw an error beacause view function 'job_add'
+		# in the template (because it's a FK), thus it will throw an error beacause view function 'job_add'
 		# won't be able to assign the current Client object to 'client' in the processed POST.
 		# The solution is using HiddenInput() widget for 'client' field.
-		exclude = ( 'active')
+		exclude = ('active')
 		widgets = {
             'client': HiddenInput(),
         }

@@ -21,7 +21,7 @@ urlpatterns = patterns('',
 	(r'^client_add/$', client_add),
 	#(r'^client_added/$', client_added),
 	(r'^client_search/$', client_search),
-	(r'^client_result/$', client_result),
+	#(r'^client_result/$', client_result),
     (r'^([\w, ,-]+)/$', client_view),
 	
 	(r'^([\w, ,-]+)/job_add/$', job_add),
