@@ -16,20 +16,20 @@
 <body>
 	<div id="topbar">
 		<ul>
-			<li> FP </li>
-			<li> {{ client_name }} </li>
+			<li> <a href="/">FP</a> </li>
+			<li> <a href="/{{ client_name }}/">{{ client_name }}</a> </li>
 			<li> Add Job </li>
 		</ul>
 	</div>
 
 	<div id="sidebar">
 		<div class="btn_box_top">
-			<div class="btn btnM btnV top"> Client List </div>
+			<a href="/{{client_name}}/"><div class="btn btnM btnV top"> Job List </div></a>
 			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure Client </div>
 			<div class="btn btnM"> <div class="icon icon2"> + </div> Submit </div>
 		</div>
 		<div class="btn_box_bottom">
-			<div class="btn btnM delete"> <div class="icon icon1">X</div> Discard changes </div>
+			<a href="/{{client_name}}/"><div class="btn btnM delete"> <div class="icon icon1">X</div> Discard changes </div></a>
 		</div>
 	</div>
 	

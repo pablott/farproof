@@ -1,7 +1,7 @@
 ﻿#from django.template import Context, loader
 
 from django.shortcuts import render_to_response # Add get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from farproof.client_list.models import Client, Job, Item, Page
 from farproof.client_list.models import ClientForm, JobForm, ItemForm
 #from django.template import RequestContext
@@ -27,12 +27,6 @@ def client_add(request):
 		'form': form,
 	})
 
-
-
-
-		
-		
-		
 def client_search(request): # TODO Consider using a ClientSearchForm or such
 	query = 0 # Initialize
 	if request.method == 'GET': # If this view gets a search query...
@@ -46,10 +40,6 @@ def client_search(request): # TODO Consider using a ClientSearchForm or such
 	else: # If not, show empty form
 		return render_to_response('client_search.html', {'query': query})
 
-	
-
-	
-	
 def client_view(request, client):
 	jobs = Job.objects.filter(client__name__exact=client).order_by('name')
 	return render_to_response('client_view.html', {
@@ -57,13 +47,6 @@ def client_view(request, client):
 		'jobs': jobs,
 	})
 	
-def job_view(request, client, job):
-	items = Item.objects.filter(job__name__exact=job).order_by('name')
-	return render_to_response('job_view.html', {
-		'client_name': client,
-		'job_name': job, 
-		'items': items,
-	})
 
 	
 	
@@ -87,6 +70,38 @@ def job_add(request, client):
 		'client_name': client,
 	})
 	
+def job_search(request, client):
+	query = 0 # Initialize
+	if request.method == 'GET': # If this view gets a search query...
+		if 'name' in request.GET: # Check if a 'name' was given
+			name = request.GET['name']
+			query = Job.objects.filter(name__icontains=name) # TODO Checks if it exists
+			message = 'You searched for: %r' % str(name) 
+		else:
+			message = 'You submitted an empty form.'
+		return render_to_response('job_search.html', {'message': message, 'query': query, 'client_name': client,})
+	else: # If not, show empty form
+		return render_to_response('job_search.html', {'query': query, 'client_name': client,})
+
+		
+		
+def job_view(request, client, job):
+	items = Item.objects.filter(job__name__exact=job, job__client__name__exact=client).order_by('name')
+	#client_exists = Client.objects.filter(name__exact=client)
+	# Check URL leads to a real item in DB.
+	# Notice how it explicitely asks for Job and for its parent Client
+	# this way is impossible to fullfill the condition in the case there are 
+	# two Jobs or Clients with the same name.
+	exists = Job.objects.filter(name__exact=job, client__name__exact=client)
+	if exists: # Check if URL exists
+		return render_to_response('job_view.html', {
+			'client_name': client,
+			'job_name': job, 
+			'items': items,
+		})
+	else:
+		raise Http404
+
 	
 	
 def item_view_list(request, client, job, item):
@@ -101,11 +116,6 @@ def item_view_list(request, client, job, item):
 def item_view_thumbs(request, client, job, item):
 	pages = Page.objects.filter(item__name__exact=item).order_by('number')
 	first_page = pages[0]
-	#first_page = pages[0]
-	#if first_page == 1:
-	#	first_page = 'odd'
-	#else:
-	#	first_page = 'even'
 	return render_to_response('item_view_thumbs.html', {
 		'client_name': client,
 		'job_name': job, 

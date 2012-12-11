@@ -27,8 +27,8 @@
 	
 	<div id="sidebar">
 		<div class="btn_box_top">
-			<div class="btn btnM btnV top pushed"> <div class="icon icon2">k</div> Thumbs </div>
-			<div class="btn btnM btnV middle"> <div class="icon icon1">5</div> List </div>
+			<a href="/{{ client_name }}/{{ job_name }}/{{ item_name }}/thumbs/"><div class="btn btnM btnV top pushed"> <div class="icon icon2">k</div> Thumbs </div></a>
+			<a href="/{{ client_name }}/{{ job_name }}/{{ item_name }}/list/"><div class="btn btnM btnV middle"> <div class="icon icon1">5</div> List </div></a>
 			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure </div>
 			<div class="btn btnM"> <div class="icon icon2">+</div> Update Pages </div>
 			<div class="help">
@@ -58,6 +58,7 @@
 			<div class="thumb_container">
 				{% for page in pages%}
 					{% if page.number|divisibleby:2 %}
+						<a href="/{{ page.item.job.client.name }}/{{ page.item.job.name }}/{{ page.item.name }}/{{ page.number }}/">
 						<div class="page_thumb even">
 						<div class="page_number">{{ page.number }}</div>
 						<div class="page_status pending"> {{ page.revision.status }} </div>
@@ -66,6 +67,7 @@
 							{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
 							</div>
 						</div>
+						</a>
 					{% else %}
 						{% if forloop.counter == 1 %}
 							<div class="page_thumb even dummy"></div>

@@ -35,7 +35,7 @@ class Job(models.Model):
 	modified = models.DateTimeField(default="", auto_now=True)
 	# Return "Job name - Client"
 	def __unicode__(self):
-		return self.name + " - " + self.client.name
+		return self.name + " - " + self.client.name + " - " + str(self.creation)
 		
 class JobForm(ModelForm):
 	class Meta:

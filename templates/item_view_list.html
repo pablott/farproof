@@ -30,8 +30,8 @@
 
 	<div id="sidebar">
 		<div class="btn_box_top">
-			<div class="btn btnM btnV top"> <div class="icon icon2">k</div> Thumbs </div>
-			<div class="btn btnM btnV middle pushed"> <div class="icon icon1">5</div> List </div>
+			<a href="/{{ client_name }}/{{ job_name }}/{{ item_name }}/thumbs/"><div class="btn btnM btnV top"> <div class="icon icon2">k</div> Thumbs </div></a>
+			<a href="/{{ client_name }}/{{ job_name }}/{{ item_name }}/list/"><div class="btn btnM btnV middle pushed"> <div class="icon icon1">5</div> List </div></a>
 			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure </div>
 			<div class="btn btnM"> <div class="icon icon2">+</div> Update Pages </div>
 			<div class="help">
@@ -39,10 +39,11 @@
 				Mark checboxes to select pages for deletion.
 			</div>
 		</div>
-		
+		{% if pages %}
 		<div class="btn_box_bottom">
 			<div class="btn btnM delete"> <div class="icon icon1">X</div> Delete Pages </div>
 		</div>
+		{% endif %}
 	</div>
 	
 	<div id="view">
@@ -67,10 +68,10 @@
 					<li class="page"> <a href="/{{ page.item.job.client.name }}/{{ page.item.job.name }}/{{ page.item.name }}/{{ page.number }}/">{{ page.number }}</a> </li>
 					<li class="comments">XX</li>
 					<li class="revisions">{{ page.revision_set.count }}</li>
-					<li class="status accepted">??</li>
+					<li class="status accepted">{{ page.revision_set.status }}</li>
 					<li class="pdf">??.pdf</li>
 					<li class="updated">??-??-????</li>
-					<li class="added">??-??-????</li>
+					<li class="added">{{ page.item.job.creation|date:"D j M y, H:i" }}</li>
 				</ul>
 			{% endfor %}
 			{% else %}

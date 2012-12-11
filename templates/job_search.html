@@ -8,35 +8,40 @@
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
 	<link href="/media/favicon.ico" rel="shortcut icon">
-	<title>FP - {{ client_name }} - Job List</title>
+	<title>FP - {{ client_name }} - Search for a Job</title>
 </head>
 
-
+	
 <body>
 	<div id="topbar">
 		<ul>
 			<li> <a href="/">FP</a> </li>
 			<li> <a href="/{{ client_name }}/">{{ client_name }}</a> </li>
-			<li> Job List </li>
+			<li> Search for a Job </li>
 		</ul>
 	</div>
 
 	<div id="sidebar">
 		<div class="btn_box_top">
-			<div class="btn btnM btnV top pushed"> Job List </div>
-			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure </div>
-			<a href="/{{ client_name }}/job_add"><div class="btn btnM"> <div class="icon icon2"> + </div> Add Job </div></a>
+			<a href="/{{ client_name }}/"><div class="btn btnM btnV top"> Job List </div></a>
+			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure Client </div>
 		</div>
-		{% if jobs %}
 		<div class="btn_box_bottom">
-			<div class="btn btnM delete"> <div class="icon icon1">X</div> Delete Job </div>
+				<a href="/{{ client_name }}/"><div class="btn btnM delete"> <div class="icon icon1">X</div> Discard changes </div></a>
 		</div>
-		{% endif %}
 	</div>
 	
 	<div id="view">
-	{% if jobs %}
-		{% for job in jobs %}
+		<form action="/{{ client_name }}/job_search/" method="get">
+			<input type="text" name="name">
+			<input type="submit" value="Search">
+		</form>
+		<ul>
+			<li>{{message}}</li>
+		</ul>
+		
+	{% if query %}
+		{% for job in query %}
 			<div class="client">
 			{{ job.creation|date }}
 				<div class="client_icon">  </div>
@@ -56,8 +61,25 @@
 			</div>
 		{% endfor %}
 	{% else %}
-		<p>No jobs are available.</p>
+		<p>No jobs were found.</p>
 	{% endif %}
-	</div>
+	</div>	
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
