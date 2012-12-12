@@ -75,7 +75,7 @@ def job_search(request, client):
 	if request.method == 'GET': # If this view gets a search query...
 		if 'name' in request.GET: # Check if a 'name' was given
 			name = request.GET['name']
-			query = Job.objects.filter(name__icontains=name) # TODO Checks if it exists
+			query = Job.objects.filter(name__icontains=name) # Checks if it exists and put it in 'query'
 			message = 'You searched for: %r' % str(name) 
 		else:
 			message = 'You submitted an empty form.'
@@ -86,14 +86,14 @@ def job_search(request, client):
 		
 		
 def job_view(request, client, job):
+	# Notice how it explicitely asks for current Item's Job AND for that Job's parent Client.
+	# It does two things: 
+	# 1) Avoids returning an Item which name is equal to another Item under a different Job and/or Client.
+	# 2) Raises a 404 whenever the Client and/or Job names don't exists.
 	items = Item.objects.filter(job__name__exact=job, job__client__name__exact=client).order_by('name')
-	#client_exists = Client.objects.filter(name__exact=client)
-	# Check URL leads to a real item in DB.
-	# Notice how it explicitely asks for Job and for its parent Client
-	# this way is impossible to fullfill the condition in the case there are 
-	# two Jobs or Clients with the same name.
-	exists = Job.objects.filter(name__exact=job, client__name__exact=client)
-	if exists: # Check if URL exists
+	# Using same logic, check if path leads to a real Job and Client in DB.
+	check_path = Job.objects.filter(name__exact=job, client__name__exact=client)
+	if check_path:
 		return render_to_response('job_view.html', {
 			'client_name': client,
 			'job_name': job, 
@@ -101,8 +101,6 @@ def job_view(request, client, job):
 		})
 	else:
 		raise Http404
-
-	
 	
 def item_view_list(request, client, job, item):
 	pages = Page.objects.filter(item__name__exact=item).order_by('number')
