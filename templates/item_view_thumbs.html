@@ -35,7 +35,9 @@
 				Click pages to view them in a new window.<br>
 				Mark checkboxes to select pages for deletion.<br>
 				<br>
-				{% if first_page.number|divisibleby:2 %}even{% else %}odd{% endif %}
+				{% if pages %}
+					{% if first_page.number|divisibleby:2 %}even{% else %}odd{% endif %}
+				{% endif %}
 			</div>
 		</div>
 		
