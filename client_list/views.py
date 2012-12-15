@@ -3,7 +3,7 @@
 from django.shortcuts import render_to_response # Add get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from farproof.client_list.models import Client, Job, Item, Page
-from farproof.client_list.models import ClientForm, JobForm, ItemForm
+from farproof.client_list.models import ClientAddForm, JobAddForm, ItemAddForm
 #from django.template import RequestContext
 #def serve(request, path, document_root, show_indexes=False)
 
@@ -13,16 +13,16 @@ def main(request):
 
 def client_add(request):
 	if request.method == 'POST': # If the form has been submitted...
-		form = ClientForm(request.POST) # A form bound to the POST data
+		form = ClientAddForm(request.POST) # A form bound to the POST data
 		if form.is_valid(): # All validation rules pass
 			# Process the data in form.cleaned_data
 			form.save()
 			message = 'You added Client: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['email'])
-			form = ClientForm() # Reset form after saving
+			form = ClientAddForm() # Reset form after saving
 			return render_to_response('client_add.html',
 				{'form': form, 'message': message})
 	else:
-		form = ClientForm() # An unbound form
+		form = ClientAddForm() # An unbound form
 	return render_to_response('client_add.html', {
 		'form': form,
 	})
@@ -32,7 +32,7 @@ def client_search(request): # TODO Consider using a ClientSearchForm or such
 	if request.method == 'GET': # If this view gets a search query...
 		if 'name' in request.GET: # Check if a 'name' was given
 			name = request.GET['name']
-			query = Client.objects.filter(name__icontains=name) # TODO Checks if it exists
+			query = Client.objects.filter(name__icontains=name) # Checks if it exists
 			message = 'You searched for: %r' % str(name) 
 		else:
 			message = 'You submitted an empty form.'
@@ -41,58 +41,69 @@ def client_search(request): # TODO Consider using a ClientSearchForm or such
 		return render_to_response('client_search.html', {'query': query})
 
 def client_view(request, client):
-	jobs = Job.objects.filter(client__name__exact=client).order_by('name')
-	return render_to_response('client_view.html', {
-		'client_name': client, 
-		'jobs': jobs,
-	})
-	
-
+	#Check if client exists and show it:
+	check_path = Client.objects.filter(name__exact=client)
+	if check_path:
+		jobs = Job.objects.filter(client__name__exact=client).order_by('name')
+		return render_to_response('client_view.html', {
+			'client_name': client,
+			'jobs': jobs,
+		})
+	else:
+		raise Http404
 	
 	
 def job_add(request, client):
-	client_id = Client.objects.get(name__exact=client).id
-	if request.method == 'POST': # Form's been submitted
-		post = request.POST.copy() # Make POST mutable, see: http://stackoverflow.com/questions/7572537/modifying-django-model-forms-after-post?rq=1
-		post['client'] = client_id # Modify POST data to reflect client's name
-		form = JobForm(post) # A form bound to the POST data
-		if form.is_valid(): # Validate resulting form
-			form.save() # Save form.cleaned_data to DB and inform user
-			message = 'You added Job: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['desc'])
-			form = JobForm() # Reset form after saving
-			return render_to_response('job_add.html',
-				{'form': form, 'message': message, 'client_name': client,})
-	else:
-		# First time called: an unbound form
-		form = JobForm() 
-	return render_to_response('job_add.html', {
-		'form': form,
-		'client_name': client,
-	})
-	
-def job_search(request, client):
-	query = 0 # Initialize
-	if request.method == 'GET': # If this view gets a search query...
-		if 'name' in request.GET: # Check if a 'name' was given
-			name = request.GET['name']
-			query = Job.objects.filter(name__icontains=name) # Checks if it exists and put it in 'query'
-			message = 'You searched for: %r' % str(name) 
+	check_path = Client.objects.filter(name__exact=client)
+	if check_path:
+		client_id = Client.objects.get(name__exact=client).id
+		if request.method == 'POST': # Form's been submitted
+			post = request.POST.copy() # Make POST mutable, see: http://stackoverflow.com/questions/7572537/modifying-django-model-forms-after-post?rq=1
+			post['client'] = client_id # Modify POST data to reflect client's name
+			form = JobAddForm(post) # A form bound to the POST data
+			if form.is_valid(): # Validate resulting form
+				form.save() # Save form.cleaned_data to DB and inform user
+				message = 'You added Job: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['desc'])
+				form = JobAddForm() # Reset form after saving
+				return render_to_response('job_add.html',
+					{'form': form, 'message': message, 'client_name': client,})
 		else:
-			message = 'You submitted an empty form.'
-		return render_to_response('job_search.html', {'message': message, 'query': query, 'client_name': client,})
-	else: # If not, show empty form
-		return render_to_response('job_search.html', {'query': query, 'client_name': client,})
+			# First time called: an unbound form
+			form = JobAddForm() 
+		return render_to_response('job_add.html', {
+			'form': form,
+			'client_name': client,
+		})
+	else:
+		raise Http404
+		
+		
+def job_search(request, client):
+	check_path = Client.objects.filter(name__exact=client)
+	if check_path:
+		query = 0 # Initialize
+		if request.method == 'GET': # If this view gets a search query...
+			if 'name' in request.GET: # Check if a 'name' was given
+				name = request.GET['name']
+				query = Job.objects.filter(name__icontains=name).order_by('name') # Checks if it exists and put it in 'query'
+				message = 'You searched for: %r' % str(name) 
+			else:
+				message = 'You submitted an empty form.'
+			return render_to_response('job_search.html', {'message': message, 'query': query, 'client_name': client,})
+		else: # If not, show empty form
+			return render_to_response('job_search.html', {'query': query, 'client_name': client,})
+	else:
+		raise Http404
 
 		
 		
 def job_view(request, client, job):
-	# Notice how it explicitely asks for current Item's Job AND for that Job's parent Client.
+	# Notice how it explicitly asks for current Item's Job AND for that Job's parent Client.
 	# It does two things: 
 	# 1) Avoids returning an Item which name is equal to another Item under a different Job and/or Client.
 	# 2) Raises a 404 whenever the Client and/or Job names don't exists.
-	items = Item.objects.filter(job__name__exact=job, job__client__name__exact=client).order_by('name')
-	# Using same logic, check if path leads to a real Job and Client in DB.
-	check_path = Job.objects.filter(name__exact=job, client__name__exact=client)
+	check_path = Job.objects.filter(name__exact=job, client__name__exact=client) # Check if Job exists TODO: substitute filter for get as filter may show Jobs with the same name
+	items = Item.objects.filter(job__name__exact=job, job__client__name__exact=client).order_by('name') # Check if Items inside Job
 	if check_path:
 		return render_to_response('job_view.html', {
 			'client_name': client,
@@ -102,32 +113,74 @@ def job_view(request, client, job):
 	else:
 		raise Http404
 	
-def item_view_list(request, client, job, item):
-	pages = Page.objects.filter(item__name__exact=item).order_by('number')
-	return render_to_response('item_view_list.html', {
-		'client_name': client,
-		'job_name': job, 
-		'item_name': item,
-		'pages': pages
-	})
+def item_add(request, client, job):
+	check_path = Job.objects.filter(name__exact=job, client__name__exact=client)
+	if check_path:
+		job_id = Job.objects.get(name__exact=job, client__name__exact=client).id 
+		if request.method == 'POST': 
+			post = request.POST.copy() 
+			post['job'] = job_id  
+			form = ItemAddForm(post) 
+			if form.is_valid(): 
+				form.save() 
+				message = 'You added Item: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['desc'])
+				form = ItemAddForm() 
+				return render_to_response('item_add.html',
+					{'form': form, 'message': message, 'client_name': client, 'job_name': job,})
+		else:
+			form = ItemAddForm() 
+		return render_to_response('item_add.html', {
+			'form': form,
+			'client_name': client,
+			'job_name': job,
+		})
+	else:
+		raise Http404
+	
 
+def item_view_list(request, client, job, item):
+	check_path = Item.objects.filter(name__exact=item, job__name__exact=job, job__client__name__exact=client)
+	pages = Page.objects.filter(item__name__exact=item, item__job__name__exact=job, item__job__client__name__exact=client).order_by('number')
+	if check_path:
+		return render_to_response('item_view_list.html', {
+			'client_name': client,
+			'job_name': job, 
+			'item_name': item,
+			'pages': pages,
+		})
+	else:
+		raise Http404
+
+		
+		
 def item_view_thumbs(request, client, job, item):
-	pages = Page.objects.filter(item__name__exact=item).order_by('number')
-	first_page = pages[0]
-	return render_to_response('item_view_thumbs.html', {
-		'client_name': client,
-		'job_name': job, 
-		'item_name': item,
-		'pages': pages,
-		'first_page': first_page
-	})	
+	check_path = Item.objects.filter(name__exact=item, job__name__exact=job, job__client__name__exact=client)
+	pages = Page.objects.filter(item__name__exact=item, item__job__name__exact=job, item__job__client__name__exact=client).order_by('number')
+	if pages:
+		first_page = pages[0]
+	else:
+		first_page = 0 # Initialize variable in case 'pages' doesn't exist or it crashes
+	if check_path:
+		return render_to_response('item_view_thumbs.html', {
+			'client_name': client,
+			'job_name': job, 
+			'item_name': item,
+			'pages': pages,
+			'first_page': first_page,
+		})
+	else:
+		raise Http404
+
 	
 def page_view(request, client, job, item, page):
-	return render_to_response('page_view.html', {
-		'client_name': client,
-		'job_name': job, 
-		'item_name': item,
-		'page_num': page
-	})
-	
+	check_path = Page.objects.filter(number__exact=page, item__name__exact=item, item__job__name__exact=job, item__job__client__name__exact=client)
+	if check_path:
+		return render_to_response('page_view.html', {
+			'client_name': client,
+			'job_name': job, 
+			'item_name': item,
+			'page_num': page
+		})
+	else:
+		raise Http404
 	

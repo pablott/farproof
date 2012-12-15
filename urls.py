@@ -26,7 +26,7 @@ urlpatterns = patterns('',
 	(r'^([\w, ,-]+)/job_search/$', job_search),
 	(r'^([\w, ,-]+)/([\w, ,-]+)/$', job_view),
 	
-	#(r'^([\w, ,-]+)/([\w, ,-]+)/item_search/$', item_view_list),
+	(r'^([\w, ,-]+)/([\w, ,-]+)/item_add/$', item_add),
     (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/list/$', item_view_list),
     (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/thumbs/$', item_view_thumbs),
     (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/([\d]+)/$', page_view)

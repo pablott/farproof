@@ -42,9 +42,10 @@
 				<div class="mini_summary">
 					XX person(s) will get notified </br>
 					{{ client.job_set.count }} total jobs </br>
-					<span class="unactive">( {{ client.job_set.count }} hidden jobs)</span>
+					<span class="unactive">({{ client.job_set.count }} hidden jobs)</span>
 				</div>
 				<div class="summary">
+					PK: {{ client.pk }}/ID: {{ client.id }} <br>
 					<span class="rejected"> XX jobs with problems </span> </br>
 					<span class="pending"> XX jobs with pages pending </span> </br>
 					<span class="accepted"> XX approved jobs </span> </br>

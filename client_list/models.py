@@ -19,7 +19,7 @@ class Client(models.Model):
 	def __unicode__(self):
 		return self.name + " - " + str(self.creation) + " - " + str(self.modified) + " - " + str(self.id)
 
-class ClientForm(ModelForm):
+class ClientAddForm(ModelForm):
 	class Meta:
 		model = Client		
 		fields = ('name', 'email')
@@ -37,10 +37,10 @@ class Job(models.Model):
 	def __unicode__(self):
 		return self.name + " - " + self.client.name + " - " + str(self.creation)
 		
-class JobForm(ModelForm):
+class JobAddForm(ModelForm):
 	class Meta:
 		model = Job	
-		# "exclude" won't allow JobForm to render a 'client' field
+		# "exclude" won't allow JobAddForm to render a 'client' field
 		# in the template (because it's a FK), thus it will throw an error beacause view function 'job_add'
 		# won't be able to assign the current Client object to 'client' in the processed POST.
 		# The solution is using HiddenInput() widget for 'client' field.
@@ -59,10 +59,12 @@ class Item(models.Model):
 	def __unicode__(self):
 		return self.name + " - " + self.job.name + " - " + self.job.client.name
 
-class ItemForm(ModelForm):
+class ItemAddForm(ModelForm):
 	class Meta:
 		model = Item				
-		
+		widgets = {
+            'job': HiddenInput(),
+        }
 		
 class Page(models.Model):
 	item = models.ForeignKey(Item)
