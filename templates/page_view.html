@@ -1,4 +1,7 @@
 <h1>{{ page_num }}</h1>
 <a href="/{{ client_name }}/{{ job_name }}/{{ item_name }}/list/">Back to item</a> <br>
 
-    <p>Page number {{ page_num }}.</p>
+    <p>Page number: {{ page_num }}</p>
+	<p>Status: {{ revision.status }}</p>
+	<p>Rev: {{ revision.rev_number }} / Num. of revs.: {{ revision.all.count }}</p>
+	<p>Comment: {{ comment }}</p>
