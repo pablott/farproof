@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
 	<link href="/media/favicon.ico" rel="shortcut icon">
-	<title>FP - {{client_name}} - Add Job</title>
+	<title>FP - {{client_name}} - OLD Add Job</title>
 </head>
 
 	
@@ -18,7 +18,7 @@
 		<ul>
 			<li> <a href="/">FP</a> </li>
 			<li> {{ client_name }} </li>
-			<li> Add Job </li>
+			<li> OLD Add Job </li>
 		</ul>
 	</div>
 
@@ -35,13 +35,10 @@
 	
 	<div id="view">
 	
-		<form action="/{{ client_name }}/job_add/" method="post">
+		<form action="/{{ client_name }}/job_add_old/" method="post">
 			{% csrf_token %}
-			{{ form_job.as_ul }}
-			<br>
-			Item:
-			{{ form_item.as_ul }}
-			<input type="submit" value="Add Job (and Items)">
+			{{ form.as_ul }}
+			<input type="submit" value="Add Job">
 		</form>
 		{{ message }}
 

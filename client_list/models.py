@@ -1,7 +1,13 @@
 #from datetime import datetime
 from django.db import models
-from django.forms import ModelForm
+from django.forms import ModelForm, forms
+#from django.forms.models import inlineformset_factory
+#from django.forms.formsets import BaseFormSet
 from django.forms.widgets import HiddenInput
+
+
+
+
 
 class User(models.Model):
 	name = models.CharField(max_length=256)
@@ -55,20 +61,48 @@ class Item(models.Model):
 	job = models.ForeignKey(Job)
 	name = models.CharField(max_length=256)
 	desc = models.CharField(max_length=256)
-	#active = models.BooleanField(default=True)
+	# active = models.BooleanField(default=True)
 	def __unicode__(self):
 		return self.name + " - " + self.job.name + " - " + self.job.client.name
 
+#class PageNumForm(forms.Form):
+#	num_pages = models.CharField() #.unique
+
+	
+	
+	
 class ItemAddForm(ModelForm):
 	class Meta:
 		model = Item				
 		widgets = {
-            'job': HiddenInput(),
-        }
+           'job': HiddenInput(),
+      }
+# ItemAddFormSet = inlineformset_factory(JobAddForm, ItemAddForm)
+
+
+#ItemAddForm = inlineformset_factory(models.Item, models.Page, extra=1)	
+#class ItemAdd(ModelForm):
+#	TenantFormset = inlineformset_factory(models.Building, models.Tenant, extra=1)	
+#class BaseItemFormSet(BaseFormSet):
+#	def add_fields(self, form, index):
+#		super(BaseItemFormSet, self).add_fields(form, index)
+#		form.fields["my_field"] = forms.CharField()
+		#delete_box = forms.BooleanField()
+
+	#class Meta:
+	#	model = Item				
+	#	widgets = {
+	#		'job': HiddenInput(),
+	#	}
+
+#ItemAddForm = formset_factory(Item, form=BaseItemFormSet)		
+		
+
+
 		
 class Page(models.Model):
 	item = models.ForeignKey(Item)
-	number = models.IntegerField() #.unique
+	number = models.IntegerField(default="0") #.unique
 	def __unicode__(self):
 		return str(self.number) + " - " + self.item.name
 

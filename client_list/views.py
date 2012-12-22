@@ -2,7 +2,7 @@
 
 from django.shortcuts import render_to_response # Add get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from farproof.client_list.models import Client, Job, Item, Page
+from farproof.client_list.models import Client, Job, Item, Page, Revision, Comment
 from farproof.client_list.models import ClientAddForm, JobAddForm, ItemAddForm
 #from django.template import RequestContext
 #def serve(request, path, document_root, show_indexes=False)
@@ -53,7 +53,7 @@ def client_view(request, client):
 		raise Http404
 	
 	
-def job_add(request, client):
+def job_add_old(request, client):
 	check_path = Client.objects.filter(name__exact=client)
 	if check_path:
 		client_id = Client.objects.get(name__exact=client).id
@@ -70,12 +70,66 @@ def job_add(request, client):
 		else:
 			# First time called: an unbound form
 			form = JobAddForm() 
-		return render_to_response('job_add.html', {
+		return render_to_response('job_add_old.html', {
 			'form': form,
 			'client_name': client,
 		})
 	else:
 		raise Http404
+		
+		
+		# HACER CAMBIOS SOBRE POST:
+		# Cambiar Client, despues Job (asociado a Client)
+		
+		
+def job_add(request, client):
+	check_path = Client.objects.filter(name__exact=client)
+	if check_path:
+		client_id = Client.objects.get(name__exact=client).id
+		if request.method == 'POST':
+			post = request.POST.copy()
+			post['client'] = client_id
+			#form = JobAddForm(post)
+			
+			
+			form_job = JobAddForm(post, instance=Job())
+			form_item = ItemAddForm(request.POST, instance=Item())
+			job_name = form_job['name']
+			if form_job.is_valid():
+				form_job.save()
+				
+				job_id = form_job['id']
+				
+				# = Item(number=(i+1),job=job)
+				
+				#job_id = Item.objects.get(name__exact=item_name, job__name__exact=job, job__client__name__exact=client).id 
+				
+			message = 'You added Job: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['desc'])	
+			#form_job = JobAddForm(post, instance=Job())
+			#form_item = ItemAddForm(request.POST, instance=Item())
+
+
+
+			#form_job_copy = form_job.copy() # Make POST mutable, see: http://stackoverflow.com/questions/7572537/modifying-django-model-forms-after-post?rq=1
+			#form_job['desc'] = client_id # Modify POST data to reflect client's name
+			#form = JobAddForm(form_job) # A form bound to the POST data
+			return render_to_response('new_job_add.html',
+				{'form_job': form_job, 'form_item': form_item, 'message': message, 'client_name': client,})
+		else:
+			# First time called: an unbound form
+			form_job = JobAddForm() 
+			form_item = ItemAddForm()
+		return render_to_response('job_add.html', {
+			'form_job': form_job,
+			'form_item': form_item,
+			'client_name': client,
+		})
+	else:
+		raise Http404		
+		
+		
+		
+		
 		
 		
 def job_search(request, client):
@@ -116,19 +170,30 @@ def job_view(request, client, job):
 def item_add(request, client, job):
 	check_path = Job.objects.filter(name__exact=job, client__name__exact=client)
 	if check_path:
-		job_id = Job.objects.get(name__exact=job, client__name__exact=client).id 
 		if request.method == 'POST': 
 			post = request.POST.copy() 
+			job_id = Job.objects.get(name__exact=job, client__name__exact=client).id 
+			num_pages = int(post['num_pages'])
+			item_name = post['name']
 			post['job'] = job_id  
 			form = ItemAddForm(post) 
 			if form.is_valid(): 
+				# Save form
 				form.save() 
-				message = 'You added Item: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['desc'])
+				item_id = Item.objects.get(name__exact=item_name, job__name__exact=job, job__client__name__exact=client).id 
+				message = 'You added Item: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['desc']) + ' - %r' % str(request.POST['num_pages']) + ' - %r' % str(item_id) # It takes ID of new item correctly
 				form = ItemAddForm() 
+				
+				# Create all the neccesary pages:
+				for i in range(0,num_pages):
+					item = Item.objects.get(name__exact=item_name, job__name__exact=job, job__client__name__exact=client)
+					pages = Page(number=(i+1),item=item)
+					#pages.item = item_id
+					pages.save()
 				return render_to_response('item_add.html',
 					{'form': form, 'message': message, 'client_name': client, 'job_name': job,})
 		else:
-			form = ItemAddForm() 
+			form = ItemAddForm()
 		return render_to_response('item_add.html', {
 			'form': form,
 			'client_name': client,
@@ -174,12 +239,17 @@ def item_view_thumbs(request, client, job, item):
 	
 def page_view(request, client, job, item, page):
 	check_path = Page.objects.filter(number__exact=page, item__name__exact=item, item__job__name__exact=job, item__job__client__name__exact=client)
+	
+	revision = Revision.objects.get(page__number__exact=page, page__item__name__exact=item, page__item__job__name__exact=job, page__item__job__client__name__exact=client)
+	comment = Comment.objects.get(revision=revision, revision__page__number__exact=page, revision__page__item__name__exact=item, revision__page__item__job__name__exact=job, revision__page__item__job__client__name__exact=client).comment
 	if check_path:
 		return render_to_response('page_view.html', {
 			'client_name': client,
 			'job_name': job, 
 			'item_name': item,
-			'page_num': page
+			'page_num': page,
+			'revision': revision,
+			'comment': comment,
 		})
 	else:
 		raise Http404

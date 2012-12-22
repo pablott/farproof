@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     (r'^([\w, ,-]+)/$', client_view),
 	
 	(r'^([\w, ,-]+)/job_add/$', job_add),
+	(r'^([\w, ,-]+)/job_add_old/$', job_add_old),
 	(r'^([\w, ,-]+)/job_search/$', job_search),
 	(r'^([\w, ,-]+)/([\w, ,-]+)/$', job_view),
 	
@@ -31,7 +32,7 @@ urlpatterns = patterns('',
     (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/thumbs/$', item_view_thumbs),
     (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/([\d]+)/$', page_view)
 )
-
+#(r'^(?P<category>\w+)/feedback/$', 'my_view')
 
 import settings
 if settings.DEBUG:
