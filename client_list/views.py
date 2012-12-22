@@ -174,6 +174,7 @@ def item_add(request, client, job):
 			post = request.POST.copy() 
 			job_id = Job.objects.get(name__exact=job, client__name__exact=client).id 
 			num_pages = int(post['num_pages'])
+			start_page = int(post['start_page'])
 			item_name = post['name']
 			post['job'] = job_id  
 			form = ItemAddForm(post) 
@@ -185,9 +186,9 @@ def item_add(request, client, job):
 				form = ItemAddForm() 
 				
 				# Create all the neccesary pages:
-				for i in range(0,num_pages):
+				for i in range(start_page,start_page+num_pages):
 					item = Item.objects.get(name__exact=item_name, job__name__exact=job, job__client__name__exact=client)
-					pages = Page(number=(i+1),item=item)
+					pages = Page(number=(i), item=item)
 					#pages.item = item_id
 					pages.save()
 				return render_to_response('item_add.html',
