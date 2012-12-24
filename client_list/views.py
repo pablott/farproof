@@ -189,7 +189,6 @@ def item_add(request, client, job):
 				for i in range(start_page,start_page+num_pages):
 					item = Item.objects.get(name__exact=item_name, job__name__exact=job, job__client__name__exact=client)
 					pages = Page(number=(i), item=item)
-					#pages.item = item_id
 					pages.save()
 				return render_to_response('item_add.html',
 					{'form': form, 'message': message, 'client_name': client, 'job_name': job,})
