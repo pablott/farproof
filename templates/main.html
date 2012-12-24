@@ -38,7 +38,7 @@
 		{% for client in clients %}
 			<div class="client">
 				<div class="client_icon">  </div>
-				<div class="title"> <a href="/{{ client.name }}/">{{ client.name }}</a> </div>
+				<div class="title"> <a href="/{{ client.pk }}/">{{ client.name }}</a> </div>
 				<div class="mini_summary">
 					XX person(s) will get notified </br>
 					{{ client.job_set.count }} total jobs </br>

@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
 	<link href="/media/favicon.ico" rel="shortcut icon">
-	<title>FP - {{ client_name }} - Job List</title>
+	<title>FP - {{ client.name }} - Job List</title>
 </head>
 
 
@@ -16,7 +16,7 @@
 	<div id="topbar">
 		<ul>
 			<li> <a href="/">FP</a> </li>
-			<li> {{ client_name }} </li>
+			<li> {{ client.name }} </li>
 			<li> Job List </li>
 		</ul>
 	</div>
@@ -25,7 +25,7 @@
 		<div class="btn_box_top">
 			<div class="btn btnM btnV top pushed"> Job List </div>
 			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure </div>
-			<a href="/{{ client_name }}/job_add"><div class="btn btnM"> <div class="icon icon2"> + </div> Add Job </div></a>
+			<a href="/{{ client.pk }}/job_add"><div class="btn btnM"> <div class="icon icon2"> + </div> Add Job </div></a>
 		</div>
 		{% if jobs %}
 		<div class="btn_box_bottom">
@@ -39,7 +39,7 @@
 		{% for job in jobs %}
 			<div class="client">
 				<div class="client_icon">  </div>
-				<div class="title"> <a href="/{{ job.client.name }}/{{ job.name }}/">{{ job.name }}</a> </div>
+				<div class="title"> <a href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a> </div>
 				<div class="mini_summary"> 
 					{{ job.item_set.count }} total items / {{ item.page_set.count }} total pages 
 					

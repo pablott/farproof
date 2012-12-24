@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
 	<link href="/media/favicon.ico" rel="shortcut icon">
-	<title>FP - {{ client_name }} - {{ job_name}} - {{item_name}} - Page Thumbs</title>
+	<title>FP - {{ client.name }} - {{ job.name }} - {{ item.name }} - Page Thumbs</title>
 </head>
 
 
@@ -18,17 +18,18 @@
 	<div id="topbar">
 		<ul>
 			<li> <a href="/">FP</a> </li>
-			<li> <a href="/{{ client_name }}/">{{ client_name }}</a> </li>
-			<li> <a href="/{{ client_name }}/{{ job_name }}/">{{ job_name }}</a> </li>
-			<li> {{ item_name }} </li>
+			<li> <a href="/{{ client.pk }}/">{{ client.name }}</a> </li>
+			<li> <a href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a> </li>
+			<li> {{ item.name }} </li>
 			<li> <div class="icon icon1">5</div> Page Thumbs </li>
 		</ul>
 	</div>
 	
 	<div id="sidebar">
 		<div class="btn_box_top">
+		
 			<div class="btn btnM btnV top pushed"> <div class="icon icon2">k</div> Thumbs </div>
-			<a href="/{{ client_name }}/{{ job_name }}/{{ item_name }}/list/"><div class="btn btnM btnV middle"> <div class="icon icon1">5</div> List </div></a>
+			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list/"><div class="btn btnM btnV middle"> <div class="icon icon1">5</div> List </div></a>
 			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure </div>
 			<div class="btn btnM"> <div class="icon icon2">+</div> Update Pages </div>
 			<div class="help">
@@ -60,36 +61,40 @@
 			<div class="thumb_container">
 				{% for page in pages%}
 					{% if page.number|divisibleby:2 %}
-						<a href="/{{ page.item.job.client.name }}/{{ page.item.job.name }}/{{ page.item.name }}/{{ page.number }}/">
-						<div class="page_thumb even">
-						<div class="page_number">{{ page.number }}</div>
-						<div class="page_status pending"> {{ page.revision.status }} </div>
-						<div class="page_info">
-							XX comments <br>
-							{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
+						<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/">
+							<div class="page_thumb even">
+							<div class="page_number">{{ page.number }}</div>
+							<div class="page_status pending"> {{ page.revision.status }} </div>
+							<div class="page_info">
+								XX comments <br>
+								{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
+								</div>
 							</div>
-						</div>
 						</a>
 					{% else %}
 						{% if forloop.counter == 1 %}
 							<div class="page_thumb even dummy"></div>
-							<div class="page_thumb odd">
-								<div class="page_number">{{ page.number }}</div>
-								<div class="page_status pending"> {{ page.revision.status }} </div>
-								<div class="page_info">
-									XX comments <br>
-									{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
+							<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/">
+								<div class="page_thumb odd">
+									<div class="page_number">{{ page.number }}</div>
+									<div class="page_status pending"> {{ page.revision.status }} </div>
+									<div class="page_info">
+										XX comments <br>
+										{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
+									</div>
 								</div>
-							</div>
+							</a>
 						{% else %}
-							<div class="page_thumb odd">
-								<div class="page_number">{{ page.number }}</div>
-								<div class="page_status pending"> {{ page.revision.status }} </div>
-								<div class="page_info">
-									XX comments <br>
-									{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
+							<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/">
+								<div class="page_thumb odd">
+									<div class="page_number">{{ page.number }}</div>
+									<div class="page_status pending"> {{ page.revision.status }} </div>
+									<div class="page_info">
+										XX comments <br>
+										{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
+									</div>
 								</div>
-							</div>
+							</a>
 						{% endif %}
 					{% endif %}
 					

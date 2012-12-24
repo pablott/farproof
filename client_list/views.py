@@ -40,13 +40,13 @@ def client_search(request): # TODO Consider using a ClientSearchForm or such
 	else: # If not, show empty form
 		return render_to_response('client_search.html', {'query': query})
 
-def client_view(request, client):
+def client_view(request, client_pk):
+	client = Client.objects.get(pk=client_pk)
 	#Check if client exists and show it:
-	check_path = Client.objects.filter(name__exact=client)
-	if check_path:
-		jobs = Job.objects.filter(client__name__exact=client).order_by('name')
+	if client:
+		jobs = Job.objects.filter(client=client).order_by('name')
 		return render_to_response('client_view.html', {
-			'client_name': client,
+			'client': client,
 			'jobs': jobs,
 		})
 	else:
@@ -151,17 +151,18 @@ def job_search(request, client):
 
 		
 		
-def job_view(request, client, job):
+def job_view(request, client_pk, job_pk):
 	# Notice how it explicitly asks for current Item's Job AND for that Job's parent Client.
 	# It does two things: 
 	# 1) Avoids returning an Item which name is equal to another Item under a different Job and/or Client.
 	# 2) Raises a 404 whenever the Client and/or Job names don't exists.
-	check_path = Job.objects.filter(name__exact=job, client__name__exact=client) # Check if Job exists TODO: substitute filter for get as filter may show Jobs with the same name
-	items = Item.objects.filter(job__name__exact=job, job__client__name__exact=client).order_by('name') # Check if Items inside Job
-	if check_path:
+	client = Client.objects.get(pk=client_pk)
+	job = Job.objects.get(pk=job_pk, client=client) # Check if Job exists
+	items = Item.objects.filter(job=job).order_by('name') # Check if Items inside Job
+	if job:
 		return render_to_response('job_view.html', {
-			'client_name': client,
-			'job_name': job, 
+			'client': client,
+			'job': job, 
 			'items': items,
 		})
 	else:
@@ -203,14 +204,16 @@ def item_add(request, client, job):
 		raise Http404
 	
 
-def item_view_list(request, client, job, item):
-	check_path = Item.objects.filter(name__exact=item, job__name__exact=job, job__client__name__exact=client)
-	pages = Page.objects.filter(item__name__exact=item, item__job__name__exact=job, item__job__client__name__exact=client).order_by('number')
-	if check_path:
+def item_view_list(request, client_pk, job_pk, item_pk):
+	client = Client.objects.get(pk=client_pk)
+	job = Job.objects.get(pk=job_pk, client=client)
+	item = Item.objects.get(pk=item_pk, job=job)
+	pages = Page.objects.filter(item=item).order_by('number')
+	if item:
 		return render_to_response('item_view_list.html', {
-			'client_name': client,
-			'job_name': job, 
-			'item_name': item,
+			'client': client,
+			'job': job, 
+			'item': item,
 			'pages': pages,
 		})
 	else:
@@ -218,18 +221,20 @@ def item_view_list(request, client, job, item):
 
 		
 		
-def item_view_thumbs(request, client, job, item):
-	check_path = Item.objects.filter(name__exact=item, job__name__exact=job, job__client__name__exact=client)
-	pages = Page.objects.filter(item__name__exact=item, item__job__name__exact=job, item__job__client__name__exact=client).order_by('number')
+def item_view_thumbs(request, client_pk, job_pk, item_pk):
+	client = Client.objects.get(pk=client_pk)
+	job = Job.objects.get(pk=job_pk, client=client)
+	item = Item.objects.get(pk=item_pk, job=job)
+	pages = Page.objects.filter(item=item).order_by('number')
 	if pages:
 		first_page = pages[0]
 	else:
 		first_page = 0 # Initialize variable in case 'pages' doesn't exist or it crashes
-	if check_path:
+	if item:
 		return render_to_response('item_view_thumbs.html', {
-			'client_name': client,
-			'job_name': job, 
-			'item_name': item,
+			'client': client,
+			'job': job, 
+			'item': item,
 			'pages': pages,
 			'first_page': first_page,
 		})

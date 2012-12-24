@@ -20,17 +20,17 @@ urlpatterns = patterns('',
 	
 	(r'^client_add/$', client_add),
 	(r'^client_search/$', client_search),
-    (r'^([\w, ,-]+)/$', client_view),
+    (r'^(\d+)/$', client_view),
 	
-	(r'^([\w, ,-]+)/job_add/$', job_add),
-	(r'^([\w, ,-]+)/job_add_old/$', job_add_old),
-	(r'^([\w, ,-]+)/job_search/$', job_search),
-	(r'^([\w, ,-]+)/([\w, ,-]+)/$', job_view),
+	(r'^(\d+)/job_add/$', job_add),
+	(r'^(\d+)/job_add_old/$', job_add_old),
+	(r'^(\d+)/job_search/$', job_search),
+	(r'^(\d+)/(\d+)/$', job_view),
 	
-	(r'^([\w, ,-]+)/([\w, ,-]+)/item_add/$', item_add),
-    (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/list/$', item_view_list),
-    (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/thumbs/$', item_view_thumbs),
-    (r'^([\w, ,-]+)/([\w, ,-]+)/([\w, ,-]+)/([\d]+)/$', page_view)
+	(r'^(\d+)/(\d+)/item_add/$', item_add),
+    (r'^(\d+)/(\d+)/(\d+)/list/$', item_view_list),
+    (r'^(\d+)/(\d+)/(\d+)/thumbs/$', item_view_thumbs),
+    (r'^(\d+)/(\d+)/(\d+)/(\d+)/$', page_view)
 )
 #(r'^(?P<category>\w+)/feedback/$', 'my_view')
 

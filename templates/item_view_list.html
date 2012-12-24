@@ -12,7 +12,7 @@
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
 	<link href="/media/favicon.ico" rel="shortcut icon">
-	<title>FP - {{ client_name }} - {{ job_name}} - {{item_name}} - Page List</title>
+	<title>FP - {{ client.name }} - {{ job.name}} - {{item.name}} - Page List</title>
 </head>
 
 
@@ -21,16 +21,16 @@
 	<div id="topbar">
 		<ul>
 			<li> <a href="/">FP</a> </li>
-			<li> <a href="/{{ client_name }}/">{{ client_name }}</a> </li>
-			<li> <a href="/{{ client_name }}/{{ job_name }}/">{{ job_name }}</a> </li>
-			<li> {{ item_name }} </li>
+			<li> <a href="/{{ client.pk }}/">{{ client.name }}</a> </li>
+			<li> <a href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a> </li>
+			<li> {{ item.name }} </li>
 			<li> <div class="icon icon1">5</div> Page List </li>
 		</ul>
 	</div>
 
 	<div id="sidebar">
 		<div class="btn_box_top">
-			<a href="/{{ client_name }}/{{ job_name }}/{{ item_name }}/thumbs/"><div class="btn btnM btnV top"> <div class="icon icon2">k</div> Thumbs </div></a>
+			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/thumbs/"><div class="btn btnM btnV top"> <div class="icon icon2">k</div> Thumbs </div></a>
 			<div class="btn btnM btnV middle pushed"> <div class="icon icon1">5</div> List </div>
 			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure </div>
 			<div class="btn btnM"> <div class="icon icon2">+</div> Update Pages </div>
@@ -65,13 +65,13 @@
 				{% for page in pages %}
 				<ul>
 					<li class="checkbox"><input type="checkbox" name="option1" value="page1"></li>
-					<li class="page"> <a href="/{{ page.item.job.client.name }}/{{ page.item.job.name }}/{{ page.item.name }}/{{ page.number }}/">{{ page.number }}</a> </li>
+					<li class="page"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/">{{ page.number }}</a> </li>
 					<li class="comments">XX</li>
 					<li class="revisions">{{ page.revision_set.count }}</li>
 					<li class="status accepted">{{ page.revision_set.status }}</li>
 					<li class="pdf">??.pdf</li>
 					<li class="updated">??-??-????</li>
-					<li class="added">{{ page.item.job.creation|date:"D j M y, H:i" }}</li>
+					<li class="added">{{ job.creation|date:"D j M y, H:i" }}</li>
 				</ul>
 			{% endfor %}
 			{% else %}
