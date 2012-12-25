@@ -63,8 +63,10 @@
 					{% if page.number|divisibleby:2 %}
 						<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/">
 							<div class="page_thumb even">
-							<div class="page_number">{{ page.number }}</div>
-							<div class="page_status pending"> {{ page.revision.status }} </div>
+							<div class="page_number">{{ page.number }}<br>PK:{{ page.pk }}</div>
+							<div class="page_status pending"> 
+								{{ page.revision.status }} 
+							</div>
 							<div class="page_info">
 								XX comments <br>
 								{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
@@ -76,8 +78,8 @@
 							<div class="page_thumb even dummy"></div>
 							<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/">
 								<div class="page_thumb odd">
-									<div class="page_number">{{ page.number }}</div>
-									<div class="page_status pending"> {{ page.revision.status }} </div>
+									<div class="page_number">{{ page.number }}<br>PK:{{ page.pk }}</div>
+									<div class="page_status pending"> {{ page.status }} </div>
 									<div class="page_info">
 										XX comments <br>
 										{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
@@ -87,8 +89,8 @@
 						{% else %}
 							<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/">
 								<div class="page_thumb odd">
-									<div class="page_number">{{ page.number }}</div>
-									<div class="page_status pending"> {{ page.revision.status }} </div>
+									<div class="page_number">{{ page.number }}<br>PK:{{ page.pk }}</div>
+									<div class="page_status pending"> {{ page.status }} </div>
 									<div class="page_info">
 										XX comments <br>
 										{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
