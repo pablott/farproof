@@ -89,8 +89,9 @@ TEMPLATE_DIRS = (
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+	'django.template.loaders.eggs.Loader',
+	'django.template.loaders.app_directories.load_template_source',
+   )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -122,5 +123,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
 	'client_list',
+	#'client_list.templatetags.page_extras',
 	'django_evolution'
 )

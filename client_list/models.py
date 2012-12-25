@@ -103,13 +103,14 @@ class ItemAddForm(ModelForm):
 class Page(models.Model):
 	item = models.ForeignKey(Item)
 	number = models.IntegerField(default="0") #.unique
+	#status = Revision.objects.filter(page=page).order_by('-pk').[0]status
 	def __unicode__(self):
 		return str(self.number) + " - " + self.item.name
 
 class Revision(models.Model):
+	page = models.ForeignKey(Page)
 	creation = models.DateTimeField(auto_now_add=True)
 	rev_number = models.IntegerField()
-	page = models.ForeignKey(Page)
 	STATUS_CHOICES = (
 		('OK', 'Ok'),
 		('FAIL', 'Fail'),
