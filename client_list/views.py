@@ -69,7 +69,7 @@ def job_add_old(request, client):
 					{'form': form, 'message': message, 'client_name': client,})
 		else:
 			# First time called: an unbound form
-			form = JobAddForm() 
+			form = JobAddForm()
 		return render_to_response('job_add_old.html', {
 			'form': form,
 			'client_name': client,
@@ -132,9 +132,9 @@ def job_add(request, client):
 		
 		
 		
-def job_search(request, client):
-	check_path = Client.objects.filter(name__exact=client)
-	if check_path:
+def job_search(request, client_pk):
+	client = Client.objects.get(pk=client_pk)
+	if client:
 		query = 0 # Initialize
 		if request.method == 'GET': # If this view gets a search query...
 			if 'name' in request.GET: # Check if a 'name' was given
@@ -143,9 +143,9 @@ def job_search(request, client):
 				message = 'You searched for: %r' % str(name) 
 			else:
 				message = 'You submitted an empty form.'
-			return render_to_response('job_search.html', {'message': message, 'query': query, 'client_name': client,})
+			return render_to_response('job_search.html', {'message': message, 'query': query, 'client': client,})
 		else: # If not, show empty form
-			return render_to_response('job_search.html', {'query': query, 'client_name': client,})
+			return render_to_response('job_search.html', {'client': client,})
 	else:
 		raise Http404
 
@@ -225,6 +225,7 @@ def item_view_thumbs(request, client_pk, job_pk, item_pk):
 	client = Client.objects.get(pk=client_pk)
 	job = Job.objects.get(pk=job_pk, client=client)
 	item = Item.objects.get(pk=item_pk, job=job)
+	revisions = Revision.objects.all().order_by('-pk') # Order by inverted pk and get first (which is the last one)
 	pages = Page.objects.filter(item=item).order_by('number')
 	if pages:
 		first_page = pages[0]
@@ -242,18 +243,26 @@ def item_view_thumbs(request, client_pk, job_pk, item_pk):
 		raise Http404
 
 	
-def page_view(request, client, job, item, page):
-	check_path = Page.objects.filter(number__exact=page, item__name__exact=item, item__job__name__exact=job, item__job__client__name__exact=client)
-	
-	revision = Revision.objects.get(page__number__exact=page, page__item__name__exact=item, page__item__job__name__exact=job, page__item__job__client__name__exact=client)
-	comment = Comment.objects.get(revision=revision, revision__page__number__exact=page, revision__page__item__name__exact=item, revision__page__item__job__name__exact=job, revision__page__item__job__client__name__exact=client).comment
-	if check_path:
+def page_view(request, client_pk, job_pk, item_pk, page_num):
+	client = Client.objects.get(pk=client_pk)
+	job = Job.objects.get(pk=job_pk, client=client)
+	item = Item.objects.get(pk=item_pk, job=job)
+	page = Page.objects.get(number=page_num, item=item)
+	revisions = Revision.objects.filter(page=page).order_by('-pk') # Order by inverted pk and get first (which is the last one)
+	last_rev = 0 # Initialize...
+	comment = 0
+	if revisions:
+		last_rev = revisions[0]
+		comment = Comment.objects.get(revision=last_rev).comment
+	if page:
 		return render_to_response('page_view.html', {
-			'client_name': client,
-			'job_name': job, 
-			'item_name': item,
-			'page_num': page,
-			'revision': revision,
+			'client': client,
+			'job': job, 
+			'item': item,
+			'page': page,
+			'page_num': page_num,
+			'revisions': revisions,
+			'last_rev': last_rev,
 			'comment': comment,
 		})
 	else:

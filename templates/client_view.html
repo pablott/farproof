@@ -58,7 +58,7 @@
 					{% if job.item_set.all %}
 						Items inside: 
 						{% for item in job.item_set.all %}
-							<a href="/{{ job.client.name }}/{{ job.name }}/{{ item.name }}/list/">{{ item.name }}</a> 
+							<a href="/{{ job.client.pk }}/{{ job.pk }}/{{ item.pk }}/list/">{{ item.name }}</a> 
 						{% endfor %} <br>
 					{% endif %}
 					<span class="rejected"> XX items with problems </span> </br>

@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
 	<link href="/media/favicon.ico" rel="shortcut icon">
-	<title>FP - {{ client_name }} - Search for a Job</title>
+	<title>FP - {{ client.name }} - Search for a Job</title>
 </head>
 
 	
@@ -16,23 +16,23 @@
 	<div id="topbar">
 		<ul>
 			<li> <a href="/">FP</a> </li>
-			<li> {{ client_name }} </li>
+			<li> {{ client.name }} </li>
 			<li> Search for a Job </li>
 		</ul>
 	</div>
 
 	<div id="sidebar">
 		<div class="btn_box_top">
-			<a href="/{{ client_name }}/"><div class="btn btnM btnV top"> Job List </div></a>
+			<a href="/{{ client.pk }}/"><div class="btn btnM btnV top"> Job List </div></a>
 			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure Client </div>
 		</div>
 		<div class="btn_box_bottom">
-				<a href="/{{ client_name }}/"><div class="btn btnM delete"> <div class="icon icon1">X</div> Discard changes </div></a>
+				<a href="/{{ client.pk }}/"><div class="btn btnM delete"> <div class="icon icon1">X</div> Discard changes </div></a>
 		</div>
 	</div>
 	
 	<div id="view">
-		<form action="/{{ client_name }}/job_search/" method="get">
+		<form action="/{{ client.pk }}/job_search/" method="get">
 			<input type="text" name="name">
 			<input type="submit" value="Search">
 		</form>
@@ -44,9 +44,17 @@
 		{% for job in query %}
 			<div class="client">
 				<div class="client_icon">  </div>
-				<div class="title"> <a href="/{{ job.client.name }}/{{ job.name }}/">{{ job.name }}</a> </div>
+				<div class="title"> <a href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a> </div>
 				<div class="mini_summary"> 
-					{{ job.item_set.count }} total items / {{ job.item_set.page_set.count }} total pages 
+					{{ job.item_set.count }} total items / {{ item.page_set.count }} total pages 
+					
+					{% for item in job.item_set.all %}
+						{% for page in item.page_set.all %}
+							{{ forloop.counter }}
+						{% endfor %}
+					{% endfor %}
+					{{ counter }}
+					
 				</div>
 				<div class="summary">
 					PK: {{ job.pk }}/ID: {{ job.id }} <br>
@@ -55,7 +63,7 @@
 					{% if job.item_set.all %}
 						Items inside: 
 						{% for item in job.item_set.all %}
-							<a href="/{{ job.client.name }}/{{ job.name }}/{{ item.name }}/list/">{{ item.name }}</a> 
+							<a href="/{{ job.client.pk }}/{{ job.pk }}/{{ item.pk }}/list/">{{ item.name }}</a> 
 						{% endfor %} <br>
 					{% endif %}
 					<span class="rejected"> XX items with problems </span> </br>
