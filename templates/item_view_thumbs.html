@@ -65,7 +65,15 @@
 							<div class="page_thumb even">
 							<div class="page_number">{{ page.number }}<br>PK:{{ page.pk }}</div>
 							<div class="page_status pending"> 
-								{{ page.revision.status }} 
+								{% for revision in page.revision_set.all %}
+									{% if forloop.last %} {# get last revision #}
+										Status: {{ revision.status }}
+										Comments:
+										{% for comment in revision.comment_set.all %} {# get all comments associated with last  revision #}
+											<li>{{ comment.comment }}</li>
+										{% endfor %}
+									{% endif %}
+								{% endfor %}
 							</div>
 							<div class="page_info">
 								XX comments <br>
