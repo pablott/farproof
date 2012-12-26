@@ -121,7 +121,8 @@ class Revision(models.Model):
 		return str(self.rev_number) + " - " + "page: " + str(self.page.number) + " - " + self.page.item.name
 
 class Comment(models.Model):
-	revision = models.ForeignKey(Revision)
+	revision = models.ManyToManyField(Revision)
+	#revision = models.ForeignKey(Revision)
 	comment = models.CharField(max_length=200)
 	def __unicode__(self):
 		return self.comment
