@@ -11,6 +11,7 @@ def main(request):
 	clients = Client.objects.all().order_by('name') #TODO: make it case insensitive
 	return render_to_response('main.html', {'clients': clients})
 
+	
 def client_add(request):
 	if request.method == 'POST': # If the form has been submitted...
 		form = ClientAddForm(request.POST) # A form bound to the POST data
@@ -40,6 +41,7 @@ def client_search(request): # TODO Consider using a ClientSearchForm or such
 	else: # If not, show empty form
 		return render_to_response('client_search.html', {'query': query})
 
+		
 def client_view(request, client_pk):
 	client = Client.objects.get(pk=client_pk)
 	#Check if client exists and show it:
@@ -51,8 +53,8 @@ def client_view(request, client_pk):
 		})
 	else:
 		raise Http404
-	
-	
+
+		
 def job_add_old(request, client):
 	check_path = Client.objects.filter(name__exact=client)
 	if check_path:
@@ -78,58 +80,34 @@ def job_add_old(request, client):
 		raise Http404
 		
 		
-		# HACER CAMBIOS SOBRE POST:
-		# Cambiar Client, despues Job (asociado a Client)
-		
-		
-def job_add(request, client):
-	check_path = Client.objects.filter(name__exact=client)
-	if check_path:
-		client_id = Client.objects.get(name__exact=client).id
+def job_add(request, client_pk):
+	client = Client.objects.get(pk=client_pk)
+	if client:
 		if request.method == 'POST':
 			post = request.POST.copy()
-			post['client'] = client_id
-			#form = JobAddForm(post)
-			
-			
-			form_job = JobAddForm(post, instance=Job())
-			form_item = ItemAddForm(request.POST, instance=Item())
-			job_name = form_job['name']
+			post['job-client'] = client.id
+			form_job = JobAddForm(post, instance=Job(), prefix="job")
 			if form_job.is_valid():
 				form_job.save()
-				
-				job_id = form_job['id']
-				
-				# = Item(number=(i+1),job=job)
-				
-				#job_id = Item.objects.get(name__exact=item_name, job__name__exact=job, job__client__name__exact=client).id 
-				
-			message = 'You added Job: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['desc'])	
-			#form_job = JobAddForm(post, instance=Job())
-			#form_item = ItemAddForm(request.POST, instance=Item())
-
-
-
-			#form_job_copy = form_job.copy() # Make POST mutable, see: http://stackoverflow.com/questions/7572537/modifying-django-model-forms-after-post?rq=1
-			#form_job['desc'] = client_id # Modify POST data to reflect client's name
-			#form = JobAddForm(form_job) # A form bound to the POST data
-			return render_to_response('new_job_add.html',
-				{'form_job': form_job, 'form_item': form_item, 'message': message, 'client_name': client,})
+				last_job = Job.objects.filter(client=client).order_by('-pk')[0]
+				post['item-job'] = last_job.id
+				form_item = ItemAddForm(post, instance=Item(), prefix="item")
+				if form_item.is_valid():
+					form_item.save()
+			message = 'You added Job: %r'%str(request.POST['job-name'])+' - %r'%str(request.POST['job-desc'])+', Item%r'%str(request.POST['item-name'])+' - %r'%str(request.POST['item-desc'])
+			return render_to_response('job_add.html',
+				{'form_job': form_job, 'form_item': form_item, 'message': message, 'client': client,})
 		else:
-			# First time called: an unbound form
-			form_job = JobAddForm() 
-			form_item = ItemAddForm()
+			# First time called: unbound forms
+			form_job = JobAddForm(prefix="job") 
+			form_item = ItemAddForm(prefix="item")
 		return render_to_response('job_add.html', {
 			'form_job': form_job,
 			'form_item': form_item,
-			'client_name': client,
+			'client': client,
 		})
 	else:
 		raise Http404		
-		
-		
-		
-		
 		
 		
 def job_search(request, client_pk):
@@ -150,7 +128,6 @@ def job_search(request, client_pk):
 		raise Http404
 
 		
-		
 def job_view(request, client_pk, job_pk):
 	# Notice how it explicitly asks for current Item's Job AND for that Job's parent Client.
 	# It does two things: 
@@ -168,37 +145,36 @@ def job_view(request, client_pk, job_pk):
 	else:
 		raise Http404
 	
-def item_add(request, client, job):
-	check_path = Job.objects.filter(name__exact=job, client__name__exact=client)
-	if check_path:
+	
+def item_add(request, client_pk, job_pk):
+	client = Client.objects.get(pk=client_pk)
+	job = Job.objects.get(pk=job_pk, client=client) # Check if Job exists
+	if job:
 		if request.method == 'POST': 
 			post = request.POST.copy() 
-			job_id = Job.objects.get(name__exact=job, client__name__exact=client).id 
 			num_pages = int(post['num_pages'])
 			start_page = int(post['start_page'])
-			item_name = post['name']
-			post['job'] = job_id  
-			form = ItemAddForm(post) 
+			post['job'] = job.id
+			form = ItemAddForm(post)
 			if form.is_valid(): 
 				# Save form
 				form.save() 
-				item_id = Item.objects.get(name__exact=item_name, job__name__exact=job, job__client__name__exact=client).id 
-				message = 'You added Item: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['desc']) + ' - %r' % str(request.POST['num_pages']) + ' - %r' % str(item_id) # It takes ID of new item correctly
+				message = 'You added Item: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['desc']) + ' - %r' % str(request.POST['num_pages']) # It takes ID of new item correctly
 				form = ItemAddForm() 
 				
 				# Create all the neccesary pages:
 				for i in range(start_page,start_page+num_pages):
-					item = Item.objects.get(name__exact=item_name, job__name__exact=job, job__client__name__exact=client)
-					pages = Page(number=(i), item=item)
+					last_item = Item.objects.filter(job=job).latest('pk')
+					pages = Page(number=(i), item=last_item)
 					pages.save()
 				return render_to_response('item_add.html',
-					{'form': form, 'message': message, 'client_name': client, 'job_name': job,})
+					{'form': form, 'message': message, 'client': client, 'job': job,})
 		else:
 			form = ItemAddForm()
 		return render_to_response('item_add.html', {
 			'form': form,
-			'client_name': client,
-			'job_name': job,
+			'client': client,
+			'job': job,
 		})
 	else:
 		raise Http404
@@ -218,19 +194,20 @@ def item_view_list(request, client_pk, job_pk, item_pk):
 		})
 	else:
 		raise Http404
-
 		
 		
 def item_view_thumbs(request, client_pk, job_pk, item_pk):
 	client = Client.objects.get(pk=client_pk)
 	job = Job.objects.get(pk=job_pk, client=client)
 	item = Item.objects.get(pk=item_pk, job=job)
-	revisions = Revision.objects.all().order_by('-pk') # Order by inverted pk and get first (which is the last one)
+	revisions = Revision.objects.all().order_by('-pk')
 	pages = Page.objects.filter(item=item).order_by('number')
+	#pages = Page.objects.filter(item=item).revision_set.values_list('status', flat=True)
+	#article.headline_set.values_list('headline', flat=True)
 	if pages:
 		first_page = pages[0]
 	else:
-		first_page = 0 # Initialize variable in case 'pages' doesn't exist or it crashes
+		first_page = 0 # Initialize variable in case 'pages' doesn't exist or it crashes (has to be a number)
 	if item:
 		return render_to_response('item_view_thumbs.html', {
 			'client': client,
@@ -248,12 +225,12 @@ def page_view(request, client_pk, job_pk, item_pk, page_num):
 	job = Job.objects.get(pk=job_pk, client=client)
 	item = Item.objects.get(pk=item_pk, job=job)
 	page = Page.objects.get(number=page_num, item=item)
-	revisions = Revision.objects.filter(page=page).order_by('-pk') # Order by inverted pk and get first (which is the last one)
-	last_rev = 0 # Initialize...
-	comment = 0
+	revisions = Revision.objects.filter(page=page).order_by('-pk') # Order by inverted pk and get first (which is the last created for that page)
+	last_rev = '--' # Initialize...
+	comment = '--' # Initialize...
 	if revisions:
 		last_rev = revisions[0]
-		comment = Comment.objects.get(revision=last_rev).comment
+		#comment = Comment.objects.get(revision=last_rev).comment # TODO: don't throw error if there are no coments for last rev.
 	if page:
 		return render_to_response('page_view.html', {
 			'client': client,
@@ -267,4 +244,5 @@ def page_view(request, client_pk, job_pk, item_pk, page_num):
 		})
 	else:
 		raise Http404
+	
 	
