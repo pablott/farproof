@@ -31,7 +31,6 @@ class ClientAddForm(ModelForm):
 		fields = ('name', 'email')
 		
 		
-
 class Job(models.Model):
 	client = models.ForeignKey(Client)
 	name = models.CharField(max_length=256)
@@ -39,9 +38,26 @@ class Job(models.Model):
 	active = models.BooleanField(default=True)
 	creation = models.DateTimeField(default="", auto_now_add=True)
 	modified = models.DateTimeField(default="", auto_now=True)
-	# Return "Job name - Client"
+	
+	def total_items(self):
+		total_items = self.item_set.count()
+		return total_items
+		
+	def total_pages(self):
+		count = 0
+		if self.item_set:
+			for item in self.item_set.all():
+				for page in item.page_set.all():
+					count = count+1
+			message = 'there are pages %r' % count 
+		else:
+			message = 'there are NO pages'
+		return message
+		
+	# Return "Job name - Client - Date"
 	def __unicode__(self):
 		return self.name + " - " + self.client.name + " - " + str(self.creation)
+
 		
 class JobAddForm(ModelForm):
 	class Meta:
@@ -115,6 +131,7 @@ class Revision(models.Model):
 		('OK', 'Ok'),
 		('FAIL', 'Fail'),
 		('PENDING', 'Pending'),
+		('MISSING', 'Missing'),
 	)
 	status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='PENDING')
 	def __unicode__(self):
