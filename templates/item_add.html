@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
 	<link href="/media/favicon.ico" rel="shortcut icon">
-	<title>FP - {{client_name}} - {{ job_name }} - Add Item</title>
+	<title>FP - {{ client.name }} - {{ job.name }} - Add Item</title>
 </head>
 
 	
@@ -17,26 +17,26 @@
 	<div id="topbar">
 		<ul>
 			<li> <a href="/">FP</a> </li>
-			<li> <a href="/{{ client_name }}/">{{ client_name }}</a> </li>
-			<li> {{ job_name }} </li>
+			<li> <a href="/{{ client.pk }}/">{{ client.name }}</a> </li>
+			<li> {{ job.name }} </li>
 			<li> Add Item </li>
 		</ul>
 	</div>
 
 	<div id="sidebar">
 		<div class="btn_box_top">
-			<a href="/{{ client_name }}/{{ job_name }}/"><div class="btn btnM btnV top"> Item List </div></a>
+			<a href="/{{ client.pk }}/{{ job.pk }}/"><div class="btn btnM btnV top"> Item List </div></a>
 			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure Client </div>
 			<div class="btn btnM"> <div class="icon icon2"> + </div> Submit </div>
 		</div>
 		<div class="btn_box_bottom">
-			<a href="/{{ client_name }}/{{ job_name }}/"><div class="btn btnM delete"> <div class="icon icon1">X</div> Discard changes </div></a>
+			<a href="/{{ client.pk }}/{{ job.pk }}/"><div class="btn btnM delete"> <div class="icon icon1">X</div> Discard changes </div></a>
 		</div>
 	</div>
 	
 	<div id="view">
 	
-		<form action="/{{ client_name }}/{{ job_name }}/item_add/" method="post">
+		<form action="/{{ client.pk }}/{{ job.pk }}/item_add/" method="post">
 			{% csrf_token %}
 			<label>Nr. of pages: </label><input type="number" name="num_pages">
 			<label>Starting from: </label><input type="number" name="start_page">
