@@ -41,15 +41,12 @@
 				<div class="client_icon">  </div>
 				<div class="title"> <a href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a> </div>
 				<div class="mini_summary"> 
-					{{ job.item_set.count }} total items / {{ item.page_set.count }} total pages 
-					
+					{{ job.item_set.count }} total items 
+					/ 
 					{% for item in job.item_set.all %}
-						{% for page in item.page_set.all %}
-							{{ forloop.counter }}
-						{% endfor %}
+						{{ item.page_set.count }}
 					{% endfor %}
-					{{ counter }}
-					
+					total pages 
 				</div>
 				<div class="summary">
 					PK: {{ job.pk }}/ID: {{ job.id }} <br>
@@ -59,6 +56,7 @@
 						Items inside: 
 						{% for item in job.item_set.all %}
 							<a href="/{{ job.client.pk }}/{{ job.pk }}/{{ item.pk }}/list/">{{ item.name }}</a> 
+							({{ item.page_set.count }})
 						{% endfor %} <br>
 					{% endif %}
 					<span class="rejected"> XX items with problems </span> </br>
