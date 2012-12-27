@@ -49,7 +49,7 @@ class Job(models.Model):
 			for item in self.item_set.all():
 				for page in item.page_set.all():
 					count = count+1
-			message = 'there are pages %r' % count 
+			message = 'there are %r pages' % count 
 		else:
 			message = 'there are NO pages'
 		return message
@@ -72,7 +72,6 @@ class JobAddForm(ModelForm):
         }
 		
 		
-		
 class Item(models.Model):
 	job = models.ForeignKey(Job)
 	name = models.CharField(max_length=256)
@@ -81,11 +80,6 @@ class Item(models.Model):
 	def __unicode__(self):
 		return self.name + " - " + self.job.name + " - " + self.job.client.name
 
-#class PageNumForm(forms.Form):
-#	num_pages = models.CharField() #.unique
-
-	
-	
 	
 class ItemAddForm(ModelForm):
 	class Meta:
@@ -119,10 +113,18 @@ class ItemAddForm(ModelForm):
 class Page(models.Model):
 	item = models.ForeignKey(Item)
 	number = models.IntegerField(default="0") #.unique
-	#status = Revision.objects.filter(page=page).order_by('-pk').[0]status
+	def last_rev(self):
+		revisions = self.revision_set.filter(page=self).order_by('-pk')
+		if revisions:
+			last_rev = revisions[0]
+		else:
+			last_rev = 0
+		return last_rev
+		
 	def __unicode__(self):
 		return str(self.number) + " - " + self.item.name
 
+		
 class Revision(models.Model):
 	page = models.ForeignKey(Page)
 	creation = models.DateTimeField(auto_now_add=True)

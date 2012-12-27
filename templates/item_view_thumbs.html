@@ -59,20 +59,15 @@
 	-->
 		{% if pages %}
 			<div class="thumb_container">
-				{% for page in pages%}
+				{% for page in pages %}
 					{% if page.number|divisibleby:2 %}
 						<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/">
 							<div class="page_thumb even">
 							<div class="page_number">{{ page.number }}<br>PK:{{ page.pk }}</div>
 							<div class="page_status pending"> 
-								{% for revision in page.revision_set.all %}
-									{% if forloop.last %} {# get last revision #}
-										Status: {{ revision.status }}
-										Comments:
-										{% for comment in revision.comment_set.all %} {# get all comments associated with last  revision #}
-											<li>{{ comment.comment }}</li>
-										{% endfor %}
-									{% endif %}
+								Status: {{ page.last_rev.status }}
+								{% for comment in page.last_rev.comment_set.all %} {# get all comments associated with last  revision #}
+									<li>{{ comment.comment }}</li>
 								{% endfor %}
 							</div>
 							<div class="page_info">
