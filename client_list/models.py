@@ -118,7 +118,7 @@ class Page(models.Model):
 		if revisions:
 			last_rev = revisions[0]
 		else:
-			last_rev = 0
+			last_rev = '--'
 		return last_rev
 		
 	def __unicode__(self):
@@ -139,22 +139,32 @@ class Revision(models.Model):
 	def __unicode__(self):
 		return str(self.rev_number) + " - " + "page: " + str(self.page.number) + " - " + self.page.item.name
 
+		
 class Comment(models.Model):
 	revision = models.ManyToManyField(Revision)
 	#revision = models.ForeignKey(Revision)
 	comment = models.CharField(max_length=200)
 	def __unicode__(self):
 		return self.comment
-
+		
+		
+class Curve(models.Model):
+	revision = models.ForeignKey(Revision)
+	curve = models.CharField(max_length=200)
+	def __unicode__(self):
+		return self.comment		
+		
+		
 # PDF uploaded by the content provider to the server
-class PDF(models.Model):
+class ProviderContent(models.Model):
 	revision = models.ForeignKey(Revision)
 	pdf_ref = models.CharField(max_length=30)
 	def __unicode__(self):
 		return self.pdf_ref
 
+		
 # PDF uploaded by the client as a correction
-class Correction(models.Model):
+class ClientContent(models.Model):
 	revision = models.ForeignKey(Revision)
 	corr_ref = models.CharField(max_length=30)
 	def __unicode__(self):
