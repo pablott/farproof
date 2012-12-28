@@ -1,27 +1,36 @@
 {#% load page_extras %#}
-	
+
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
 	<meta charset="utf-8">
 	<title>FP - {{ client.name }} - {{ job.name}} - {{item.name}} - {{ page.number }}</title>
 </head>
 
-<h1>{{ page.number }}</h1>
 <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list/">Back to item</a> <br>
-
-	<p>Status: {{ last_rev.status }}</p>
-	<p>Last rev. #: {{ last_rev.rev_number }} / Num. of revs.: {{ revisions.count }} / Last rev. PK: {{ last_rev.pk }}</p>
-	<p>Comment: {{ comment }}</p>
-			------------------------------------------------
+<h1>{{ page.number }}</h1>
+{% if revisions %}
+<h2>Last revision</h2>
+	<p>Status: {{ page.last_rev.status }}</p>
+	<p>Last rev. #: {{ page.last_rev.rev_number }} <br> Total revs.: {{ revisions.count }} <br> Last rev. PK: {{ page.last_rev.pk }} <br> Creation: {{ page.last_rev.creation }} </p>
+	Comments:
+	{% for comment in page.last_rev.comment_set.all %}
+		<li>{{ comment.comment }} </li>
+	{% endfor %}
+------------------------------------------------
 	
-	{% if revisions %}
 	<ul>
-		{% for revision in revisions %}
+		{% for revision in page.revision_set.all %}
 			<li> Rev. num.: {{ revision.rev_number }} / Rev. PK: {{ revision.pk }} </li>
 			<ul> 
 				<li>Status: {{ revision.status }}</li>
 				<li>Belongs to page: {{ revision.page.number }}</li>
-				<li>Comment: {{ revision.getcomment }} {{ revision.page.number }}</li>
+				<li>Comments:
+					<ul>
+						{% for comment in revision.comment_set.all %}
+							<li>{{ comment.comment }} </li>
+						{% endfor %}
+					</ul>
+				</li>
 				<li>Date: {{ revision.creation }}</li>
 			</ul>
 		{% endfor %}

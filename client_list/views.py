@@ -226,10 +226,10 @@ def page_view(request, client_pk, job_pk, item_pk, page_num):
 	item = Item.objects.get(pk=item_pk, job=job)
 	page = Page.objects.get(number=page_num, item=item)
 	revisions = Revision.objects.filter(page=page).order_by('-pk') # Order by inverted pk and get first (which is the last created for that page)
-	last_rev = '--' # Initialize...
-	comment = '--' # Initialize...
-	if revisions:
-		last_rev = revisions[0]
+	#last_rev = '--' # Initialize...
+	#comment = '--' # Initialize...
+	#if revisions:
+	#	last_rev = revisions[0]
 		#comment = Comment.objects.get(revision=last_rev).comment # TODO: don't throw error if there are no coments for last rev.
 	if page:
 		return render_to_response('page_view.html', {
@@ -237,10 +237,8 @@ def page_view(request, client_pk, job_pk, item_pk, page_num):
 			'job': job, 
 			'item': item,
 			'page': page,
-			'page_num': page_num,
 			'revisions': revisions,
-			'last_rev': last_rev,
-			'comment': comment,
+			#'comment': comment,
 		})
 	else:
 		raise Http404
