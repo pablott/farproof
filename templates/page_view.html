@@ -24,6 +24,7 @@
 			<ul> 
 				<li>Status: {{ revision.status }}</li>
 				<li>Belongs to page: {{ revision.page.number }}</li>
+				<li>Client correction: {{ revision.clientcontent.corr_ref }}</li>
 				<li>Comments:
 					<ul>
 						{% for comment in revision.comment_set.all %}
