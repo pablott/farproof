@@ -1,34 +1,34 @@
-#from datetime import datetime
 from django.db import models
 from django.forms import ModelForm, forms
+from django.forms.widgets import HiddenInput
+#from datetime import datetime
 #from django.forms.models import inlineformset_factory
 #from django.forms.formsets import BaseFormSet
-from django.forms.widgets import HiddenInput
 
-
-
-
-
-class User(models.Model):
-	name = models.CharField(max_length=256)
-	email = models.CharField(max_length=256, default='xx@xx.com')
-	admin = models.BooleanField(default=False)
-	def __unicode__(self):
-		return self.name
+	
 	
 class Client(models.Model):
 	name = models.CharField(max_length=256)
-	email = models.CharField(max_length=256)
+	#email = models.EmailField(max_length=254)
 	active = models.BooleanField(default=True)
 	creation = models.DateTimeField(default="", auto_now_add=True)
 	modified = models.DateTimeField(default="", auto_now=True)
 	def __unicode__(self):
-		return self.name + " - " + str(self.creation) + " - " + str(self.modified) + " - " + str(self.id)
+		return  str(self.pk)+":"+self.name + " - " + str(self.modified)
+		
+class User(models.Model):
+	client = models.ManyToManyField(Client)
+	name = models.CharField(max_length=256, unique=True)
+	email = models.EmailField(max_length=254, default='xx@xx.com')
+	desc = models.CharField(max_length=256)
+	admin = models.BooleanField(default=False)
+	def __unicode__(self):
+		return self.name + self.email		
 
 class ClientAddForm(ModelForm):
 	class Meta:
-		model = Client		
-		fields = ('name', 'email')
+		model = Client
+		fields = ('name',)
 		
 		
 class Job(models.Model):
@@ -54,9 +54,11 @@ class Job(models.Model):
 			message = 'there are NO pages'
 		return message
 		
-	# Return "Job name - Client - Date"
 	def __unicode__(self):
-		return self.name + " - " + self.client.name + " - " + str(self.creation)
+		return str(self.pk)+":"+self.name + " - " + self.client.name + " - " + str(self.modified)
+		
+	class Meta(object):
+		unique_together = ("name", "client")
 
 		
 class JobAddForm(ModelForm):
@@ -65,7 +67,8 @@ class JobAddForm(ModelForm):
 		# "exclude" won't allow JobAddForm to render a 'client' field
 		# in the template (because it's a FK), thus it will throw an error beacause view function 'job_add'
 		# won't be able to assign the current Client object to 'client' in the processed POST.
-		# The solution is using HiddenInput() widget for 'client' field.
+		# The solution is using HiddenInput() widget for 'client' field. This way client name gets passed
+		# to POST but is hidden in the template.
 		exclude = ('active')
 		widgets = {
             'client': HiddenInput(),
@@ -76,43 +79,26 @@ class Item(models.Model):
 	job = models.ForeignKey(Job)
 	name = models.CharField(max_length=256)
 	desc = models.CharField(max_length=256)
-	# active = models.BooleanField(default=True)
+	creation = models.DateTimeField(default="", auto_now_add=True)
+	modified = models.DateTimeField(default="", auto_now=True)
 	def __unicode__(self):
-		return self.name + " - " + self.job.name + " - " + self.job.client.name
+		return str(self.pk)+":"+self.name + " - " + self.job.name + " - " + self.job.client.name + " - " + str(self.modified)
+		
+	class Meta(object):
+		unique_together = ("name", "job")
 
-	
+
 class ItemAddForm(ModelForm):
 	class Meta:
 		model = Item				
 		widgets = {
            'job': HiddenInput(),
       }
-# ItemAddFormSet = inlineformset_factory(JobAddForm, ItemAddForm)
-
-
-#ItemAddForm = inlineformset_factory(models.Item, models.Page, extra=1)	
-#class ItemAdd(ModelForm):
-#	TenantFormset = inlineformset_factory(models.Building, models.Tenant, extra=1)	
-#class BaseItemFormSet(BaseFormSet):
-#	def add_fields(self, form, index):
-#		super(BaseItemFormSet, self).add_fields(form, index)
-#		form.fields["my_field"] = forms.CharField()
-		#delete_box = forms.BooleanField()
-
-	#class Meta:
-	#	model = Item				
-	#	widgets = {
-	#		'job': HiddenInput(),
-	#	}
-
-#ItemAddForm = formset_factory(Item, form=BaseItemFormSet)		
-		
-
-
+	  
 		
 class Page(models.Model):
 	item = models.ForeignKey(Item)
-	number = models.IntegerField(default="0") #.unique
+	number = models.IntegerField(default="0")
 	def last_rev(self):
 		revisions = self.revision_set.filter(page=self).order_by('-pk')
 		if revisions:
@@ -122,51 +108,58 @@ class Page(models.Model):
 		return last_rev
 		
 	def __unicode__(self):
-		return str(self.number) + " - " + self.item.name
+		return "page:"+str(self.number) + " - " + self.item.name + " - " + self.item.job.name + " - " + self.item.job.client.name
 
+	class Meta(object):
+		unique_together = ("number", "item")
+		
 		
 class Revision(models.Model):
 	page = models.ForeignKey(Page)
-	creation = models.DateTimeField(auto_now_add=True)
 	rev_number = models.IntegerField()
+	creation = models.DateTimeField(auto_now_add=True)
 	STATUS_CHOICES = (
-		('OK', 'Ok'),
-		('FAIL', 'Fail'),
-		('PENDING', 'Pending'),
-		('MISSING', 'Missing'),
+		('OK', 'Ok'), # Page has been approved by Client
+		('REJECTED', 'Rejected'), # Page has been rejected (by Client or automatically after adding a Comment by Provider)
+		('PENDING', 'Pending'), # Page is awaiting Client's review
+		('MISSING', 'Missing'), # No file uploaded for this page
 	)
-	status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='PENDING')
+	status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='PENDING')
 	def __unicode__(self):
-		return str(self.rev_number) + " - " + "page: " + str(self.page.number) + " - " + self.page.item.name
+		return "rev:"+str(self.rev_number)+"/pk:"+str(self.pk) + " - " + "page:"+ str(self.page.number) + " - " + self.page.item.name + " - " + self.page.item.job.name + " - " + self.page.item.job.client.name
 
+	class Meta(object):
+		unique_together = ("rev_number", "page")		
+		
 		
 class Comment(models.Model):
 	revision = models.ManyToManyField(Revision)
-	#revision = models.ForeignKey(Revision)
-	comment = models.CharField(max_length=200)
+	comment = models.CharField(max_length=256)
 	def __unicode__(self):
-		return self.comment
+		return self.comment #+ " - " + str(self.revision)
 		
 		
 class Curve(models.Model):
 	revision = models.ForeignKey(Revision)
 	curve = models.CharField(max_length=200)
 	def __unicode__(self):
-		return self.comment		
+		return self.comment	+ " - " + self.page.item.client.name + "rev pk:"+str(self.revision.pk)
 		
 		
-# PDF uploaded by the content provider to the server
+# File uploaded by the Provider to the server
 class ProviderContent(models.Model):
 	revision = models.ForeignKey(Revision)
-	pdf_ref = models.CharField(max_length=30)
+	file = models.CharField(max_length=30, default="")
+	render = models.CharField(max_length=30, default="")
 	def __unicode__(self):
-		return self.pdf_ref
+		return "pk:"+str(self.pk) + "file:"+self.file + " - rev pk:"+str(self.revision.pk)
 
-		
-# PDF uploaded by the client as a correction
+
+# File uploaded by the Client as a correction
 class ClientContent(models.Model):
 	revision = models.ForeignKey(Revision)
-	corr_ref = models.CharField(max_length=30)
+	file = models.CharField(max_length=30, default="")
+	render = models.CharField(max_length=30, default="")
 	def __unicode__(self):
-		return self.corr_ref
+		return "pk:"+str(self.pk) + "file:"+self.file + " - rev pk:"+str(self.revision.pk)
 		
