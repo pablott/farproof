@@ -64,15 +64,14 @@
 						<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/">
 							<div class="page_thumb even">
 							<div class="page_number">{{ page.number }}<br>PK:{{ page.pk }}</div>
-							<div class="page_status pending"> 
-								Status: {{ page.last_rev.status }}
-								{% for comment in page.last_rev.comment_set.all %} {# get all comments associated with last  revision #}
-									<li>{{ comment.comment }}</li>
-								{% endfor %}
+								{# get all comments associated with last revision: #}
+							<div class="page_status pending" title="Last comments: {% for comment in page.last_rev.comment_set.all %} --{{ comment.comment }}{% endfor %}"> 
+								{{ page.last_rev.status }}
 							</div>
 							<div class="page_info">
-								XX comments <br>
+								{{ page.last_rev.comment_set.count }} last comments on {{ page.last_rev.creation|date:"j M, H:i" }}  <br>
 								{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
+								
 								</div>
 							</div>
 						</a>
