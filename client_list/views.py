@@ -18,7 +18,7 @@ def client_add(request):
 		if form.is_valid(): # All validation rules pass
 			# Process the data in form.cleaned_data
 			form.save()
-			message = 'You added Client: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['email'])
+			message = 'You added Client: %r' % str(request.POST['name']) #+ ' - %r' % str(request.POST['email'])
 			form = ClientAddForm() # Reset form after saving
 			return render_to_response('client_add.html',
 				{'form': form, 'message': message})
@@ -82,19 +82,19 @@ def job_add_old(request, client):
 		
 def job_add(request, client_pk):
 	client = Client.objects.get(pk=client_pk)
+	message = ''
 	if client:
 		if request.method == 'POST':
 			post = request.POST.copy()
-			post['job-client'] = client.id
+			post['job-client'] = client.pk
 			form_job = JobAddForm(post, instance=Job(), prefix="job")
+			form_item = ItemAddForm(post, instance=Item(), prefix="item")
 			if form_job.is_valid():
-				form_job.save()
-				last_job = Job.objects.filter(client=client).order_by('-pk')[0]
-				post['item-job'] = last_job.id
-				form_item = ItemAddForm(post, instance=Item(), prefix="item")
+				last_job = form_job.save()
+				post['item-job'] = last_job.pk
 				if form_item.is_valid():
 					form_item.save()
-			message = 'You added Job: %r'%str(request.POST['job-name'])+' - %r'%str(request.POST['job-desc'])+', Item%r'%str(request.POST['item-name'])+' - %r'%str(request.POST['item-desc'])
+					message = 'You added Job: %r'%str(request.POST['job-name'])+' - %r'%str(request.POST['job-desc'])+', Item%r'%str(request.POST['item-name'])+' - %r'%str(request.POST['item-desc'])
 			return render_to_response('job_add.html',
 				{'form_job': form_job, 'form_item': form_item, 'message': message, 'client': client,})
 		else:
@@ -154,19 +154,21 @@ def item_add(request, client_pk, job_pk):
 			post = request.POST.copy() 
 			num_pages = int(post['num_pages'])
 			start_page = int(post['start_page'])
-			post['job'] = job.id
+			post['job'] = job.pk
 			form = ItemAddForm(post)
 			if form.is_valid(): 
-				# Save form
-				form.save() 
-				message = 'You added Item: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['desc']) + ' - %r' % str(request.POST['num_pages']) # It takes ID of new item correctly
-				form = ItemAddForm() 
-				
+				# Save Item
+				last_item = form.save() 
 				# Create all the neccesary pages:
-				for i in range(start_page,start_page+num_pages):
-					last_item = Item.objects.filter(job=job).latest('pk')
-					pages = Page(number=(i), item=last_item)
-					pages.save()
+				for i in range(start_page, start_page+num_pages):
+					page = Page(number=(i), item=last_item)
+					page.save()
+				# Add a initial PENDING Revision to each new page:
+				last_pages = Page.objects.filter(item=last_item)
+				for page in last_pages:
+					revision = Revision(rev_number=0, page=page)
+					revision.save()
+				message = 'You added Item: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['desc']) + ' - %r' % str(request.POST['num_pages'])
 				return render_to_response('item_add.html',
 					{'form': form, 'message': message, 'client': client, 'job': job,})
 		else:
