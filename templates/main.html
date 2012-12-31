@@ -40,15 +40,15 @@
 				<div class="client_icon">  </div>
 				<div class="title"> <a href="/{{ client.pk }}/">{{ client.name }}</a> </div>
 				<div class="mini_summary">
-					XX person(s) will get notified </br>
-					{{ client.job_set.count }} total jobs </br>
+					{{ client.user_set.count }} person(s) will get notified </br>
+					{{ client.job_set.count }} visible jobs </br>
 					<span class="unactive">({{ client.job_set.count }} hidden jobs)</span>
 				</div>
 				<div class="summary">
 					PK: {{ client.pk }}/ID: {{ client.id }} <br>
 					<span class="rejected"> XX jobs with problems </span> </br>
 					<span class="pending"> XX jobs with pages pending </span> </br>
-					<span class="accepted"> XX approved jobs </span> </br>
+					<span class="ok"> XX approved jobs </span> </br>
 				</div>
 			</div>
 		{% endfor %}

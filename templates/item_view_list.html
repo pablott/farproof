@@ -68,7 +68,7 @@
 					<li class="page"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/">{{ page.number }}</a> </li>
 					<li class="comments">{{ page.last_rev.comment_set.count }}(XX{{ revision_set.comment_set.count }})</li>
 					<li class="revisions">{{ page.last_rev.rev_number }}({{ page.revision_set.count }})</li>
-					<li class="status accepted">{{ page.last_rev.status }}</li>
+					<li class="status {{ page.last_rev.status|lower }}">{{ page.last_rev.status }}</li>
 					<li class="pdf">URI:{{ page.last_rev.clientcontent.corr_ref }}</li>
 					<li class="updated">{{ page.last_rev.creation|date:"D j M y, H:i" }}</li>
 					<li class="added">{{ job.creation|date:"D j M y, H:i" }}</li>
