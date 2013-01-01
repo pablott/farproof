@@ -53,6 +53,67 @@ class Job(models.Model):
 		else:
 			message = 'there are NO pages'
 		return message
+	
+	def is_ready(self):
+		total_pages = 0
+		approved_pages = 0
+		# TODO: use method Page.last_rev()
+		# (instead of reinventing the wheel)
+		# See below
+		for item in self.item_set.all():
+			for page in item.page_set.all():
+				total_pages = total_pages+1
+				revisions = page.revision_set.order_by('-creation')
+				if revisions:
+					last_rev = revisions[0]
+					if last_rev.status == 'OK':
+						approved_pages=approved_pages+1
+		if total_pages == approved_pages:
+			#message = 'ready'
+			return True
+		else:
+			#message = 'NOT ready'
+			return False
+		return message
+		
+	def is_ready3(self):
+		total_pages = 0
+		approved = 0
+		for item in self.item_set.all():
+			for page in item.page_set.all():
+				total_pages = total_pages+1
+				last_rev = Page.last_rev(page)
+				if last_rev.status == 'OK':
+					approved=approved+1
+		if total_pages == approved:
+			message = 'ready'
+			#return True
+		else:
+			message = 'NOT ready'
+			#return False
+		return message + approved + total_pages
+		
+	def is_ready2(self, Page):
+		total_pages = 0
+		approved=0
+		message = 'fff'
+		for item in self.item_set.all():
+			for page in item.page_set.all():
+				total_pages = total_pages+1
+				if last_rev.rev_number == 0:
+					message = 'kk'
+					approved = approved+1
+		if approved == total_pages:
+			message = 'ok'
+		else:
+			message = 'not ok'
+		return total_pages
+		
+		
+	def is_ready4(self):
+		#total_status = self.revision_set.filter()
+		out = self.total_pages()
+		return out
 		
 	def __unicode__(self):
 		return str(self.pk)+":"+self.name + " - " + self.client.name + " - " + str(self.modified)
@@ -100,7 +161,7 @@ class Page(models.Model):
 	item = models.ForeignKey(Item)
 	number = models.IntegerField(default="0")
 	def last_rev(self):
-		revisions = self.revision_set.filter(page=self).order_by('-pk')
+		revisions = self.revision_set.filter(page=self).order_by('-creation')
 		if revisions:
 			last_rev = revisions[0]
 		else:
