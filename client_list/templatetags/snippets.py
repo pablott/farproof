@@ -15,3 +15,11 @@ def show_job(job, client):
 		'job': job, 
 		'client': client
 	}
+
+@register.inclusion_tag('snippets/item.html')
+def show_item(item, job, client):
+	return {
+		'item': item,
+		'job': job, 
+		'client': client
+	}

@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<div class="item">
+	<div class="tab"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list">{{ item.name }}</a> </div>
+	<div class="preview"></div>
+	PK: {{ item.pk }}/ID: {{ item.id }} <br>
+	Pages: {{ item.page_set.count }} <br>
+	Desc: {{ item.desc }}
+</div>
+

@@ -1,4 +1,7 @@
-{% load i18n %}{% load i18n %}<!DOCTYPE html>
+{% load i18n %}
+{% load snippets %}
+
+<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
 	<meta charset="utf-8">
@@ -36,20 +39,15 @@
 	</div>
 	
 	<div id="view">
-	{{message}}
 	{% if items %}
 	    {% for item in items %}
-			<div class="item">
-				<div class="tab"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list">{{ item.name }}</a> </div>
-				<div class="preview"></div>
-				PK: {{ item.pk }}/ID: {{ item.id }} <br>
-				Pages: {{ item.page_set.count }} <br>
-				Desc: {{ item.desc }}
-			</div>
+			{% show_item item job client %}
 		{% endfor %}
 		{% else %}
 			<p>No items are available.</p>
-		{% endif %}
+	{% endif %}
 	</div>
+	
+	
 </body>
 </html>
