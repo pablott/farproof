@@ -23,3 +23,24 @@ def show_item(item, job, client):
 		'job': job, 
 		'client': client
 	}
+
+	
+@register.inclusion_tag('snippets/page_odd.html')
+def show_page_odd(page, item, job, client):
+	return {
+		'page': page,
+		'item': item,
+		'job': job, 
+		'client': client
+	}
+
+@register.inclusion_tag('snippets/page_even.html')
+def show_page_even(page, item, job, client):
+	return {
+		'page': page,
+		'item': item,
+		'job': job, 
+		'client': client
+	}
+	
+	

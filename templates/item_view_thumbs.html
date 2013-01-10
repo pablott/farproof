@@ -1,4 +1,7 @@
-{% load i18n %}{% load i18n %}<!DOCTYPE html>
+{% load i18n %}
+{% load snippets %}
+
+<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
 	<meta charset="utf-8">
@@ -60,19 +63,7 @@
 			<div class="thumb_container">
 				{% for page in pages %}
 					{% if page.number|divisibleby:2 %}
-						<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/">
-						<div class="page_thumb even">
-							<div class="page_number">{{ page.number }}<br>PK:{{ page.pk }}</div>
-								{# get all comments associated with last revision: #}
-							<div class="page_status {{ page.last_rev.status|lower }}" title="Last comments: {% for comment in page.last_rev.comment_set.all %} --{{ comment.comment }}{% endfor %}"> 
-								{{ page.last_rev.status }}
-							</div>
-							<div class="page_info">
-								{{ page.last_rev.comment_set.count }} last comments on {{ page.last_rev.creation|date:"j M, H:i" }}  <br>
-								{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
-							</div>
-						</div>
-						</a>
+						{% show_page_even page item job client %}
 					{% else %}
 						{% if forloop.counter == 1 %}
 							<div class="page_thumb even dummy"></div>
@@ -87,16 +78,7 @@
 								</div>
 							</a>
 						{% else %}
-							<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/">
-								<div class="page_thumb odd">
-									<div class="page_number">{{ page.number }}<br>PK:{{ page.pk }}</div>
-									<div class="page_status {{ page.last_rev.status|lower }}"> {{ page.status }} </div>
-									<div class="page_info">
-										XX comments <br>
-										{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
-									</div>
-								</div>
-							</a>
+							{% show_page_odd page item job client %}
 						{% endif %}
 					{% endif %}
 					
