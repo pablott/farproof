@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     # (r'^farproof/', include('farproof.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
-    #(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
@@ -29,7 +29,7 @@ urlpatterns = patterns('',
 	(r'^(\d+)/(\d+)/item_add/$', item_add),
     (r'^(\d+)/(\d+)/(\d+)/list/$', item_view_list),
     (r'^(\d+)/(\d+)/(\d+)/thumbs/$', item_view_thumbs),
-    (r'^(\d+)/(\d+)/(\d+)/(\d+)/$', page_view)
+    (r'^(\d+)/(\d+)/(\d+)/(\d+)/$', page_info)
 )
 #(r'^(?P<category>\w+)/feedback/$', 'my_view')
 
