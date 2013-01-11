@@ -28,6 +28,7 @@ def client_add(request):
 		'form': form,
 	})
 
+	
 def client_search(request): # TODO Consider using a ClientSearchForm or such
 	query = 0 # Initialize
 	if request.method == 'GET': # If this view gets a search query...
@@ -50,31 +51,6 @@ def client_view(request, client_pk):
 		return render_to_response('client_view.html', {
 			'client': client,
 			'jobs': jobs,
-		})
-	else:
-		raise Http404
-
-		
-def job_add_old(request, client):
-	check_path = Client.objects.filter(name__exact=client)
-	if check_path:
-		client_id = Client.objects.get(name__exact=client).id
-		if request.method == 'POST': # Form's been submitted
-			post = request.POST.copy() # Make POST mutable, see: http://stackoverflow.com/questions/7572537/modifying-django-model-forms-after-post?rq=1
-			post['client'] = client_id # Modify POST data to reflect client's name
-			form = JobAddForm(post) # A form bound to the POST data
-			if form.is_valid(): # Validate resulting form
-				form.save() # Save form.cleaned_data to DB and inform user
-				message = 'You added Job: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['desc'])
-				form = JobAddForm() # Reset form after saving
-				return render_to_response('job_add.html',
-					{'form': form, 'message': message, 'client_name': client,})
-		else:
-			# First time called: an unbound form
-			form = JobAddForm()
-		return render_to_response('job_add_old.html', {
-			'form': form,
-			'client_name': client,
 		})
 	else:
 		raise Http404
@@ -117,7 +93,7 @@ def job_search(request, client_pk):
 		if request.method == 'GET': # If this view gets a search query...
 			if 'name' in request.GET: # Check if a 'name' was given
 				name = request.GET['name']
-				query = Job.objects.filter(name__icontains=name).order_by('name') # Checks if it exists and put it in 'query'
+				query = Job.objects.filter(name__icontains=name, client=client).order_by('name') # Checks if it exists and put it in 'query'
 				message = 'You searched for: %r' % str(name) 
 			else:
 				message = 'You submitted an empty form.'

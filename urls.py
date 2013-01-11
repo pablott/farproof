@@ -23,7 +23,6 @@ urlpatterns = patterns('',
     (r'^(\d+)/$', client_view),
 	
 	(r'^(\d+)/job_add/$', job_add),
-	(r'^(\d+)/job_add_old/$', job_add_old),
 	(r'^(\d+)/job_search/$', job_search),
 	(r'^(\d+)/(\d+)/$', job_view),
 	
