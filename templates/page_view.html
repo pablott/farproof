@@ -1,27 +1,40 @@
-{#% load page_extras %#}
+{% load snippets %}
 
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
 	<meta charset="utf-8">
+	<link href="/media/css/common.css" rel="stylesheet" type="text/css">
+	<link href="/media/css/widgets/pages.css" rel="stylesheet" type="text/css">
 	<title>FP - {{ client.name }} - {{ job.name}} - {{item.name}} - {{ page.number }}</title>
 </head>
 
-<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list/">Back to item</a> <br>
+<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list/"><- Back to item</a> <br>
 <h1>{{ page.number }}</h1>
+
+
+<div class="thumb_container">
+	{% if page.number|divisibleby:2 %}
+		{% show_page_even page item job client %}
+	{% else %}
+		{% show_page_odd page item job client %}
+	{% endif %}
+</div>
+
+
 {% if revisions %}
-<h2>Last revision</h2>
-	<p>Status: {{ page.last_rev.status }}</p>
-	<p>Last rev. #: {{ page.last_rev.rev_number }} <br> Total revs.: {{ revisions.count }} <br> Last rev. PK: {{ page.last_rev.pk }} <br> Creation: {{ page.last_rev.creation }} </p>
+<h2 style="clear:both">Last revision -- {{ page.last_rev.creation }}</h2>
+	<p>#: {{ page.last_rev.rev_number }} / PK: {{ page.last_rev.pk }} <br> Total revs.: {{ revisions.count }} <br>  </p>
 	Comments:
 	{% for comment in page.last_rev.comment_set.all %}
-		<li>{{ comment.comment }} </li>
+		<li class="comments">{{ comment.comment }} </li>
 	{% endfor %}
-	<br>
-------------------------------------------------
-	
+<br><br>
+--------------------------------------------------------------------------------------------------------
+<br>
+<h4>Previous revisions:</h4>
 	<ul>
 		{% for revision in page.revision_set.all %}
-			<li> Rev. num.: {{ revision.rev_number }} / Rev. PK: {{ revision.pk }} </li>
+			<li> <h5>#: {{ revision.rev_number }} / PK: {{ revision.pk }} -- {{ revision.creation }} </h5></li>
 			<ul> 
 				<li>Status: {{ revision.status }}</li>
 				<li>Belongs to page: {{ revision.page.number }}</li>
@@ -29,11 +42,10 @@
 				<li>Comments:
 					<ul>
 						{% for comment in revision.comment_set.all %}
-							<li>{{ comment.comment }} </li>
+							<li class="comments">{{ comment.comment }} </li>
 						{% endfor %}
 					</ul>
 				</li>
-				<li>Date: {{ revision.creation }}</li>
 			</ul>
 		{% endfor %}
 	</ul>
