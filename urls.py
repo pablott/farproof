@@ -29,7 +29,8 @@ urlpatterns = patterns('',
 	(r'^(\d+)/(\d+)/item_add/$', item_add),
     (r'^(\d+)/(\d+)/(\d+)/list/$', item_view_list),
     (r'^(\d+)/(\d+)/(\d+)/thumbs/$', item_view_thumbs),
-    (r'^(\d+)/(\d+)/(\d+)/(\d+)/$', page_info)
+    (r'^(\d+)/(\d+)/(\d+)/(\d+)/$', page_view),
+    (r'^(\d+)/(\d+)/(\d+)/(\d+)/page_info/$', page_info)
 )
 #(r'^(?P<category>\w+)/feedback/$', 'my_view')
 

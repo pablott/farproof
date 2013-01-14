@@ -197,18 +197,33 @@ def item_view_thumbs(request, client_pk, job_pk, item_pk):
 	else:
 		raise Http404
 
-	
+
+def page_view(request, client_pk, job_pk, item_pk, page_num):
+	client = Client.objects.get(pk=client_pk)
+	job = Job.objects.get(pk=job_pk, client=client)
+	item = Item.objects.get(pk=item_pk, job=job)
+	page = Page.objects.get(number=page_num, item=item)
+	pages = Page.objects.filter(item=item).order_by('number')
+	revisions = Revision.objects.filter(page=page).order_by('-creation') # Order by inverted creation date and get first (which is the last created for that page)
+	if page:
+		return render_to_response('page_view.html', {
+			'client': client,
+			'job': job, 
+			'item': item,
+			'page': page,
+			'pages': pages,
+			'revisions': revisions,
+		})
+	else:
+		raise Http404
+		
+		
 def page_info(request, client_pk, job_pk, item_pk, page_num):
 	client = Client.objects.get(pk=client_pk)
 	job = Job.objects.get(pk=job_pk, client=client)
 	item = Item.objects.get(pk=item_pk, job=job)
 	page = Page.objects.get(number=page_num, item=item)
-	revisions = Revision.objects.filter(page=page).order_by('-pk') # Order by inverted pk and get first (which is the last created for that page)
-	#last_rev = '--' # Initialize...
-	#comment = '--' # Initialize...
-	#if revisions:
-	#	last_rev = revisions[0]
-		#comment = Comment.objects.get(revision=last_rev).comment # TODO: don't throw error if there are no coments for last rev.
+	revisions = Revision.objects.filter(page=page).order_by('-creation') # Order by inverted creation date and get first (which is the last created for that page)
 	if page:
 		return render_to_response('page_info.html', {
 			'client': client,
@@ -216,7 +231,6 @@ def page_info(request, client_pk, job_pk, item_pk, page_num):
 			'item': item,
 			'page': page,
 			'revisions': revisions,
-			#'comment': comment,
 		})
 	else:
 		raise Http404

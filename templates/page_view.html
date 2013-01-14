@@ -1,0 +1,149 @@
+{% load i18n %}
+{% load snippets %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>FP - {{ client.name }} - {{ job.name}} - {{item.name}} - page-couple </title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="stylesheet" href="/media/css/common.css">
+	<link rel="stylesheet" href="/media/css/widgets/buttons.css">
+	<link rel="stylesheet" href="/media/css/widgets/pages.css">
+	<link rel="stylesheet" href="/media/css/item_view_pages.css">
+	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
+	<script src="/media/js/jquery-1.8.1.js"></script>
+	<script src="/media/js/index.js"></script>
+	<script src="/media/js/page.js"></script>
+	<script src="/media/js/toolbar.js"></script>
+	<script src="/media/js/zoom.js"></script>
+	<script src="/media/js/nav.js"></script>
+</head>
+
+
+<body>
+	<div class="debug"></div>
+	<div id="toolbar">
+			<div class="btn_black icon1"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list/"><</a></div>
+			<div class="btn_black vertical">
+					<div class=""> View </div>
+					<div id="zoomIn" class="icon1"> + </div>
+					<div class="icon1"> - </div>
+					<div> 1:1 </div>
+					<div class="icon1"> M </div>
+					<input type="number" value="100" max="500" min="10"> % </input>
+			</div>
+			<div class="btn_black horizontal">
+					<div> Tools </div>
+					<div class="icon2"> b </div>
+					<div class="icon1"> q </div>
+					<div class="icon2"> C </div>
+					<div class="model"> 3D </div>
+			</div>
+		</ul>
+	</div>
+
+	<div id="view">
+		<div id="page_container">
+			<div class="page even">
+				<img src="/media/img/item_sample/XX02.png"></img>
+				{{ page.number }}
+				{% if  page.last_rev.comment_set.all %}
+					<div type="text" class="comment_box">
+					{% for comment in page.last_rev.comment_set.all %}
+						 {{ comment.comment }}
+					{% endfor %}
+					</div>
+				{% endif %}
+			</div>
+			<div class="page odd">
+				<img src="/media/img/item_sample/XX03.png"></img>
+				{{ page.number }} <br>
+				{{ page.last_rev.status }} <br>
+				{{ page.last_rev.creation }} <br>
+				{% if  page.last_rev.comment_set.all %}
+					<div type="text" class="comment_box">
+					{% for comment in page.last_rev.comment_set.all %}
+						 {{ comment.comment }}
+					{% endfor %}
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	
+	<div id="index_toolbar">
+		<div id="toggle_index" class="btn_black icon2"> d </div>
+		<div id="toggle_list" class="btn_black">
+			<div id="list">
+			{% if pages %}
+			<div class="">
+				{% for page in pages %}
+					{% if page.number|divisibleby:2 %}
+						{% if forloop.last %}
+							<div style="margin-left:-50%">{{ page.number }}  </div>
+						{% else %}
+							{{ page.number }}
+						{% endif %}
+					{% else %}
+						{% if forloop.counter == 1 %}
+							* - {{ page.number }}
+						{% else %}
+							 - {{ page.number }}
+						{% endif %}
+					{% endif %}
+					
+					{# if the the forloop counter is divisible by 2, close the thumb container tag and open a new one #}
+					{% if not page.number|divisibleby:2 %}</div><div class="">{% endif %}
+					
+				{% endfor %}
+				</div>
+			{% else %}
+				<p>No pages are available.</p>
+			{% endif %}
+			</div>
+		</div>
+		
+		
+		
+		<div id="nav" class="btn_black">
+			<div id="navFullLeft"> &larr; </div>
+			<div id="navLeft"> &larr; </div>
+			<div id="navRight"> &rarr; </div>
+			<div id="navFullRight"> &rarr; </div>
+		</div>
+	</div>
+	
+	
+	<div id="index">
+		<div id="inner-wrap">
+			{% if pages %}
+			<div class="thumb_container">
+				{% for page in pages %}
+					{% if page.number|divisibleby:2 %}
+						{% show_page_even page item job client %}
+					{% else %}
+						{% if forloop.counter == 1 %}
+							<div class="page_thumb even dummy"></div>
+							{% show_page_odd page item job client %}
+						{% else %}
+							{% show_page_odd page item job client %}
+						{% endif %}
+					{% endif %}
+					
+					{# if the the forloop counter is divisible by 2, close the thumb container tag and open a new one #}
+					{% if not page.number|divisibleby:2 %}</div><div class="thumb_container">{% endif %}
+					
+				{% endfor %}
+				</div>
+			{% else %}
+				<p>No pages are available.</p>
+			{% endif %}
+		</div>
+	</div>
+</body>
+</html>
+
