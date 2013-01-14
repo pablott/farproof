@@ -169,7 +169,7 @@ class Page(models.Model):
 		return last_rev
 		
 	def __unicode__(self):
-		return "page:"+str(self.number) + " - " + self.item.name + " - " + self.item.job.name + " - " + self.item.job.client.name
+		return "page:"+str(self.number) + "pk:"+str(self.pk) + " - " + self.item.name + " - " + self.item.job.name + " - " + self.item.job.client.name
 
 	class Meta(object):
 		unique_together = ("number", "item")
