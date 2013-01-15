@@ -197,7 +197,7 @@ class Comment(models.Model):
 	revision = models.ManyToManyField(Revision)
 	comment = models.CharField(max_length=256)
 	def __unicode__(self):
-		return self.comment #+ " - " + str(self.revision)
+		return self.comment + " - " + str(self.revision.all())
 		
 		
 class Curve(models.Model):
