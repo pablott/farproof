@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load snippets %}
+{% load review %}
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
@@ -54,6 +55,7 @@
 				{% if  page.last_rev.comment_set.all %}
 					<div type="text" class="comment_box">
 					{% for comment in page.last_rev.comment_set.all %}
+						 {{ comment.revision.all.rev_number }}
 						 {{ comment.comment }}
 					{% endfor %}
 					</div>
@@ -66,9 +68,14 @@
 				{{ page.last_rev.creation }} <br>
 				{% if  page.last_rev.comment_set.all %}
 					<div type="text" class="comment_box">
-					{% for comment in page.last_rev.comment_set.all %}
-						 {{ comment.comment }}
-					{% endfor %}
+						<ul>
+						{% for comment in page.last_rev.comment_set.all %}
+							<li>{{ comment.comment }}
+							{% affects_too comment page item job client %}
+							</li>
+							<br style="clear:both">
+						{% endfor %}
+						</ul>
 					</div>
 				{% endif %}
 			</div>

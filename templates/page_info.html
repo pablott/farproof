@@ -1,5 +1,7 @@
 {% load i18n %}
 {% load snippets %}
+{% load review %}
+
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
@@ -28,7 +30,9 @@
 	<p>#: {{ page.last_rev.rev_number }} / PK: {{ page.last_rev.pk }} <br> Total revs.: {{ revisions.count }} <br>  </p>
 	Comments:
 	{% for comment in page.last_rev.comment_set.all %}
-		<li class="comments">{{ comment.comment }} </li>
+		<li class="comments">
+		{{ comment.comment }} 
+		</li>
 	{% endfor %}
 <br><br>
 --------------------------------------------------------------------------------------------------------
@@ -44,7 +48,10 @@
 				<li>Comments:
 					<ul>
 						{% for comment in revision.comment_set.all %}
-							<li class="comments">{{ comment.comment }} </li>
+							<li class="comments">
+							{{ comment.comment }} 
+							{% affects_too comment page item job client %}
+							</li>
 						{% endfor %}
 					</ul>
 				</li>

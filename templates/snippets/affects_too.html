@@ -1,0 +1,31 @@
+{% load i18n %}
+{% load snippets %}
+
+<div class="">
+	Affects too: 
+		{% for revision in revisions %}
+			{% if revision == revision.page.last_rev %}
+			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/">
+				{{ revision.page.number }}</a>,
+				<div class="thumb_container" style="float:left;">
+				{% if revision.page.number|divisibleby:2 %}
+					{% show_page_even revision.page item job client %}
+				{% else %}
+					{% show_page_odd revision.page item job client %}
+				{% endif %}
+			</div>
+			{% endif %}
+		{% endfor %}
+		
+	<br>
+	
+	Used to affect too: 
+		{% for revision in revisions %}
+			{% if not revision == revision.page.last_rev %}
+			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/">
+				{{ revision.page.number }}
+			</a>
+			(on rev.: {{ revision.rev_number }}), 
+			{% endif %}
+		{% endfor %}
+</div>
