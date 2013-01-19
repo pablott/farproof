@@ -18,9 +18,9 @@
 
 <div class="thumb_container">
 	{% if page.number|divisibleby:2 %}
-		{% show_page_even page item job client %}
+		{% page_thumb_even page item job client %}
 	{% else %}
-		{% show_page_odd page item job client %}
+		{% page_thumb_odd page item job client %}
 	{% endif %}
 </div>
 

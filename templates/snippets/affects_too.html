@@ -9,9 +9,9 @@
 				{{ revision.page.number }}</a>,
 				<div class="thumb_container" style="float:left;">
 				{% if revision.page.number|divisibleby:2 %}
-					{% show_page_even revision.page item job client %}
+					{% page_thumb_even revision.page item job client %}
 				{% else %}
-					{% show_page_odd revision.page item job client %}
+					{% page_thumb_odd revision.page item job client %}
 				{% endif %}
 			</div>
 			{% endif %}

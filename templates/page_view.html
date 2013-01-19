@@ -131,13 +131,13 @@
 			<div class="thumb_container">
 				{% for page in pages %}
 					{% if page.number|divisibleby:2 %}
-						{% show_page_even page item job client %}
+						{% page_thumb_even page item job client %}
 					{% else %}
 						{% if forloop.counter == 1 %}
 							<div class="page_thumb even dummy"></div>
-							{% show_page_odd page item job client %}
+							{% page_thumb_odd page item job client %}
 						{% else %}
-							{% show_page_odd page item job client %}
+							{% page_thumb_odd page item job client %}
 						{% endif %}
 					{% endif %}
 					
