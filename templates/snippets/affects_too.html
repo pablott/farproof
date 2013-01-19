@@ -18,14 +18,19 @@
 		{% endfor %}
 		
 	<br>
+	<div style="clear:both"></div>
 	
 	Used to affect too: 
 		{% for revision in revisions %}
 			{% if not revision == revision.page.last_rev %}
-			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/">
-				{{ revision.page.number }}
-			</a>
-			(on rev.: {{ revision.rev_number }}), 
+				{% if revision %}
+				<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/">
+					{{ revision.page.number }}
+				</a>
+				(on rev.: {{ revision.rev_number }}), 
+				{% else %}
+					None
+				{% endif %}
 			{% endif %}
 		{% endfor %}
 </div>
