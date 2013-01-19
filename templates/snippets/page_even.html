@@ -1,0 +1,16 @@
+﻿{% load i18n %}
+{% load review %}
+
+
+<div class="page even">
+	<img src="/media/img/item_sample/XX02.png"></img>
+	{{ page.number }}
+	{% if  page.last_rev.comment_set.all %}
+		<div type="text" class="comment_box">
+		{% for comment in page.last_rev.comment_set.all %}
+			 {{ comment.revision.all.rev_number }}
+			 {{ comment.comment }}
+		{% endfor %}
+		</div>
+	{% endif %}
+</div>

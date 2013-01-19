@@ -1,4 +1,4 @@
-from django import template
+﻿from django import template
 
 register = template.Library()
 
@@ -23,7 +23,24 @@ def show_item(item, job, client):
 		'job': job, 
 		'client': client
 	}
+	
+@register.inclusion_tag('snippets/page_odd.html')
+def page_odd(page, item, job, client):
+	return {
+		'page': page,
+		'item': item,
+		'job': job, 
+		'client': client
+	}
 
+@register.inclusion_tag('snippets/page_even.html')
+def page_even(page, item, job, client):
+	return {
+		'page': page,
+		'item': item,
+		'job': job, 
+		'client': client
+	}
 	
 @register.inclusion_tag('snippets/page_thumb_odd.html')
 def page_thumb_odd(page, item, job, client):

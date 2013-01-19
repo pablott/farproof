@@ -1,0 +1,22 @@
+﻿{% load i18n %}
+{% load review %}
+
+
+<div class="page odd">
+	<img src="/media/img/item_sample/XX03.png"></img>
+	{{ page.number }} <br>
+	{{ page.last_rev.status }} <br>
+	{{ page.last_rev.creation }} <br>
+	{% if  page.last_rev.comment_set.all %}
+		<div type="text" class="comment_box">
+		<ul>
+		{% for comment in page.last_rev.comment_set.all %}
+			<li>{{ comment.comment }}
+			{% affects_too comment page item job client %}
+			</li>
+			<br style="clear:both">
+		{% endfor %}
+		</ul>
+		</div>
+	{% endif %}
+</div>

@@ -1,6 +1,5 @@
 {% load i18n %}
 {% load snippets %}
-{% load review %}
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
@@ -49,36 +48,8 @@
 
 	<div id="view">
 		<div id="page_container">
-			<div class="page even">
-				<img src="/media/img/item_sample/XX02.png"></img>
-				{{ page.number }}
-				{% if  page.last_rev.comment_set.all %}
-					<div type="text" class="comment_box">
-					{% for comment in page.last_rev.comment_set.all %}
-						 {{ comment.revision.all.rev_number }}
-						 {{ comment.comment }}
-					{% endfor %}
-					</div>
-				{% endif %}
-			</div>
-			<div class="page odd">
-				<img src="/media/img/item_sample/XX03.png"></img>
-				{{ page.number }} <br>
-				{{ page.last_rev.status }} <br>
-				{{ page.last_rev.creation }} <br>
-				{% if  page.last_rev.comment_set.all %}
-					<div type="text" class="comment_box">
-						<ul>
-						{% for comment in page.last_rev.comment_set.all %}
-							<li>{{ comment.comment }}
-							{% affects_too comment page item job client %}
-							</li>
-							<br style="clear:both">
-						{% endfor %}
-						</ul>
-					</div>
-				{% endif %}
-			</div>
+			{% page_even page item job client %}
+			{% page_odd page item job client %}
 		</div>
 	</div>
 	
