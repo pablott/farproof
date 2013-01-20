@@ -2,8 +2,8 @@
 {% load review %}
 
 
+{# TODO: unify odd and even since the only difference is the class #}
 <div class="page odd">
-	<img src="/media/img/item_sample/XX03.png"></img>
 	{{ page.number }} <br>
 	{{ page.last_rev.status }} <br>
 	{{ page.last_rev.creation }} <br>
@@ -19,4 +19,5 @@
 		</ul>
 		</div>
 	{% endif %}
+	<img style="z-index:-10; opacity:.3" src="/media/img/item_sample/{{ page.number }}.png"></img>
 </div>

@@ -180,8 +180,6 @@ def item_view_thumbs(request, client_pk, job_pk, item_pk):
 	item = Item.objects.get(pk=item_pk, job=job)
 	revisions = Revision.objects.all().order_by('-pk')
 	pages = Page.objects.filter(item=item).order_by('number')
-	#pages = Page.objects.filter(item=item).revision_set.values_list('status', flat=True)
-	#article.headline_set.values_list('headline', flat=True)
 	if pages:
 		first_page = pages[0]
 	else:
@@ -198,20 +196,54 @@ def item_view_thumbs(request, client_pk, job_pk, item_pk):
 		raise Http404
 
 
+# Gets page.number and decides how to fill odd and even pages.
+# Uses inclusion_tags in the template. These get a page_even or page_odd
+# and get all the information from the database.
 def page_view(request, client_pk, job_pk, item_pk, page_num):
 	client = Client.objects.get(pk=client_pk)
 	job = Job.objects.get(pk=job_pk, client=client)
 	item = Item.objects.get(pk=item_pk, job=job)
 	page = Page.objects.get(number=page_num, item=item)
 	pages = Page.objects.filter(item=item).order_by('number')
-	revisions = Revision.objects.filter(page=page).order_by('-creation') # Order by inverted creation date and get first (which is the last created for that page)
+	# Order by inverted creation date and get first (which is the last created for that page):
+	revisions = Revision.objects.filter(page=page).order_by('-creation') 
+	
+	# Get first and last pages of query
+	# last_page counts one form end of query (this is because django doesn't support negative indexing)
+	first_page = pages[0]
+	last_page = pages[pages.count()-1] 
+		
+	# Logic for even pages:
+	if page.number%2==0:
+		# Logic for LAST even page
+		# (because it has to initialize page_odd or it crashes):
+		if page == last_page:
+			page_even = page
+			page_odd = 0
+		# Otherwise page is assigned to even and the odd is calculated by adding 1 to page.number
+		else:
+			page_even = page
+			page_odd = Page.objects.get(number=page.number+1, item=item)
+	# Logic for odd pages:
+	else:
+		# Logic for odd page ONLY if it is the first
+		# (because it has to initialize page_even or it crashes):
+		if page == first_page:
+			page_odd = page
+			page_even = 0
+		# Otherwise page is assigned to odd and the even is calculated by substracting 1 to page.number
+		else:
+			page_odd = page
+			page_even = Page.objects.get(number=page.number-1, item=item)
+
 	if page:
 		return render_to_response('page_view.html', {
 			'client': client,
 			'job': job, 
 			'item': item,
-			'page': page,
 			'pages': pages,
+			'page_even': page_even,
+			'page_odd': page_odd,
 			'revisions': revisions,
 		})
 	else:
@@ -223,7 +255,8 @@ def page_info(request, client_pk, job_pk, item_pk, page_num):
 	job = Job.objects.get(pk=job_pk, client=client)
 	item = Item.objects.get(pk=item_pk, job=job)
 	page = Page.objects.get(number=page_num, item=item)
-	revisions = Revision.objects.filter(page=page).order_by('-creation') # Order by inverted creation date and get first (which is the last created for that page)
+	# Order by inverted creation date and get first (which is the last created for that page)
+	revisions = Revision.objects.filter(page=page).order_by('-creation') 
 	if page:
 		return render_to_response('page_info.html', {
 			'client': client,

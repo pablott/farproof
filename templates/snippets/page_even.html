@@ -2,15 +2,22 @@
 {% load review %}
 
 
+{# TODO: unify odd and even since the only difference is the class #}
 <div class="page even">
-	<img src="/media/img/item_sample/XX02.png"></img>
-	{{ page.number }}
+	{{ page.number }} <br>
+	{{ page.last_rev.status }} <br>
+	{{ page.last_rev.creation }} <br>
 	{% if  page.last_rev.comment_set.all %}
 		<div type="text" class="comment_box">
+		<ul>
 		{% for comment in page.last_rev.comment_set.all %}
-			 {{ comment.revision.all.rev_number }}
-			 {{ comment.comment }}
+			<li>{{ comment.comment }}
+			{% affects_too comment page item job client %}
+			</li>
+			<br style="clear:both">
 		{% endfor %}
+		</ul>
 		</div>
 	{% endif %}
+	<img style="z-index:-10; opacity:.3" src="/media/img/item_sample/{{ page.number }}.png"></img>
 </div>
