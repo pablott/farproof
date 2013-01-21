@@ -19,7 +19,7 @@
 	<script src="/media/js/index.js"></script>
 	<script src="/media/js/page.js"></script>
 	<script src="/media/js/toolbar.js"></script>
-	<script src="/media/js/zoom.js"></script>
+	<script src="/media/js/XXzoom.js"></script>
 	<script src="/media/js/nav.js"></script>
 </head>
 
@@ -29,9 +29,9 @@
 	<div id="toolbar">
 			<div class="btn_black icon1"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list/"><</a></div>
 			<div class="btn_black vertical">
-					<div class=""> View </div>
+					<div class=""> {{page_even.number}} View {{page_odd}}</div>
 					<div id="zoomIn" class="icon1"> + </div>
-					<div class="icon1"> - </div>
+					<div id="zoomOut" class="icon1"> - </div>
 					<div> 1:1 </div>
 					<div class="icon1"> M </div>
 					<input type="number" value="100" max="500" min="10"> % </input>
@@ -48,8 +48,8 @@
 
 	<div id="view">
 		<div id="page_container">
-						{% page_even page_even item job client %}
-						{% page_odd page_odd item job client %}
+			{% page_even page_even item job client %}
+			{% page_odd page_odd item job client %}
 		</div>
 	</div>
 	
@@ -122,6 +122,22 @@
 			{% endif %}
 		</div>
 	</div>
+<script type="text/javascript"> 
+function navLeft () {
+    $("#navLeft").click(function () {
+        $(".debug").html({{ page_even.number }}-1,"");
+    });
+}
+function navRight () {
+    $("#navRight").click(function () {
+		next_page = {{ page_odd.number }}+1;
+		    if ( next_page <= {{ last_page.number }} ) {
+				$(".debug").html(next_page);
+				//window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
+			}
+    });
+}
+</script>
 </body>
 </html>
 
