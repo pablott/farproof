@@ -241,6 +241,7 @@ def page_view(request, client_pk, job_pk, item_pk, page_num):
 			'client': client,
 			'job': job, 
 			'item': item,
+			'page': page,
 			'pages': pages,
 			'page_even': page_even,
 			'page_odd': page_odd,

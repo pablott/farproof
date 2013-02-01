@@ -1,4 +1,4 @@
-{% load i18n %}
+﻿{% load i18n %}
 {% load snippets %}
 
 <!DOCTYPE html>
@@ -29,7 +29,7 @@
 	<div id="toolbar">
 			<div class="btn_black icon1"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list/"><</a></div>
 			<div class="btn_black vertical">
-					<div class=""> {{page_even.number}} View {{page_odd}}</div>
+					<div class=""> {{page_even.number}} View {{page_odd.number}}</div>
 					<div id="zoomIn" class="icon1"> + </div>
 					<div id="zoomOut" class="icon1"> - </div>
 					<div> 1:1 </div>
@@ -128,14 +128,23 @@ function navLeft () {
         $(".debug").html({{ page_even.number }}-1,"");
     });
 }
+// tomar la resta entre last_page y odd_page y plantear la lógica desde ahí
+// Si la resta odd_page-last_page es 1 then next_page+1
+// Si la resta odd_page-last_page es >1 then next_page+2
 function navRight () {
     $("#navRight").click(function () {
-		next_page = {{ page_odd.number }}+1;
-		    if ( next_page <= {{ last_page.number }} ) {
-				$(".debug").html(next_page);
-				//window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
-			}
-    });
+		//next_page = 300;
+	    if ( ( {{page.number}} - {{last_page.number}} ) == 1 ) {  // MAL: 13-12=1 pero no tiene sentido...
+			next_page = {{page.number}}+1;
+			//next_page = 50;
+			//window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
+	    };
+		if ( ( {{last_page.number}} - {{page.number}} ) > 1 ) {
+			next_page = {{page.number}}+2;
+			//next_page = 60;
+		};
+		$(".debug").html(next_page);
+	});
 }
 </script>
 </body>
