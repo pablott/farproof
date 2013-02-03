@@ -128,26 +128,25 @@ function navLeft () {
         $(".debug").html({{ page_even.number }}-1,"");
     });
 }
-// tomar la resta entre last_page y odd_page y plantear la lógica desde ahí
-// Si la resta odd_page-last_page es 1 then next_page+1
-// Si la resta odd_page-last_page es >1 then next_page+2
+
 function navRight () {
     $("#navRight").click(function () {
-	    if ( {{page.number}} == {{last_page.number}} ) {
-			next_page = 404;
-			//window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
-	    }
-		else if ( {{page.number}} < {{last_page.number}} && {{page.number}} > {{first_page.number}} ) {
-			if ( {{page.number}}%2 == 0 ) {
-				next_page = {{page.number}}+2;
-			}else{
-				next_page = {{page.number}}+1;
-			};
-		}
-		else if ( {{page.number}} == {{first_page.number}} ) {
+		// next_page is calculated checking if current page is even or odd,
+		// depending on that it skips 1 or 2 pages so it always jumps to 
+		// the next diptych 
+		if ( {{page.number}}%2 == 0 ) {
+			next_page = {{page.number}}+2;
+		}else{
 			next_page = {{page.number}}+1;
-			//window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
-	    };
+		};
+		
+		// Then it is sanitized so it doesn't exceed the page range:
+		if ( next_page > {{last_page.number}} | next_page < {{first_page.number}} ) {
+			next_page = 404;
+		};
+		
+		// Send request for next_page:
+		// window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
 		$(".debug").html("next_page:"+next_page);
 	});
 }
