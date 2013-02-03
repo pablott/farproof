@@ -133,17 +133,22 @@ function navLeft () {
 // Si la resta odd_page-last_page es >1 then next_page+2
 function navRight () {
     $("#navRight").click(function () {
-		//next_page = 300;
-	    if ( ( {{page.number}} - {{last_page.number}} ) == 1 ) {  // MAL: 13-12=1 pero no tiene sentido...
+	    if ( {{page.number}} == {{last_page.number}} ) {
+			next_page = 404;
+			//window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
+	    }
+		else if ( {{page.number}} < {{last_page.number}} && {{page.number}} > {{first_page.number}} ) {
+			if ( {{page.number}}%2 == 0 ) {
+				next_page = {{page.number}}+2;
+			}else{
+				next_page = {{page.number}}+1;
+			};
+		}
+		else if ( {{page.number}} == {{first_page.number}} ) {
 			next_page = {{page.number}}+1;
-			//next_page = 50;
 			//window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
 	    };
-		if ( ( {{last_page.number}} - {{page.number}} ) > 1 ) {
-			next_page = {{page.number}}+2;
-			//next_page = 60;
-		};
-		$(".debug").html(next_page);
+		$(".debug").html("next_page:"+next_page);
 	});
 }
 </script>
