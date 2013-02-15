@@ -219,7 +219,7 @@ def page_view(request, client_pk, job_pk, item_pk, page_num):
 		# (because it has to initialize page_odd or it crashes):
 		if page == last_page:
 			page_even = page
-			page_odd = page.number+1
+			page_odd = 0
 		# Otherwise page is assigned to even and the odd is calculated by adding 1 to page.number
 		else:
 			page_even = page
@@ -230,7 +230,7 @@ def page_view(request, client_pk, job_pk, item_pk, page_num):
 		# (because it has to initialize page_even or it crashes):
 		if page == first_page:
 			page_odd = page
-			page_even = page.number-1
+			page_even = 0
 		# Otherwise page is assigned to odd and the even is calculated by substracting 1 to page.number
 		else:
 			page_odd = page

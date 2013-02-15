@@ -123,6 +123,24 @@
 		</div>
 	</div>
 <script type="text/javascript"> 
+function navFullLeft () {
+    $("#navFullLeft").click(function () {
+		next_page = {{first_page.number}};
+		// Send request for next_page:
+		//$(".debug").html("next_page:"+next_page);
+		window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
+	});
+}
+
+function navFullRight () {
+    $("#navFullRight").click(function () {
+		next_page = {{last_page.number}};
+		// Send request for next_page:
+		//$(".debug").html("next_page:"+next_page);
+		window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
+	});
+}
+
 function navLeft () {
     $("#navLeft").click(function () {
 		// next_page is calculated checking if current page is even or odd,
@@ -140,8 +158,8 @@ function navLeft () {
 		};
 		
 		// Send request for next_page:
-		// window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
-		$(".debug").html("next_page:"+next_page);
+		//$(".debug").html("next_page:"+next_page);
+		window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
 	});
 }
 
@@ -162,8 +180,8 @@ function navRight () {
 		};
 		
 		// Send request for next_page:
-		// window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
-		$(".debug").html("next_page:"+next_page);
+		//$(".debug").html("next_page:"+next_page);
+		window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
 	});
 }
 </script>
