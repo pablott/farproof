@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load snippets %}
 
 <div class="client">
 	{% if job.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">NOT approved</b> {% endif %}<br>
@@ -23,6 +24,7 @@
 			{% for item in job.item_set.all %}
 				<a href="/{{ job.client.pk }}/{{ job.pk }}/{{ item.pk }}/list/">{{ item.name }}</a> 
 				({{ item.page_set.count }})
+				{% show_item item job client %}
 			{% endfor %} <br>
 		{% endif %}
 		<span class="rejected"> XX items with problems </span> </br>
