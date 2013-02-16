@@ -27,10 +27,6 @@
 		<div class="btn_box_top">
 			<a href="/"><div class="btn btnM btnV top"> Client List </div></a>
 			<div class="btn btnM btnV bottom"> <div class="icon icon2">G</div> Configure FP </div>
-			<div class="btn btnM"> <div class="icon icon2"> + </div> Submit </div>
-		</div>
-		<div class="btn_box_bottom">
-			<div class="btn btnM delete"> <div class="icon icon1">X</div> Discard changes </div>
 		</div>
 	</div>
 	
@@ -50,6 +46,14 @@
 	{% else %}
 		<p>No clients were found.</p>
 	{% endif %}
+	
+	{% if query_unactive %}
+		There are also {{ query_unactive.count }} unactive clients:
+		{% for client in query_unactive %}
+			{% show_client_unactive client %}
+		{% endfor %}
+	{% endif %}
+	
 	</div>	
 </body>
 </html>

@@ -31,16 +31,18 @@ def client_add(request):
 	
 def client_search(request): # TODO Consider using a ClientSearchForm or such
 	query = 0 # Initialize
+	query_unactive = 0
 	if request.method == 'GET': # If this view gets a search query...
 		if 'name' in request.GET: # Check if a 'name' was given
 			name = request.GET['name']
-			query = Client.objects.filter(name__icontains=name) # Checks if it exists
+			query = Client.objects.filter(name__icontains=name, active=True)
+			query_unactive = Client.objects.filter(name__icontains=name, active=False)
 			message = 'You searched for: %r' % str(name) 
 		else:
 			message = 'You submitted an empty form.'
-		return render_to_response('client_search.html', {'message': message, 'query': query})
+		return render_to_response('client_search.html', {'message': message, 'query': query, 'query_unactive': query_unactive})
 	else: # If not, show empty form
-		return render_to_response('client_search.html', {'query': query})
+		return render_to_response('client_search.html', {'query': query, 'query_unactive': query_unactive})
 
 		
 def client_view(request, client_pk):
