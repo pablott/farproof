@@ -8,6 +8,18 @@ def show_client(client):
 	return {
 		'client': client
 	}
+	
+@register.inclusion_tag('snippets/client_unactive.html')
+def show_client_unactive(client):
+	return {
+		'client': client
+	}
+
+@register.inclusion_tag('snippets/client_unactive.html')
+def show_client_unactive(client):
+	return {
+		'client': client
+	}
 
 @register.inclusion_tag('snippets/job.html')
 def show_job(job, client):
