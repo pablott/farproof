@@ -8,8 +8,12 @@ from farproof.client_list.models import ClientAddForm, JobAddForm, ItemAddForm
 #def serve(request, path, document_root, show_indexes=False)
 
 def main(request):
-	clients = Client.objects.all().order_by('name') #TODO: make it case insensitive
-	return render_to_response('main.html', {'clients': clients})
+	clients = Client.objects.filter(active=True).order_by('name') #TODO: make it case insensitive
+	clients_unactive = Client.objects.filter(active=False).order_by('name')
+	return render_to_response('main.html', {
+		'clients': clients,
+		'clients_unactive': clients_unactive,
+	})
 
 	
 def client_add(request):
@@ -49,10 +53,12 @@ def client_view(request, client_pk):
 	client = Client.objects.get(pk=client_pk)
 	#Check if client exists and show it:
 	if client:
-		jobs = Job.objects.filter(client=client).order_by('name')
+		jobs = Job.objects.filter(client=client, active=True).order_by('name')
+		jobs_unactive = Job.objects.filter(client=client, active=False).order_by('name')
 		return render_to_response('client_view.html', {
 			'client': client,
 			'jobs': jobs,
+			'jobs_unactive': jobs_unactive,
 		})
 	else:
 		raise Http404
@@ -92,14 +98,22 @@ def job_search(request, client_pk):
 	client = Client.objects.get(pk=client_pk)
 	if client:
 		query = 0 # Initialize
+		query_unactive = 0
 		if request.method == 'GET': # If this view gets a search query...
 			if 'name' in request.GET: # Check if a 'name' was given
 				name = request.GET['name']
-				query = Job.objects.filter(name__icontains=name, client=client).order_by('name') # Checks if it exists and put it in 'query'
+				# Checks if it exists and put it in 'query':
+				query = Job.objects.filter(name__icontains=name, client=client, active=True).order_by('name') 
+				query_unactive = Job.objects.filter(name__icontains=name, client=client, active=False).order_by('name')
 				message = 'You searched for: %r' % str(name) 
 			else:
 				message = 'You submitted an empty form.'
-			return render_to_response('job_search.html', {'message': message, 'query': query, 'client': client,})
+			return render_to_response('job_search.html', {
+				'client': client,
+				'message': message,
+				'query': query,
+				'query_unactive': query_unactive,
+			})
 		else: # If not, show empty form
 			return render_to_response('job_search.html', {'client': client,})
 	else:

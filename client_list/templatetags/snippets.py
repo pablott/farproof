@@ -15,12 +15,6 @@ def show_client_unactive(client):
 		'client': client
 	}
 
-@register.inclusion_tag('snippets/client_unactive.html')
-def show_client_unactive(client):
-	return {
-		'client': client
-	}
-
 @register.inclusion_tag('snippets/job.html')
 def show_job(job, client):
 	return {
@@ -28,6 +22,13 @@ def show_job(job, client):
 		'client': client
 	}
 
+@register.inclusion_tag('snippets/job_unactive.html')
+def show_job_unactive(job, client):
+	return {
+		'job': job, 
+		'client': client
+	}
+	
 @register.inclusion_tag('snippets/item.html')
 def show_item(item, job, client):
 	return {

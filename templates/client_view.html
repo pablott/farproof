@@ -46,6 +46,13 @@
 	{% else %}
 		<p>No jobs are available.</p>
 	{% endif %}
+
+	{% if jobs_unactive %}
+		There are also {{ jobs_unactive.count }} unactive jobs:
+		{% for job in jobs_unactive %}
+			{% show_job_unactive job client %}
+		{% endfor %}
+	{% endif %}
 	</div>
 </body>
 </html>

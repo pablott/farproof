@@ -8,6 +8,7 @@
 	<link href="/media/css/common.css" rel="stylesheet" type="text/css">
 	<link href="/media/css/widgets/buttons.css" rel="stylesheet" type="text/css">
 	<link href="/media/css/main.css" rel="stylesheet" type="text/css">
+	<link href="/media/css/job_view.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
 	<link href="/media/favicon.ico" rel="shortcut icon">
@@ -49,6 +50,13 @@
 		{% endfor %}
 	{% else %}
 		<p>No jobs were found.</p>
+	{% endif %}
+	
+	{% if query_unactive %}
+		There are also {{ query_unactive.count }} unactive jobs:
+		{% for job in query_unactive %}
+			{% show_job_unactive job client %}
+		{% endfor %}
 	{% endif %}
 	</div>	
 </body>

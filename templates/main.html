@@ -44,6 +44,13 @@
 	{% else %}
 		<p>No clients are available.</p>
 	{% endif %}
+	
+	{% if clients_unactive %}
+		There are also {{ clients_unactive.count }} unactive clients:
+		{% for client in clients_unactive %}
+			{% show_client_unactive client %}
+		{% endfor %}
+	{% endif %}
 	</div>	
 </body>
 </html>
