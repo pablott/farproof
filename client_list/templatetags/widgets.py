@@ -3,33 +3,33 @@
 register = template.Library()
 
 
-@register.inclusion_tag('snippets/client.html')
+@register.inclusion_tag('widgets/client.html')
 def show_client(client):
 	return {
 		'client': client
 	}
 	
-@register.inclusion_tag('snippets/client_unactive.html')
+@register.inclusion_tag('widgets/client_unactive.html')
 def show_client_unactive(client):
 	return {
 		'client': client
 	}
 
-@register.inclusion_tag('snippets/job.html')
+@register.inclusion_tag('widgets/job.html')
 def show_job(job, client):
 	return {
 		'job': job, 
 		'client': client
 	}
 
-@register.inclusion_tag('snippets/job_unactive.html')
+@register.inclusion_tag('widgets/job_unactive.html')
 def show_job_unactive(job, client):
 	return {
 		'job': job, 
 		'client': client
 	}
 	
-@register.inclusion_tag('snippets/item.html')
+@register.inclusion_tag('widgets/item.html')
 def show_item(item, job, client):
 	return {
 		'item': item,
@@ -37,7 +37,7 @@ def show_item(item, job, client):
 		'client': client
 	}
 	
-@register.inclusion_tag('snippets/page_odd.html')
+@register.inclusion_tag('widgets/page_odd.html')
 def page_odd(page, item, job, client):
 	return {
 		'page': page,
@@ -46,7 +46,7 @@ def page_odd(page, item, job, client):
 		'client': client
 	}
 
-@register.inclusion_tag('snippets/page_even.html')
+@register.inclusion_tag('widgets/page_even.html')
 def page_even(page, item, job, client):
 	return {
 		'page': page,
@@ -55,7 +55,7 @@ def page_even(page, item, job, client):
 		'client': client
 	}
 	
-@register.inclusion_tag('snippets/page_thumb_odd.html')
+@register.inclusion_tag('widgets/page_thumb_odd.html')
 def page_thumb_odd(page, item, job, client):
 	return {
 		'page': page,
@@ -64,7 +64,7 @@ def page_thumb_odd(page, item, job, client):
 		'client': client
 	}
 
-@register.inclusion_tag('snippets/page_thumb_even.html')
+@register.inclusion_tag('widgets/page_thumb_even.html')
 def page_thumb_even(page, item, job, client):
 	return {
 		'page': page,

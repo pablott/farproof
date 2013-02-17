@@ -3,7 +3,7 @@ from django import template
 register = template.Library()
 
 
-@register.inclusion_tag('snippets/affects_too.html')
+@register.inclusion_tag('widgets/affects_too.html')
 def affects_too(comment, page, item, job, client):
 	revisions = comment.revision.all() # Get all revisions with that associated comment
 	last_rev = page.last_rev()
