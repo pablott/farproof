@@ -2,8 +2,7 @@
 {% load widgets %}
 
 <div class="job">
-	<div class="client_icon">  </div>
-	<div class="title"> <a href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a> </div>
+	<div class="job_icon">  </div>
 	<div class="mini_summary"> 
 		PK: {{ job.pk }}/ID: {{ job.id }} <br>
 		{% if job.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">NOT approved</b> {% endif %}<br>
@@ -11,17 +10,19 @@
 		<span class="pending"> XX items pending </span> </br>
 		<span class="ok"> XX approved items </span> </br>
 	</div>
+	
+	<div class="title"> <a href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a> </div>
 	<div class="summary">
 		<b>Added on</b> {{ job.creation|date:"D j M y, H:i" }} <br>
-		<b>Description</b>: {{ job.desc }} <br>
+		<b>Description:</b> {{ job.desc }} <br>
 
-	{% if job.item_set.all %}
-		<b>{{ job.item_set.count }} items, {{ job.total_pages }} pages inside:</b> <br>
-		{% for item in job.item_set.all %}
-			<a href="/{{ job.client.pk }}/{{ job.pk }}/{{ item.pk }}/list/">{{ item.name }}</a> 
-			({{ item.page_set.count }} pages) +
-		{% endfor %} <br>
-	{% endif %}
+		{% if job.item_set.all %}
+			<b>{{ job.item_set.count }} items, {{ job.total_pages }} pages inside:</b> <br>
+			{% for item in job.item_set.all %}
+				<a href="/{{ job.client.pk }}/{{ job.pk }}/{{ item.pk }}/list/">{{ item.name }} ({{ item.page_set.count }} pages)</a> 
+				&nbsp;+&nbsp;
+			{% endfor %} <br>
+		{% endif %}
 	</div>
 	
 	{% if job.item_set.all %}
