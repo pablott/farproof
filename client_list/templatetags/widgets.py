@@ -73,4 +73,12 @@ def page_thumb_even(page, item, job, client):
 		'client': client
 	}
 	
-	
+@register.inclusion_tag('widgets/comment.html')
+def show_comment(comment, page, item, job, client):
+	return {
+		'comment': comment,
+		'page': page,
+		'item': item,
+		'job': job, 
+		'client': client,
+	}

@@ -6,12 +6,13 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>FP - {{ client.name }} - {{ job.name}} - {{item.name}} - page-couple </title>
+	<title>FP - {{ client.name }} - {{ job.name}} - {{item.name}} - Page spread </title>
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="stylesheet" href="/media/css/common.css">
 	<link rel="stylesheet" href="/media/css/widgets/buttons.css">
 	<link rel="stylesheet" href="/media/css/widgets/pages.css">
+	<link rel="stylesheet" href="/media/css/widgets/comments.css">
 	<link rel="stylesheet" href="/media/css/item_view_pages.css">
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
@@ -29,7 +30,7 @@
 	<div id="toolbar">
 			<div class="btn_black icon1"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list/"><</a></div>
 			<div class="btn_black vertical">
-					<div class=""> {{page_even.number}} View {{page_odd.number}}</div>
+					<div class=""> View </div>
 					<div id="zoomIn" class="icon1"> + </div>
 					<div id="zoomOut" class="icon1"> - </div>
 					<div> 1:1 </div>
@@ -86,7 +87,6 @@
 		</div>
 		
 		
-		
 		<div id="nav" class="btn_black">
 			<div id="navFullLeft"> &larr; </div>
 			<div id="navLeft"> &larr; </div>
@@ -122,6 +122,8 @@
 			{% endif %}
 		</div>
 	</div>
+	
+	
 <script type="text/javascript"> 
 function navFullLeft () {
     $("#navFullLeft").click(function () {

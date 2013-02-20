@@ -2,35 +2,33 @@
 {% load widgets %}
 
 <div class="">
-	Affects too: 
+	Affecting too right now: 
 		{% for revision in revisions %}
 			{% if revision == revision.page.last_rev %}
-			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/">
+				<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/">
+					page {{ revision.page.number }}
+				</a>			<!-- <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/"> 
 				{{ revision.page.number }}</a>,
-				<div class="thumb_container" style="float:left;">
+			<div class="thumb_container" style="float:left;">
 				{% if revision.page.number|divisibleby:2 %}
 					{% page_thumb_even revision.page item job client %}
 				{% else %}
 					{% page_thumb_odd revision.page item job client %}
 				{% endif %}
-			</div>
+			</div> -->
 			{% endif %}
 		{% endfor %}
 		
 	<br>
 	<div style="clear:both"></div>
 	
-	Used to affect too: 
-		{% for revision in revisions %}
-			{% if not revision == revision.page.last_rev %}
-				{% if revision %}
-				<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/">
-					{{ revision.page.number }}
-				</a>
-				(on rev.: {{ revision.rev_number }}), 
-				{% else %}
-					None
-				{% endif %}
-			{% endif %}
-		{% endfor %}
+	{% for revision in revisions %}
+		{% if not revision == revision.page.last_rev %}
+			Used to affect too: 
+			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/">
+				page {{ revision.page.number }}
+			</a>
+			(on rev.: {{ revision.rev_number }}), 
+		{% endif %}
+	{% endfor %}
 </div>
