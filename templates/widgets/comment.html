@@ -3,10 +3,6 @@
 
 
 <div type="text" class="comment_box">
-	<ul>
-		<li><h4>{{ comment.comment }}</h4>
-			{% affects_too comment page item job client %}
-		</li>
-		<br style="clear:both">
-	</ul>
+		<h3>{{ comment.comment }}</h3>
+		{% affects_too comment page item job client %}
 </div>
