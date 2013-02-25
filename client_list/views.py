@@ -14,7 +14,7 @@ import subprocess
 def main(request):
 	clients = Client.objects.filter(active=True).order_by('name') #TODO: make it case insensitive
 	clients_unactive = Client.objects.filter(active=False).order_by('name')
-	handle_uploaded_file(112)
+	handle_uploaded_file(300)
 	return render_to_response('main.html', {
 		'clients': clients,
 		'clients_unactive': clients_unactive,
