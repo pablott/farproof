@@ -9,7 +9,8 @@ def affects_too(comment, page, item, job, client):
 	last_rev = page.last_rev() # Get last revision for current page
 	current_revisions = revisions.exclude(pk=last_rev.pk) # Finally, exclude last_rev itself from list
 	
-	# To query 
+	# To query past revisions we need to go throught the queryset
+	# and discard those revisions which are the last_rev() of its own page
 	past_revisions = revisions
 	for revision in past_revisions:
 		past_revisions = past_revisions.exclude(pk=revision.page.last_rev().pk)
