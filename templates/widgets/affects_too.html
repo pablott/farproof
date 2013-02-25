@@ -2,34 +2,36 @@
 {% load widgets %}
 
 <div>
-	<b>Affecting too right now: </b>
-		{% for revision in revisions %}
+	{% if current_revisions %}
+		<b>Affecting too right now: </b>
+		{% for revision in current_revisions %}
 			{% if revision == revision.page.last_rev %}
 				<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/">
-					page {{ revision.page.number }}
-				</a>,
-			<!-- <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/"> 
-			{{ revision.page.number }}</a>,
-			<div class="thumb_container" style="float:left;">
-				{% if revision.page.number|divisibleby:2 %}
-					{% page_thumb_even revision.page item job client %}
-				{% else %}
-					{% page_thumb_odd revision.page item job client %}
-				{% endif %}
-			</div> -->
+					page {{ revision.page.number }} (on rev. {{ revision.rev_number }})</a>,
+				<!-- <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/"> 
+				{{ revision.page.number }}</a>,
+				<div class="thumb_container" style="float:left;">
+					{% if revision.page.number|divisibleby:2 %}
+						{% page_thumb_even revision.page item job client %}
+					{% else %}
+						{% page_thumb_odd revision.page item job client %}
+					{% endif %}
+				</div> -->
 			{% endif %}
 		{% endfor %}
+	{% endif %}
 		
 	<br><br>
 	
-	<b>Used to affect too: </b>
-
-	{% for revision in revisions %}
-		{% if not revision == revision.page.last_rev %}
+	{% if past_revisions %}
+		<b>Used to affect too: </b>
+		{% for revision in past_revisions %}
 			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/">
-				page {{ revision.page.number }}
-			</a>
-			(on rev. {{ revision.rev_number }}), 
-		{% endif %}
-	{% endfor %}
+				{% if revision.page.number = page.number %}
+					this page (on previous rev. {{ revision.rev_number }})</a>,
+				{% else %}
+					page {{ revision.page.number }} (on rev. {{ revision.rev_number }})</a>,
+				{% endif %}
+		{% endfor %}
+	{% endif %}
 </div>
