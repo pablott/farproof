@@ -279,7 +279,7 @@ def page_info(request, client_pk, job_pk, item_pk, page_num):
 	job = Job.objects.get(pk=job_pk, client=client)
 	item = Item.objects.get(pk=item_pk, job=job)
 	page = Page.objects.get(number=page_num, item=item)
-	# Order by inverted creation date and get first (which is the last created for that page)
+	# Order by inverted creation date and get first (which is the last created for that page):
 	revisions = Revision.objects.filter(page=page).order_by('-creation') 
 	if page:
 		return render_to_response('page_info.html', {

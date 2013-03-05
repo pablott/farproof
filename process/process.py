@@ -38,9 +38,10 @@ def handle_uploaded_file(dpi):
 		#RENDER_INTENT,
 		#ICC_FOLDER, RGB_PROFILE, #BPC,
 		#COLOR, 
-		'-sOUTPUTFILE=' "D:/tmp/result.jpg", "D:/tmp/source.pdf",
+		'-sOUTPUTFILE=' "D:/tmp/result.jpg", "D:/tmp/upload.pdf",
 	])
 	# TODO: make CMYK_PROFILE and OVERPRINT work together
+	# TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK)
 	subprocess.Popen([
 		gs,
 		'-sDEVICE=tiffsep', '-r' + str(dpi),
@@ -53,7 +54,7 @@ def handle_uploaded_file(dpi):
 		#BPC,
 		#PRESERVE_K,
 		OVERPRINT,
-		'-sOUTPUTFILE=' "D:/tmp/tiffsep/result.tiff", "D:/tmp/source.pdf", #'-sstdout=' "D:/tmp/file.txt",
+		'-sOUTPUTFILE=' "D:/tmp/tiffsep/result.tiff", "D:/tmp/upload.pdf", #'-sstdout=' "D:/tmp/file.txt",
 	]) 
 	
 	#subprocess.Popen([

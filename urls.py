@@ -4,6 +4,7 @@ admin.autodiscover()
 
 from django.conf.urls.defaults import *
 from farproof.client_list.views import *
+from farproof.uploader.uploader import *
 
 urlpatterns = patterns('',
     # Example:
@@ -31,6 +32,7 @@ urlpatterns = patterns('',
     (r'^(\d+)/(\d+)/(\d+)/thumbs/$', item_view_thumbs),
     (r'^(\d+)/(\d+)/(\d+)/(\d+)/$', page_view),
     (r'^(\d+)/(\d+)/(\d+)/(\d+)/page_info/$', page_info),
+    (r'^(\d+)/(\d+)/(\d+)/(\d+)/file_upload/$', file_upload),
 )
 #(r'^(?P<category>\w+)/feedback/$', 'my_view') # Might be useful as wildcard capture method
 
