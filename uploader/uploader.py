@@ -36,6 +36,5 @@ def write_file(f):
 	with open(PATH + 'upload.pdf', 'wb+') as destination:
 		for chunk in f.chunks():
 			destination.write(chunk)
-	handle_uploaded_file(300)
-			
+	process(300)
 			

@@ -4,7 +4,6 @@ from django.shortcuts import render_to_response # Add get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from farproof.client_list.models import Client, Job, Item, Page, Revision, Comment
 from farproof.client_list.models import ClientAddForm, JobAddForm, ItemAddForm
-from farproof.process.process import handle_uploaded_file
 #from django.template import RequestContext
 #def serve(request, path, document_root, show_indexes=False)
 
@@ -14,7 +13,6 @@ import subprocess
 def main(request):
 	clients = Client.objects.filter(active=True).order_by('name') #TODO: make it case insensitive
 	clients_unactive = Client.objects.filter(active=False).order_by('name')
-	handle_uploaded_file(120)
 	return render_to_response('main.html', {
 		'clients': clients,
 		'clients_unactive': clients_unactive,

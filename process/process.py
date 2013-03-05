@@ -26,7 +26,7 @@ OVERPRINT = '-dSimulateOverprint=true' #Only for CMYK outputs
 BPC = '-dBlackPtComp=1' #0:Don't, #1:Do
 PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 2:PRESERVE K PLANE (littleCMS)
 
-def handle_uploaded_file(dpi): 
+def process(dpi): 
 	#TODO: RGB devices don't support overprint, conversion from CMYK tiff is neccesary
 	subprocess.Popen([
 		gs,
