@@ -123,12 +123,6 @@ class Page(models.Model):
 	class Meta(object):
 		unique_together = ("number", "item")
 
-
-# This one doesn't use a ModelForm
-class UploadFileForm(forms.Form):
-    title = models.CharField(max_length=50)
-    file  = models.FileField()
-
 	
 class Revision(models.Model):
 	page = models.ForeignKey(Page)
