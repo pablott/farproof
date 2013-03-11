@@ -8,12 +8,11 @@ import subprocess
 # CAUTION: is very important that variables are written like this:
 #'-var1 -var2', (with the '' included)
 gs = r'D:\tmp\gs\bin\gswin64c.exe',
-#PATH = "D:/tmp/"
 COMMON = '-dNOPAUSE -dBATCH -dQUIET', # REQUIRES the trailing comma for some odd reason
 
 # Render Options:
 GRAPHICS = '-dGraphicsAlphaBits=2'
-JPEGQ = '-dJPEGQ=95'
+JPEGQ = '-dJPEGQ=85'
 TEXT = '-dTextAlphaBits=4 -dAlignToPixels=0'
 COLOR = '-dUseCIEColor -dDOINTERPOLATE' #-dCOLORSCREEN'
 
@@ -26,7 +25,10 @@ OVERPRINT = '-dSimulateOverprint=true' #Only for CMYK outputs
 BPC = '-dBlackPtComp=1' #0:Don't, #1:Do
 PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 2:PRESERVE K PLANE (littleCMS)
 
-def process(dpi): 
+start = 10
+stop = 20
+
+def process(dpi, dirname, filename): 
 	#TODO: RGB devices don't support overprint, conversion from CMYK tiff is neccesary
 	subprocess.Popen([
 		gs,
@@ -35,11 +37,15 @@ def process(dpi):
 		GRAPHICS,
 		TEXT,
 		JPEGQ,
+		#"-dFirstPage=11",
+		#"-dLastPage=22",
 		#RENDER_INTENT,
 		#ICC_FOLDER, RGB_PROFILE, #BPC,
 		#COLOR, 
-		'-sOUTPUTFILE=' "D:/tmp/result.jpg", "D:/tmp/upload.pdf",
+		'-sOUTPUTFILE=' + (dirname + "%d.jpg"), dirname+filename,
+		#'-sOUTPUTFILE=' + (dirname + filename.replace(".pdf","%d.jpg")), dirname+filename,
 	])
+	
 	# TODO: make CMYK_PROFILE and OVERPRINT work together
 	# TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK)
 	subprocess.Popen([
@@ -48,13 +54,15 @@ def process(dpi):
 		COMMON,
 		COLOR, 
 		GRAPHICS,
+		"-dFirstPage=11",
+		"-dLastPage=22",
 		TEXT,
 		RENDER_INTENT,
 		#ICC_FOLDER, CMYK_PROFILE, 
 		#BPC,
 		#PRESERVE_K,
 		OVERPRINT,
-		'-sOUTPUTFILE=' "D:/tmp/tiffsep/result.tiff", "D:/tmp/upload.pdf", #'-sstdout=' "D:/tmp/file.txt",
+		'-sOUTPUTFILE=' "D:/tmp/tiffsep/%d.tiff", dirname+filename, #'-sstdout=' "D:/tmp/file.txt",
 	]) 
 	
 	#subprocess.Popen([
@@ -62,12 +70,3 @@ def process(dpi):
 	#	'-o', '-sDEVICE=inkcov', "D:/tmp/source.pdf",
 	#], shell=True) 
 
-#TODO: just delete this function
-def handle_uploaded_file2(dpi): 
-	subprocess.Popen([
-		gs, 
-		'-dNOPAUSE', '-dBATCH', '-dQUIET', 
-		'-sDEVICE=jpeg', '-sOUTPUTFILE=' "D:/tmp/resultqq.jpg", "D:/tmp/source.pdf"
-	], shell=True)
-
-	
