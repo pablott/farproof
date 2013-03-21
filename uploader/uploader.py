@@ -7,7 +7,7 @@ import os, subprocess
 
 #TODO: JSON and MD5 client-side checksum verified by server-side checksum
 
-PDF_PATH = "D:/tmp/pdf/"
+PDF_PATH = "D:/tmp/pdf/" #TODO: unify with process.py and set in a separate conf file
 
 
 def file_upload(request, client_pk, job_pk, item_pk, page_num):
@@ -41,16 +41,26 @@ def file_upload(request, client_pk, job_pk, item_pk, page_num):
 
 	
 def write_file(upload_list, client, job, item, page):
-	dirname = PDF_PATH + str(client.pk) +"/"+ str(job.pk) +"/"+ str(item.pk) +"/"+ str(page.pk) +"/"+ str(page.last_rev().rev_number+1) +"/"
-	os.makedirs(dirname) # TODO: don't stop on OSError and jump to writing chunks
-	#os.mkdir(os.path.join(PDF_PATH, dirname)) #TODO: remove
+	#http://stackoverflow.com/questions/117250/how-do-i-get-a-decimal-value-when-using-the-division-operator-in-python
+	# temp_dir = PDF_PATH + str(client.pk) +"/"+ str(job.pk) +"/"+ str(item.pk) +"/"+ str(page.pk) +"/"+ str(page.last_rev().rev_number+1) +"/"
+	temp_dir = PDF_PATH + str(client.pk) +"/"+ str(job.pk) +"/"+ str(item.pk) +"/uploads/"
+	
+	#http://code.activestate.com/recipes/82465-a-friendly-mkdir/
+	if os.path.isdir(temp_dir):
+		pass
+		#raise OSError("a path with the same name as the desired " \
+		#"dir, '%s', already exists." % temp_dir)
+	else:
+		os.makedirs(temp_dir) # TODO: don't stop on OSError and jump to writing chunks
+	#os.mkdir(os.path.join(PDF_PATH, temp_dir)) #TODO: remove
 
 	for file in upload_list:
 		filename = file.name
-		with open(dirname + filename, 'wb+') as destination:
+		with open(temp_dir + filename, 'wb+') as destination:
 			for chunk in file.chunks():
 				destination.write(chunk)
-		process(150, dirname, filename)
+		process(150, temp_dir, filename)
+		assign(temp_dir, filename, client, job, item, page)
 
 
 # add PDF to last rev of a page:
