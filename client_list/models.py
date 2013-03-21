@@ -114,7 +114,7 @@ class Page(models.Model):
 		if revisions:
 			last_rev = revisions[0]
 		else:
-			last_rev = '--'
+			last_rev = 0
 		return last_rev
 		
 	def __unicode__(self):
