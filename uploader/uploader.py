@@ -7,9 +7,10 @@ import os, subprocess
 
 #TODO: JSON and MD5 client-side checksum verified by server-side checksum
 
-PDF_PATH = "D:/tmp/pdf/" #TODO: unify with process.py and set in a separate conf file
+CONTENTS_PATH = "D:/tmp/pdf/" #TODO: unify with process.py and set in a separate conf file
 
-
+# This first function gets files from POST 
+# and writes them using the write_file() function below
 def file_upload(request, client_pk, job_pk, item_pk, page_num):
 	client = Client.objects.get(pk=client_pk)
 	job = Job.objects.get(pk=job_pk, client=client)
@@ -17,14 +18,13 @@ def file_upload(request, client_pk, job_pk, item_pk, page_num):
 	page = Page.objects.get(number=page_num, item=item)
 
 	if request.method == 'POST':
-		#form = request.FILES # bind to a form
-		#if form.is_valid():
 		upload_list = request.FILES.getlist('uploads') # this is a MultiValueDict 
 		write_file(upload_list, client, job, item, page)
 		message = "Uploaded files: "
 		total_size = 0
 		for file in upload_list:
-			message = message +" - "+ file.name +" - "+ file.content_type +" - "+ str(round(file.size/1048576.0, 2))+"MB"
+			#http://stackoverflow.com/questions/117250/how-do-i-get-a-decimal-value-when-using-the-division-operator-in-python
+			message = message + file.name +" - "+ file.content_type +" - "+ str(round(file.size/1048576.0, 2))+"MB"
 			total_size = total_size + file.size
 		message = message +" / "+ str(total_size/1048576.0) + "MB"
 	else:
@@ -41,26 +41,20 @@ def file_upload(request, client_pk, job_pk, item_pk, page_num):
 
 	
 def write_file(upload_list, client, job, item, page):
-	#http://stackoverflow.com/questions/117250/how-do-i-get-a-decimal-value-when-using-the-division-operator-in-python
-	# temp_dir = PDF_PATH + str(client.pk) +"/"+ str(job.pk) +"/"+ str(item.pk) +"/"+ str(page.pk) +"/"+ str(page.last_rev().rev_number+1) +"/"
-	temp_dir = PDF_PATH + str(client.pk) +"/"+ str(job.pk) +"/"+ str(item.pk) +"/uploads/"
-	
-	#http://code.activestate.com/recipes/82465-a-friendly-mkdir/
-	if os.path.isdir(temp_dir):
+	upload_dir = CONTENTS_PATH + str(client.pk) +"/"+ str(job.pk) +"/"+ str(item.pk) +"/uploads/"
+	if os.path.isdir(upload_dir):
 		pass
-		#raise OSError("a path with the same name as the desired " \
-		#"dir, '%s', already exists." % temp_dir)
+		print("a path with the same name as the desired " \
+		"dir, '%s', already exists." % upload_dir)
 	else:
-		os.makedirs(temp_dir) # TODO: don't stop on OSError and jump to writing chunks
-	#os.mkdir(os.path.join(PDF_PATH, temp_dir)) #TODO: remove
+		os.makedirs(upload_dir) # TODO: don't stop on OSError and jump to writing chunks
 
 	for file in upload_list:
 		filename = file.name
-		with open(temp_dir + filename, 'wb+') as destination:
+		with open(upload_dir + filename, 'wb+') as destination:
 			for chunk in file.chunks():
 				destination.write(chunk)
-		process(150, temp_dir, filename)
-		assign(temp_dir, filename, client, job, item, page)
+		process(150, upload_dir, filename, client, job, item)
 
 
 # add PDF to last rev of a page:
@@ -116,7 +110,4 @@ def write_file(upload_list, client, job, item, page):
 # returns (Comment associated to Revision)
 
 	
-#file.name           # Gives name
-#file.content_type   # Gives Content type text/html etc
-#file.size           # Gives file's size in byte
-#file.read() 	
+
