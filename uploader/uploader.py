@@ -43,10 +43,10 @@ def file_upload(request, client_pk, job_pk, item_pk, page_num):
 def write_file(upload_list, client, job, item, page):
 	upload_dir = CONTENTS_PATH + str(client.pk) +"/"+ str(job.pk) +"/"+ str(item.pk) +"/uploads/"
 	if os.path.isdir(upload_dir):
+		print("upload_dir already exists: " + upload_dir)
 		pass
-		print("a path with the same name as the desired " \
-		"dir, '%s', already exists." % upload_dir)
 	else:
+		print("creating upload_dir... " + upload_dir)
 		os.makedirs(upload_dir) # TODO: don't stop on OSError and jump to writing chunks
 
 	for file in upload_list:

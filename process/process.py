@@ -37,14 +37,12 @@ CONTENTS_PATH = "D:/tmp/pdf/" #TODO: unify with uploader.py and set in a separat
 def process(dpi, upload_dir, filename, client, job, item): 
 	render_dir = CONTENTS_PATH + str(client.pk) +"/"+ str(job.pk) +"/"+ str(item.pk) +"/render/"
 	if os.path.isdir(render_dir):
-		print("render_dir already exists")
+		print("render_dir already exists: " + render_dir)
 		pass
 	else:
 		print("creating render_dir... " + render_dir)
 		os.makedirs(render_dir) # TODO: don't stop on OSError and jump to writing chunks
 
-
-# TODO: temp_dir & filename check before starting processing
 	# RGB devices don't support overprint, conversion from CMYK tiff is neccesary
 	jpg_render_proc = subprocess.Popen([
 		gs,
@@ -53,14 +51,11 @@ def process(dpi, upload_dir, filename, client, job, item):
 		GRAPHICS,
 		TEXT,
 		JPEGQ,
-		#"-dFirstPage=11",
-		#"-dLastPage=22",
 		#RENDER_INTENT,
 		#ICC_FOLDER, RGB_PROFILE, #BPC,
 		#COLOR, 
 		'-sOUTPUTFILE=' + (render_dir + "%d.jpg"), upload_dir+filename,
 	])
-	
 
 	# TODO: make CMYK_PROFILE and OVERPRINT work together
 	# TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK)
@@ -70,34 +65,19 @@ def process(dpi, upload_dir, filename, client, job, item):
 		COMMON,
 		COLOR, 
 		GRAPHICS,
-		#"-dFirstPage=11",
-		#"-dLastPage=22",
 		TEXT,
 		RENDER_INTENT,
-		#ICC_FOLDER, CMYK_PROFILE, 
-		#BPC,
-		#PRESERVE_K,
 		OVERPRINT,
-		'-sOUTPUTFILE=' "D:/tmp/tiffsep/%d.tiff", upload_dir+filename, #'-sstdout=' "D:/tmp/file.txt",
+		'-sOUTPUTFILE=' + (render_dir + "%d.tiff"), upload_dir+filename, #'-sstdout=' "D:/tmp/file.txt",
 	]) 
 	
+	# Wait for render to finish and spawn the assign process
 	jpg_render_proc.wait()
 	print("finished rendering, assigning...")
 	assign(render_dir, filename, client, job, item)
 	tiff_render_proc.wait()
 	print("finished separations")
 	
-	#if jpg_render_proc.returncode:
-		#raise Exception('Test error: ')
-		#assign(temp_dir, filename, client, job, item)
-		#print("finished rendering, assigning...")
-	#return float(stdout)
-	
-	#subprocess.Popen([
-	#	gs,
-	#	'-o', '-sDEVICE=inkcov', "D:/tmp/source.pdf",
-	#]) 
-	#print(subprocess.Popen.returncode)
 	
 def assign(render_dir, filename, client, job, item):
 	if 1: #os.path.isdir(temp_dir) & os.path.isfile(filename):
@@ -128,22 +108,20 @@ def assign(render_dir, filename, client, job, item):
 			
 			# Create required dirs recursively only if they don't exist
 			if os.path.isdir(page_dir):
+				print("page_dir already exists: " + page_dir)
 				pass
-				print("a path with the same name as the desired " \
-				"dir, '%s', already exists, skipping." % page_dir)
 			else:
-				print("created dir: " + page_dir)
+				print("creating page_dir... " + page_dir)
 				os.makedirs(page_dir)
 			
-			# Create required files only if they don't exist
-			# and remove them before exiting
+			# Remove target dir files if they exists
 			if os.path.isfile(page_dir + new_filename):
 				os.remove(page_dir + new_filename)
-				pass
 			
-			print("moving..." + render_dir + origin_filename)
+			#Finally, move rendered files to the proper item's subfolder
 			# IMPORTANT: use shutil's copy instead of os.rename because the 
 			# latter gets stuck and causes os.remove to not find the files
+			print("moving..." + render_dir + origin_filename)
 			shutil.copy(render_dir + origin_filename, page_dir + new_filename)
 			print("removing... " + render_dir + origin_filename)
 			os.remove(render_dir + origin_filename)
@@ -151,6 +129,3 @@ def assign(render_dir, filename, client, job, item):
 		raise OSError("no files given and/or no temp folder given")
 		pass
 	
-	
-	def cleanup(temp_dir, origin_filename):
-		os.remove(temp_dir + origin_filename)
