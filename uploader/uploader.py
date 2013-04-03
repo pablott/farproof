@@ -7,7 +7,9 @@ import os, subprocess
 
 #TODO: JSON and MD5 client-side checksum verified by server-side checksum
 
-CONTENTS_PATH = "D:/tmp/pdf/" #TODO: unify with process.py and set in a separate conf file
+#CONTENTS_PATH = os.path.join('d:', 'tmp', 'pdf') #TODO: unify with process.py and set in a separate conf file
+CONTENTS_PATH = 'D:\\tmp\\pdf\\'
+
 
 # This first function gets files from POST 
 # and writes them using the write_file() function below
@@ -41,7 +43,7 @@ def file_upload(request, client_pk, job_pk, item_pk, page_num):
 
 	
 def write_file(upload_list, client, job, item, page):
-	upload_dir = CONTENTS_PATH + str(client.pk) +"/"+ str(job.pk) +"/"+ str(item.pk) +"/uploads/"
+	upload_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'uploads')
 	if os.path.isdir(upload_dir):
 		print("upload_dir already exists: " + upload_dir)
 		pass
@@ -51,10 +53,10 @@ def write_file(upload_list, client, job, item, page):
 
 	for file in upload_list:
 		filename = file.name
-		with open(upload_dir + filename, 'wb+') as destination:
+		with open(os.path.join(upload_dir, filename), 'wb+') as destination:
 			for chunk in file.chunks():
 				destination.write(chunk)
-		process(150, upload_dir, filename, client, job, item)
+		process(72, upload_dir, filename, client, job, item)
 
 
 # add PDF to last rev of a page:

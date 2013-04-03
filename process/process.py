@@ -1,6 +1,5 @@
 # Processes and assigns files
 
-
 from farproof.client_list.models import Page, Revision
 import os, subprocess, re, shutil
 
@@ -13,10 +12,12 @@ import os, subprocess, re, shutil
 #'-var1 -var2', (with the '' included)
 gs = r'D:\tmp\gs\bin\gswin64c.exe',
 COMMON = '-dNOPAUSE -dBATCH -dQUIET', # REQUIRES the trailing comma for some odd reason
+#CONTENTS_PATH = os.path.join('d:', 'tmp', 'pdf') #TODO: unify with uploader.py and set in a separate conf file
+CONTENTS_PATH = 'D:\tmp\pdf'
 
 # Render Options:
 GRAPHICS = '-dGraphicsAlphaBits=2'
-JPEGQ = '-dJPEGQ=85'
+JPEGQ = '-quality 100'
 TEXT = '-dTextAlphaBits=4 -dAlignToPixels=0'
 COLOR = '-dUseCIEColor -dDOINTERPOLATE' #-dCOLORSCREEN'
 
@@ -28,14 +29,11 @@ RENDER_INTENT = '-dRenderIntent=1' #0:Perceptual, 1:Colorimetric, 2:Saturation, 
 OVERPRINT = '-dSimulateOverprint=true' #Only for CMYK outputs
 BPC = '-dBlackPtComp=1' #0:Don't, #1:Do
 PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 2:PRESERVE K PLANE (littleCMS)
-
-CONTENTS_PATH = "D:/tmp/pdf/" #TODO: unify with uploader.py and set in a separate conf file
-
 	
 
 
 def process(dpi, upload_dir, filename, client, job, item): 
-	render_dir = CONTENTS_PATH + str(client.pk) +"/"+ str(job.pk) +"/"+ str(item.pk) +"/render/"
+	render_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'render')
 	if os.path.isdir(render_dir):
 		print("render_dir already exists: " + render_dir)
 		pass
@@ -44,39 +42,24 @@ def process(dpi, upload_dir, filename, client, job, item):
 		os.makedirs(render_dir) # TODO: don't stop on OSError and jump to writing chunks
 
 	# RGB devices don't support overprint, conversion from CMYK tiff is neccesary
-	jpg_render_proc = subprocess.Popen([
-		gs,
-		'-sDEVICE=jpeg', '-r' + str(dpi),
-		COMMON,
-		GRAPHICS,
-		TEXT,
-		JPEGQ,
-		#RENDER_INTENT,
-		#ICC_FOLDER, RGB_PROFILE, #BPC,
-		#COLOR, 
-		'-sOUTPUTFILE=' + (render_dir + "%d.jpg"), upload_dir+filename,
-	])
-
 	# TODO: make CMYK_PROFILE and OVERPRINT work together
 	# TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK)
 	tiff_render_proc = subprocess.Popen([
 		gs,
-		'-sDEVICE=tiffsep', '-r' + str(dpi),
+		'-sDEVICE=tiff24nc', '-r' + str(dpi), #tiff32nc , tiffsep
 		COMMON,
 		COLOR, 
 		GRAPHICS,
 		TEXT,
 		RENDER_INTENT,
 		OVERPRINT,
-		'-sOUTPUTFILE=' + (render_dir + "%d.tiff"), upload_dir+filename, #'-sstdout=' "D:/tmp/file.txt",
+		'-sOUTPUTFILE=' + os.path.join(render_dir, "%d.tiff"), os.path.join(upload_dir, filename), #'-sstdout=' "D:/tmp/file.txt",
 	]) 
 	
 	# Wait for render to finish and spawn the assign process
-	jpg_render_proc.wait()
-	print("finished rendering, assigning...")
-	assign(render_dir, filename, client, job, item)
 	tiff_render_proc.wait()
-	print("finished separations")
+	print("finished rendering TIFF, converting to JPEG...")
+	assign(render_dir, filename, client, job, item)
 	
 	
 def assign(render_dir, filename, client, job, item):
@@ -96,14 +79,12 @@ def assign(render_dir, filename, client, job, item):
 			current_rev = current_page.last_rev()
 			if current_rev:
 				next_rev = current_rev.rev_number+1 
-				#raise OSError(next_rev)
 			else:
 				next_rev = 0
 			
 			# Construct page_dir, new_filename and original_filename
-			page_dir = CONTENTS_PATH + str(client.pk) +"/"+ str(job.pk) +"/"+ str(item.pk) +"/pages/"+ str(current_pos) \
-			+"/"+ str(next_rev) +"/"
-			origin_filename = str(i+1) +".jpg"
+			page_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'pages', str(current_pos), str(next_rev))
+			origin_filename = str(i+1) +".tiff"
 			new_filename = str(current_pos) +"-render.jpg"
 			
 			# Create required dirs recursively only if they don't exist
@@ -117,14 +98,55 @@ def assign(render_dir, filename, client, job, item):
 			# Remove target dir files if they exists
 			if os.path.isfile(page_dir + new_filename):
 				os.remove(page_dir + new_filename)
+				
+			print("TIFF to JPG... " + os.path.join(render_dir, origin_filename) +" -->> "+ os.path.join(page_dir, new_filename))
+			#jpg_render_proc = subprocess.Popen([
+			#	"convert",
+				#'-r' + str(72), #TODO: pass 'dpi' variable
+				#JPEGQ,
+			#	render_dir +"/"+ origin_filename,
+				#'D:\tmp\pdf\1\10\26\render\5.tiff',
+				#'-black-point-compensation',
+				#'-intent relative',
+				#'-profile D:\tmp\profiles\CoatedFOGRA27.icc',
+				#'-profile D:\tmp\profiles\sRGB.icm',
+				#page_dir +"\\"+ new_filename
+			#	'D:\tmp\pdf\1\10\26\pages\1\1\1.jpg'
+			#])
 			
-			#Finally, move rendered files to the proper item's subfolder
+			jpg_render_proc2 = subprocess.Popen([
+				'convert', os.path.join(render_dir, origin_filename) + '1.jpg',
+				#'convert', os.path.join(render_dir, origin_filename), 'D:\\tmp\\pdf\\1\\10\\26\\pages\\1\\1\\1.jpg',
+				#'-r' + str(72), #TODO: pass 'dpi' variable
+				#JPEGQ,
+				#render_dir +"/"+ origin_filename,
+				#'D:\tmp\pdf\1\10\26\render\5.tiff',
+				#'-black-point-compensation',
+				#'-intent relative',
+				#'-profile D:\tmp\profiles\CoatedFOGRA27.icc',
+				#'-profile D:\tmp\profiles\sRGB.icm',
+				#page_dir +"\\"+ new_filename
+				#'D:\tmp\pdf\1\10\26\pages\1\1\1.jpg'
+			])			
+			
+			
+			jpg_render_proc2.wait()
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			# Finally, move rendered files to the proper item's subfolder.
 			# IMPORTANT: use shutil's copy instead of os.rename because the 
 			# latter gets stuck and causes os.remove to not find the files
-			print("moving..." + render_dir + origin_filename)
-			shutil.copy(render_dir + origin_filename, page_dir + new_filename)
-			print("removing... " + render_dir + origin_filename)
-			os.remove(render_dir + origin_filename)
+			#print("moving..." + render_dir + origin_filename)
+			#shutil.copy(render_dir + origin_filename, page_dir + origin_filename)
+			print("removing intermediate files... " + os.path.join(render_dir, origin_filename))
+			#os.remove(os.path.join(render_dir, origin_filename))
 	else:	
 		raise OSError("no files given and/or no temp folder given")
 		pass
