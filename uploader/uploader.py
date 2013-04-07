@@ -7,8 +7,7 @@ import os, subprocess
 
 #TODO: JSON and MD5 client-side checksum verified by server-side checksum
 
-#CONTENTS_PATH = os.path.join('d:', 'tmp', 'pdf') #TODO: unify with process.py and set in a separate conf file
-CONTENTS_PATH = 'D:\\tmp\\pdf\\'
+CONTENTS_PATH = r'D:\tmp\pdf'
 
 
 # This first function gets files from POST 
@@ -56,7 +55,7 @@ def write_file(upload_list, client, job, item, page):
 		with open(os.path.join(upload_dir, filename), 'wb+') as destination:
 			for chunk in file.chunks():
 				destination.write(chunk)
-		process(72, upload_dir, filename, client, job, item)
+		process(300, upload_dir, filename, client, job, item)
 
 
 # add PDF to last rev of a page:

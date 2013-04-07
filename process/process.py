@@ -12,12 +12,11 @@ import os, subprocess, re, shutil
 #'-var1 -var2', (with the '' included)
 gs = r'D:\tmp\gs\bin\gswin64c.exe',
 COMMON = '-dNOPAUSE -dBATCH -dQUIET', # REQUIRES the trailing comma for some odd reason
-#CONTENTS_PATH = os.path.join('d:', 'tmp', 'pdf') #TODO: unify with uploader.py and set in a separate conf file
-CONTENTS_PATH = 'D:\tmp\pdf'
+CONTENTS_PATH = r'D:\tmp\pdf'
 
 # Render Options:
 GRAPHICS = '-dGraphicsAlphaBits=2'
-JPEGQ = '-quality 100'
+JPEGQ = '100'
 TEXT = '-dTextAlphaBits=4 -dAlignToPixels=0'
 COLOR = '-dUseCIEColor -dDOINTERPOLATE' #-dCOLORSCREEN'
 
@@ -46,7 +45,7 @@ def process(dpi, upload_dir, filename, client, job, item):
 	# TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK)
 	tiff_render_proc = subprocess.Popen([
 		gs,
-		'-sDEVICE=tiff24nc', '-r' + str(dpi), #tiff32nc , tiffsep
+		'-sDEVICE=tiffsep', '-r' + str(dpi), #tiff32nc , tiffsep
 		COMMON,
 		COLOR, 
 		GRAPHICS,
@@ -63,91 +62,59 @@ def process(dpi, upload_dir, filename, client, job, item):
 	
 	
 def assign(render_dir, filename, client, job, item):
-	if 1: #os.path.isdir(temp_dir) & os.path.isfile(filename):
-		# Check for page range in filename
-		seq = re.findall('(\d+)', filename)
-		start_pos = int(seq[0])
-		end_pos = int(seq[-1])
-		span = (end_pos-start_pos)+1 # sum +1 because the range is including both extremes
-		
-		# Use initial number to rename jpgs and send them to their proper page folder
-		for i in range(0,span):
-			current_pos = i+start_pos
-			# Check if current_page really has a Revision 
-			# (because if not, last_rev will return '0' and not a Revision object)
-			current_page = Page.objects.get(number=current_pos, item=item)
-			current_rev = current_page.last_rev()
-			if current_rev:
-				next_rev = current_rev.rev_number+1 
-			else:
-				next_rev = 0
-			
-			# Construct page_dir, new_filename and original_filename
-			page_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'pages', str(current_pos), str(next_rev))
-			origin_filename = str(i+1) +".tiff"
-			new_filename = str(current_pos) +"-render.jpg"
-			
-			# Create required dirs recursively only if they don't exist
-			if os.path.isdir(page_dir):
-				print("page_dir already exists: " + page_dir)
-				pass
-			else:
-				print("creating page_dir... " + page_dir)
-				os.makedirs(page_dir)
-			
-			# Remove target dir files if they exists
-			if os.path.isfile(page_dir + new_filename):
-				os.remove(page_dir + new_filename)
-				
-			print("TIFF to JPG... " + os.path.join(render_dir, origin_filename) +" -->> "+ os.path.join(page_dir, new_filename))
-			#jpg_render_proc = subprocess.Popen([
-			#	"convert",
-				#'-r' + str(72), #TODO: pass 'dpi' variable
-				#JPEGQ,
-			#	render_dir +"/"+ origin_filename,
-				#'D:\tmp\pdf\1\10\26\render\5.tiff',
-				#'-black-point-compensation',
-				#'-intent relative',
-				#'-profile D:\tmp\profiles\CoatedFOGRA27.icc',
-				#'-profile D:\tmp\profiles\sRGB.icm',
-				#page_dir +"\\"+ new_filename
-			#	'D:\tmp\pdf\1\10\26\pages\1\1\1.jpg'
-			#])
-			
-			jpg_render_proc2 = subprocess.Popen([
-				'convert', os.path.join(render_dir, origin_filename) + '1.jpg',
-				#'convert', os.path.join(render_dir, origin_filename), 'D:\\tmp\\pdf\\1\\10\\26\\pages\\1\\1\\1.jpg',
-				#'-r' + str(72), #TODO: pass 'dpi' variable
-				#JPEGQ,
-				#render_dir +"/"+ origin_filename,
-				#'D:\tmp\pdf\1\10\26\render\5.tiff',
-				#'-black-point-compensation',
-				#'-intent relative',
-				#'-profile D:\tmp\profiles\CoatedFOGRA27.icc',
-				#'-profile D:\tmp\profiles\sRGB.icm',
-				#page_dir +"\\"+ new_filename
-				#'D:\tmp\pdf\1\10\26\pages\1\1\1.jpg'
-			])			
-			
-			
-			jpg_render_proc2.wait()
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			# Finally, move rendered files to the proper item's subfolder.
-			# IMPORTANT: use shutil's copy instead of os.rename because the 
-			# latter gets stuck and causes os.remove to not find the files
-			#print("moving..." + render_dir + origin_filename)
-			#shutil.copy(render_dir + origin_filename, page_dir + origin_filename)
-			print("removing intermediate files... " + os.path.join(render_dir, origin_filename))
-			#os.remove(os.path.join(render_dir, origin_filename))
-	else:	
-		raise OSError("no files given and/or no temp folder given")
-		pass
+	# Check for page range in filename
+	seq = re.findall('(\d+)', filename)
+	start_pos = int(seq[0])
+	end_pos = int(seq[-1])
+	span = (end_pos-start_pos)+1 # sum +1 because the range is including both extremes
 	
+	# Use initial number to rename jpgs and send them to their proper page folder
+	for i in range(0,span):
+		current_pos = i+start_pos
+		# Check if current_page really has a Revision 
+		# (because if not, last_rev will return '0' and not a Revision object)
+		current_page = Page.objects.get(number=current_pos, item=item)
+		current_rev = current_page.last_rev()
+		if current_rev:
+			next_rev = current_rev.rev_number+1 
+		else:
+			next_rev = 0
+		
+		# Construct page_dir, new_filename and original_filename
+		page_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'pages', str(current_pos), str(next_rev))
+		origin_filename = str(i+1) +".tiff"
+		new_filename = str(current_pos) +"-render.jpg"
+		
+		# Create required dirs recursively only if they don't exist
+		if os.path.isdir(page_dir):
+			print("page_dir already exists: " + page_dir)
+			pass
+		else:
+			print("creating page_dir... " + page_dir)
+			os.makedirs(page_dir)
+		
+		# Remove target dir files if they exists
+		if os.path.isfile(page_dir + new_filename):
+			os.remove(page_dir + new_filename)
+			
+		print('TIFF to JPG... ' + os.path.join(render_dir, origin_filename) +' ->> '+ os.path.join(page_dir, new_filename))
+		
+		# IMPORTANT: shell=True is required!! turning path into str also is.
+		# Order of passed arguments DOES matter.
+		jpg_render_proc = subprocess.Popen([
+			'convert', 
+			'-quality', JPEGQ,
+			str(os.path.join(render_dir, origin_filename)),
+			'+profile', 'icm',
+			'-black-point-compensation',
+			'-profile', r'D:\tmp\profiles\CoatedFOGRA27.icc',
+			'-intent', 'relative',
+			'-profile', r'D:\tmp\profiles\sRGB.icm',
+			str(os.path.join(page_dir, new_filename)),
+		], shell=True) 
+		
+		# Finally, move rendered files to the proper item's subfolder.
+		jpg_render_proc.wait()
+		print("removing intermediate files... " + os.path.join(render_dir, origin_filename))
+		#os.remove(os.path.join(render_dir, origin_filename))
+
