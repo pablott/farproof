@@ -202,7 +202,7 @@ def item_view_thumbs(request, client_pk, job_pk, item_pk):
 	if pages:
 		first_page = pages[0]
 	else:
-		first_page = 0 # Initialize variable in case 'pages' doesn't exist or it crashes (has to be a number)
+		first_page = 0 # Initialize variable in case 'pages' doesn't exist or it crashes (has to be an int)
 	if item:
 		return render_to_response('item_view_thumbs.html', {
 			'client': client,
