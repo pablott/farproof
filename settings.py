@@ -78,6 +78,11 @@ SECRET_KEY = 'u%8g^o)8b+%xxa-1j^8i@zkv!&0(a8h!pg7j(8lrlc-n1t88dz'
 
 ROOT_URLCONF = 'farproof.urls'
 
+# Folder where PDFs and rendered files (color and separations) are stored.
+# Down this path the following structure will be created:
+# /client.pk/job.pk/item.pk/pages|render|uploads
+CONTENTS_PATH = r'D:\tmp\pdf'
+
 TEMPLATE_DIRS = (
 	os.path.join(FARPROOF_DIR, 'templates')#.replace('\\', '/'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
