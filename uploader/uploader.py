@@ -1,14 +1,11 @@
+import os, subprocess
 from django.shortcuts import render_to_response # Add get_object_or_404
 from farproof.client_list.models import Client, Job, Item, Page, Revision
 from farproof.process.process import *
-
-import os, subprocess
+from farproof.settings import CONTENTS_PATH
 
 
 #TODO: JSON and MD5 client-side checksum verified by server-side checksum
-
-CONTENTS_PATH = r'D:\tmp\pdf'
-
 
 # This first function gets files from POST 
 # and writes them using the write_file() function below
@@ -55,7 +52,7 @@ def write_file(upload_list, client, job, item, page):
 		with open(os.path.join(upload_dir, filename), 'wb+') as destination:
 			for chunk in file.chunks():
 				destination.write(chunk)
-		process(300, upload_dir, filename, client, job, item)
+		process(150, upload_dir, filename, client, job, item, SEPS=True)
 
 
 # add PDF to last rev of a page:
