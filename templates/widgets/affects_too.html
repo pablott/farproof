@@ -1,37 +1,26 @@
 {% load i18n %}
-{% load widgets %}
 
-<div>
+{% if current_revisions or past_revisions %}
+<div class="affects_too">
+	<div class="btn_show_more">show more</div>
 	{% if current_revisions %}
-		<b>Affecting too right now: </b>
+		<h4>Also affecting right now: </h4>
 		{% for revision in current_revisions %}
-			{% if revision == revision.page.last_rev %}
-				<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/">
-					page {{ revision.page.number }} (on rev. {{ revision.rev_number }})</a>,
-				<!-- <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/"> 
-				{{ revision.page.number }}</a>,
-				<div class="thumb_container" style="float:left;">
-					{% if revision.page.number|divisibleby:2 %}
-						{% page_thumb_even revision.page item job client %}
-					{% else %}
-						{% page_thumb_odd revision.page item job client %}
-					{% endif %}
-				</div> -->
-			{% endif %}
+			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/">
+				page {{ revision.page.number }}</a>{% if not forloop.last %}, {% endif %}
 		{% endfor %}
+		
 	{% endif %}
 		
-	<br><br>
-	
 	{% if past_revisions %}
-		<b>Used to affect too: </b>
+		<h4>Used to affect: </h4>
 		{% for revision in past_revisions %}
 			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.number }}/">
 				{% if revision.page.number = page.number %}
-					this page (on previous rev. {{ revision.rev_number }})</a>,
+					this page <i>(on previous rev. {{ revision.rev_number }})</i></a>
 				{% else %}
-					page {{ revision.page.number }} (on rev. {{ revision.rev_number }})</a>,
-				{% endif %}
+					page {{ revision.page.number }} <i>(on rev. {{ revision.rev_number }})</i></a>{% endif %}{% if not forloop.last %}, {% endif %}
 		{% endfor %}
 	{% endif %}
 </div>
+{% endif %}
