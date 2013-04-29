@@ -1,8 +1,8 @@
 # Processes and assigns files
 
+import os, subprocess, re, shutil, glob
 from farproof.client_list.models import Page, Revision
-import os, subprocess, re, shutil
-
+from farproof.settings import CONTENTS_PATH
 
 # See: http://ghostscript.com/doc/current/Use.htm
 # and: http://ghostscript.com/doc/current/Devices.htm#TIFF
@@ -12,7 +12,7 @@ import os, subprocess, re, shutil
 #'-var1 -var2', (with the '' included)
 gs = r'D:\tmp\gs\bin\gswin64c.exe',
 COMMON = '-dNOPAUSE -dBATCH -dQUIET', # REQUIRES the trailing comma for some odd reason
-CONTENTS_PATH = r'D:\tmp\pdf'
+
 
 # Render Options:
 GRAPHICS = '-dGraphicsAlphaBits=2'
@@ -31,7 +31,7 @@ PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 
 	
 
 
-def process(dpi, upload_dir, filename, client, job, item): 
+def process(dpi, upload_dir, filename, client, job, item, SEPS=False): 
 	render_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'render')
 	if os.path.isdir(render_dir):
 		print("render_dir already exists: " + render_dir)
@@ -43,9 +43,10 @@ def process(dpi, upload_dir, filename, client, job, item):
 	# RGB devices don't support overprint, conversion from CMYK tiff is neccesary
 	# TODO: make CMYK_PROFILE and OVERPRINT work together
 	# TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK)
+	print('PDF to TIFF... ' + os.path.join(upload_dir, filename) +' ->> '+ render_dir)
 	tiff_render_proc = subprocess.Popen([
 		gs,
-		'-sDEVICE=tiffsep', '-r' + str(dpi), #tiff32nc , tiffsep
+		'-sDEVICE=tiffsep', '-r' + str(dpi), #tiff24nc, tiff32nc, tiffsep
 		COMMON,
 		COLOR, 
 		GRAPHICS,
@@ -58,10 +59,10 @@ def process(dpi, upload_dir, filename, client, job, item):
 	# Wait for render to finish and spawn the assign process
 	tiff_render_proc.wait()
 	print("finished rendering TIFF, converting to JPEG...")
-	assign(render_dir, filename, client, job, item)
+	assign(render_dir, filename, client, job, item, SEPS)
 	
 	
-def assign(render_dir, filename, client, job, item):
+def assign(render_dir, filename, client, job, item, SEPS):
 	# Check for page range in filename
 	seq = re.findall('(\d+)', filename)
 	start_pos = int(seq[0])
@@ -116,5 +117,46 @@ def assign(render_dir, filename, client, job, item):
 		# Finally, move rendered files to the proper item's subfolder.
 		jpg_render_proc.wait()
 		print("removing intermediate files... " + os.path.join(render_dir, origin_filename))
-		#os.remove(os.path.join(render_dir, origin_filename))
+		os.remove(os.path.join(render_dir, origin_filename))
 
+		
+		# Render individual separation files:
+		# TODO: It should process all separations (CMYK+spots) and import them with a name 
+		#		(maybe adding UI for this?).
+		print('processing separations into png...')
+		os.chdir(render_dir)
+		sep_list = glob.glob(str(i+1)+'.tiff*.tif')
+		if SEPS:
+			for org_sep_filename in sep_list:
+				print org_sep_filename
+				suffix = re.search('\((.*?)\)', org_sep_filename).group(1)
+				dst_sep_filename = str(current_pos) +'-'+ suffix +'.png'
+				
+				sep_render_proc = subprocess.Popen([
+					'convert', 
+					str(os.path.join(render_dir, org_sep_filename)),
+					# http://www.imagemagick.org/Usage/color_mods/#linear
+					# TODO: tint seps before saving.
+					# The following fx tints each ink (although it takes a LOOOONG time)
+					# imagemagick is not fast, a canvas solution might be more efficient
+					# http://stackoverflow.com/questions/11973086/duplicate-photoshops-color-blend-mode-in-imagemagick
+					# 'convert image.jpg color_layer.png -compose blend -composite result.jpg'
+					# FOGRA27	->	sRGB
+					# cyan		->	0,158,224
+					# This works: C:\Users\Pablo>convert D:\tmp\pdf\1\10\26\render\9.tiff(Black).tif xc:rgb(0,158,224) -fx 1-(1-v.p{0,0})*(1-u) 000.png
+					#'-size', '100x100',
+					#'canvas:rgb(0,158,224)',
+					#'-fx', '1-(1-v.p{0,0})*(1-u)',
+					str(os.path.join(page_dir, dst_sep_filename)),
+				], shell=True)
+				
+				# Finally, move rendered separations to the proper item's subfolder.
+				sep_render_proc.wait()
+				print("removing intermediate sep files... " + os.path.join(render_dir, org_sep_filename))
+				os.remove(os.path.join(render_dir, org_sep_filename))
+		else:
+			for org_sep_filename in sep_list:
+				print("removing intermediate sep files... " + os.path.join(render_dir, org_sep_filename))
+				os.remove(os.path.join(render_dir, org_sep_filename))
+			
+	print('Render of '+filename+' done!')
