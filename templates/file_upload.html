@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load uploader %}
+{% load dajaxice_templatetags %}
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
@@ -11,7 +12,18 @@
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
 	<link href="/media/favicon.ico" rel="shortcut icon">
+	<script src="/media/js/jquery-1.8.1.js"></script>
 	<title>FP - File Upload</title>
+	
+	{% dajaxice_js_import %}
+	<script>
+		function sayhdello(shtml){
+			alert(html.message2222);
+		}
+	</script>
+	
+	
+
 </head>
 
 	
@@ -35,14 +47,22 @@
 	</div>
 	
 	<div id="view">
-		
-	<form action="/{{ client.pk }}/{{ job.pk}}/{{item.pk}}/{{page.number}}/file_upload/" method="post" enctype="multipart/form-data">
-		<input name="uploads" type=file multiple>
-		<input type="submit">
-	</form>
 	
-	{{ message }}
+		<button onclick="Dajaxice.client_list.sayhello('Dajax.process');">dajax</button>
 		
-	</div>	
+		
+		
+		
+		
+		
+	
+	
+		<form action="/{{ client.pk }}/{{ job.pk}}/{{item.pk}}/{{page.number}}/file_upload/" method="post" enctype="multipart/form-data">
+			<input name="uploads" type=file multiple>
+			<input type="submit">
+		</form>
+		<div id="message"></div> 
+	</div>
+	
 </body>
 </html>

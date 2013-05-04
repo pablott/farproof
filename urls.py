@@ -2,7 +2,13 @@
 from django.contrib import admin
 admin.autodiscover()
 
-from django.conf.urls.defaults import *
+from dajaxice.core import dajaxice_autodiscover, dajaxice_config
+dajaxice_autodiscover()
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+# Deprecated for Django 1.5:
+#from django.conf.urls.defaults import *
+from django.conf.urls import *
 from farproof.client_list.views import *
 from farproof.uploader.uploader import *
 
@@ -15,6 +21,9 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
+	
+	# URL manager for Dajaxice:
+	url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
 	
 	#TODO Add 404 templates when a client, job, item or page is not found
     (r'^$', main),
@@ -47,3 +56,5 @@ if settings.DEBUG:
                                 serve,
                                 {'document_root': settings.MEDIA_ROOT}))
     del _media_url, serve
+
+urlpatterns += staticfiles_urlpatterns()

@@ -7,6 +7,8 @@ FARPROOF_VERSION = '0.1alpha'
 
 FARPROOF_DIR = os.path.abspath(os.path.dirname(__file__))
 ROOT_DIR = os.path.dirname(FARPROOF_DIR)
+STATIC_ROOT = os.path.join(ROOT_DIR, 'static') 
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -95,7 +97,8 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 	'django.template.loaders.eggs.Loader',
-	'django.template.loaders.app_directories.load_template_source',
+	#Deprecated for Django 1.5:
+	#'django.template.loaders.app_directories.load_template_source',
    )
 
 MIDDLEWARE_CLASSES = (
@@ -108,14 +111,60 @@ MIDDLEWARE_CLASSES = (
 )
 
 # https://docs.djangoproject.com/en/1.3/howto/static-files/#with-a-context-processor
-#TEMPLATE_CONTEXT_PROCESSORS = (
-#    'django.core.context_processors.debug',
-#    'django.core.context_processors.i18n',
-#    'django.core.context_processors.media',
-#    'django.core.context_processors.static',
-#    'django.contrib.auth.context_processors.auth',
-#    'django.contrib.messages.context_processors.messages',
-#)
+TEMPLATE_CONTEXT_PROCESSORS = (
+   'django.core.context_processors.debug',
+   'django.core.context_processors.i18n',
+   'django.core.context_processors.media',
+   'django.core.context_processors.static',
+   'django.core.context_processors.request',
+   'django.contrib.auth.context_processors.auth',
+   'django.contrib.messages.context_processors.messages',
+   #'django.contrib.messages.context_processors.request',
+   #'djangoapp.app.context_processors.media_url',
+)
+
+STATICFILES_FINDERS = (
+   'django.contrib.staticfiles.finders.FileSystemFinder',
+   'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+   'dajaxice.finders.DajaxiceFinder',
+)
+
+STATICFILES_DIRS = (
+	#os.path.join(ROOT_DIR, 'static'),
+	#'C:\Python27\Lib\site-packages\dajaxice'
+    # "/home/special.polls.com/polls/static",
+    # "/home/polls.com/polls/static",
+    # "/opt/webfiles/common",
+ )
+
+STATIC_URL = '/static/'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler'
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'dajaxice': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+    }
+}
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -123,11 +172,16 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+	'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-     'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
 	'client_list',
-	#'client_list.templatetags.page_extras',
-	'django_evolution'
+	#'uploader',
+	'django_evolution',
+	'dajaxice',
+	'dajax',
 )
+
+DAJAXICE_DEBUG = True
