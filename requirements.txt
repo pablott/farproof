@@ -1,3 +1,6 @@
 django_evolution
 ghostscript
 imagemagick
+dajax
+dajaxice
+jquery
