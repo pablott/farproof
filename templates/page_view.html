@@ -156,7 +156,7 @@ function navLeft () {
 		
 		// Then it is sanitized so it doesn't exceed the page range:
 		if ( next_page > {{last_page.number}} | next_page < {{first_page.number}} ) {
-			next_page = 404;
+			next_page = {{first_page.number}};
 		};
 		
 		// Send request for next_page:
@@ -178,7 +178,7 @@ function navRight () {
 		
 		// Then it is sanitized so it doesn't exceed the page range:
 		if ( next_page > {{last_page.number}} | next_page < {{first_page.number}} ) {
-			next_page = 404;
+			next_page = {{last_page.number}};
 		};
 		
 		// Send request for next_page:
