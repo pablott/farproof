@@ -11,14 +11,17 @@
 	<link href="/media/css/client_conf.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
+	<script src="/media/js/jquery-1.8.1.js"></script>
+
 	<link href="/media/favicon.ico" rel="shortcut icon">
 	<script src="/media/js/jquery-1.8.1.js"></script>
 	<title>FP - File Upload</title>
 	
 	{% dajaxice_js_import %}
 	<script>
-		function sayhdello(shtml){
-			alert(html.message2222);
+		function sayhello(data){
+			alert(data.message);
+			$( '#message' ).html( data.message );
 		}
 	</script>
 	
@@ -48,7 +51,7 @@
 	
 	<div id="view">
 	
-		<button onclick="Dajaxice.client_list.sayhello('Dajax.process');">dajax</button>
+		<button onclick="Dajaxice.client_list.sayhello(sayhello,{ 'page':{{page.number}} });">dajax</button>
 		
 		
 		
@@ -59,9 +62,10 @@
 	
 		<form action="/{{ client.pk }}/{{ job.pk}}/{{item.pk}}/{{page.number}}/file_upload/" method="post" enctype="multipart/form-data">
 			<input name="uploads" type=file multiple>
-			<input type="submit">
+			<input type="submit" onclick="Dajaxice.client_list.sayhello(sayhello,{ 'page':{{page.number}} });"> 
 		</form>
-		<div id="message"></div> 
+		<br>
+		<div style="background-color:green; height:80px; width:80px" id="message"></div> 
 	</div>
 	
 </body>

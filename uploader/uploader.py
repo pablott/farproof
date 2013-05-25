@@ -1,7 +1,7 @@
 import os, subprocess
 from django.shortcuts import render_to_response # Add get_object_or_404
 from farproof.client_list.models import Client, Job, Item, Page, Revision
-from farproof.process.process import *
+from farproof.process.process import process
 from farproof.settings import CONTENTS_PATH
 
 
@@ -9,6 +9,11 @@ from farproof.settings import CONTENTS_PATH
 
 # This first function gets files from POST 
 # and writes them using the write_file() function below
+from django.utils import simplejson
+from django.template.loader import render_to_string
+from django.template import RequestContext
+from farproof.client_list.ajax import sayhello
+
 def file_upload(request, client_pk, job_pk, item_pk, page_num):
 	client = Client.objects.get(pk=client_pk)
 	job = Job.objects.get(pk=job_pk, client=client)
@@ -25,9 +30,21 @@ def file_upload(request, client_pk, job_pk, item_pk, page_num):
 			message = message + file.name +" - "+ file.content_type +" - "+ str(round(file.size/1048576.0, 2))+"MB"
 			total_size = total_size + file.size
 		message = message +" / "+ str(total_size/1048576.0) + "MB"
+		
+		# html = render_to_string('upload_content.html',
+			# {'message': message,
+			# 'page':page,
+			# }, context_instance = RequestContext(request)
+		# )
+		# return simplejson.dumps({'message':html})
+		# print(html)
+		#return sayhello(request, page.number)
+		
 	else:
 		upload_list = "empty"
 		message = "upload something"
+		
+	
 	return render_to_response('file_upload.html', {
 		'client': client,
 		'job': job,
@@ -52,7 +69,7 @@ def write_file(upload_list, client, job, item, page):
 		with open(os.path.join(upload_dir, filename), 'wb+') as destination:
 			for chunk in file.chunks():
 				destination.write(chunk)
-		process(150, upload_dir, filename, client, job, item, SEPS=True)
+		process(150, upload_dir, filename, client, job, item, SEPS=False)
 
 
 # add PDF to last rev of a page:
