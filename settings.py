@@ -178,7 +178,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
 	'client_list',
-	'django_extensions',
+	#'uploader',
 	'django_evolution',
 	'dajaxice',
 	'dajax',
