@@ -124,7 +124,9 @@ def assign(render_dir, filename, client, job, item, SEPS):
 		# TODO: It should process all separations (CMYK+spots) and import them with a name 
 		#		(maybe adding UI for this?).
 		print('processing separations into png...')
-		os.chdir(render_dir)
+		# TODO, CAUTION: chdir() changes the dir for any actions that happens afterwards
+		#os.chdir(render_dir)
+		# http://stackoverflow.com/questions/431684/how-do-i-cd-in-python
 		sep_list = glob.glob(str(i+1)+'.tiff*.tif')
 		if SEPS:
 			for org_sep_filename in sep_list:
