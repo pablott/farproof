@@ -1,0 +1,12 @@
+{% load i18n %}
+
+<div class="comment_add" style="border:black 2px solid;">
+	Add a comment:
+	<form action="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/" method="post">
+		{% csrf_token %}
+		{{ form.as_ul }}
+		<input type="submit" value="Add Comment">
+	</form>
+	{{ message }}
+</div>	
+

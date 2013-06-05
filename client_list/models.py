@@ -103,7 +103,7 @@ class ItemAddForm(ModelForm):
 		model = Item				
 		widgets = {
            'job': HiddenInput(),
-      }
+		}
 	  
 		
 class Page(models.Model):
@@ -147,7 +147,16 @@ class Comment(models.Model):
 	comment = models.CharField(max_length=256)
 	def __unicode__(self):
 		return self.comment + " - " + str(self.revision.all())
+
 		
+class CommentAddForm(ModelForm):
+	class Meta:
+		model = Comment				
+		widgets = {
+           'revision': HiddenInput(),
+		   #'comment': ,
+      }
+	  
 		
 class Curve(models.Model):
 	revision = models.ForeignKey(Revision)

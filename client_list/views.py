@@ -4,7 +4,9 @@ from django.shortcuts import render_to_response # Add get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from farproof.client_list.models import Client, Job, Item, Page, Revision, Comment
 from farproof.client_list.models import ClientAddForm, JobAddForm, ItemAddForm
-#from django.template import RequestContext
+from django.template import RequestContext
+#from django.core.context_processors import request
+
 #def serve(request, path, document_root, show_indexes=False)
 
 import subprocess
@@ -267,7 +269,7 @@ def page_view(request, client_pk, job_pk, item_pk, page_num):
 			'first_page': first_page,
 			'last_page': last_page,
 			'revisions': revisions,
-		})
+		}, context_instance=RequestContext(request))
 	else:
 		raise Http404
 		

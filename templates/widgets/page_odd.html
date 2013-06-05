@@ -1,9 +1,12 @@
 ﻿{% load i18n %}
 {% load widgets %}
+{% load review %}
 
 
 {# TODO: unify odd and even since the only difference is the class #}
 <div class="page odd">
+	{% comment_add page item job client %}
+
 	{{ page.number }} <br>
 	{{ page.last_rev.status }} <br>
 	{{ page.last_rev.creation }} <br>

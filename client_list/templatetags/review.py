@@ -1,4 +1,8 @@
 from django import template
+from farproof.client_list.models import Comment
+from farproof.client_list.models import CommentAddForm
+#from django.core.context_processors import request
+
 
 register = template.Library()
 
@@ -15,7 +19,7 @@ def affects_too(comment, page, item, job, client):
 		if revision.pk == revision.page.last_rev().pk:
 			pass
 		else:
-			print(revision.pk)
+			#print(revision.pk)
 			current_revisions = current_revisions.exclude(pk=revision.pk)
 	
 	# To query past revisions we need to go through the queryset
@@ -34,3 +38,45 @@ def affects_too(comment, page, item, job, client):
 	}
 
 
+@register.inclusion_tag('widgets/comment_add.html', takes_context=True)
+def comment_add(context, page, item, job, client):
+# TODO this takes 'request' as a string when called when it should be the POST data
+	#if context:
+	#request = context['request']   
+	# else:
+		# request = 'rrr'
+	# if request.method == 'POST': # If the form has been submitted...
+		# form = CommentAddForm(request.POST) # A form bound to the POST data
+		# if form.is_valid(): # All validation rules pass
+			#Process the data in form.cleaned_data
+			# form.save()
+			# message = 'You added Comment: %r' % str(request.POST['comment']) #+ ' - %r' % str(request.POST['email'])
+			# form = CommentAddForm() # Reset form after saving
+	# else:
+		# message = ''
+	form = CommentAddForm() # An unbound form
+	params = {
+		#'request': request,
+		'form': form,
+		#'message': message,
+		#'page': page,
+		#'item': item,
+		#'job': job, 
+		'client': client,
+	}
+	params.update(context)
+	return params
+
+	
+@register.inclusion_tag('widgets/comment_add.html', takes_context=True)
+def comment_add2(context, page, item, job, client):
+	return template.RequestContext(context['request'], {
+		'request': request,
+		'form': form,
+		'message': message,
+		'page': page,
+		'item': item,
+		'job': job, 
+		'client': client,
+	})
+	
