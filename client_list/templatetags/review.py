@@ -38,34 +38,33 @@ def affects_too(comment, page, item, job, client):
 	}
 
 
-@register.inclusion_tag('widgets/comment_add.html', takes_context=True)
-def comment_add(context, page, item, job, client):
+@register.inclusion_tag('widgets/comment_add.html')
+def comment_add(contx, page, item, job, client):
 # TODO this takes 'request' as a string when called when it should be the POST data
-	#if context:
-	#request = context['request']   
+	# print(contx)
+	# if contx:
+		# request = contx['request']   
 	# else:
 		# request = 'rrr'
-	# if request.method == 'POST': # If the form has been submitted...
-		# form = CommentAddForm(request.POST) # A form bound to the POST data
-		# if form.is_valid(): # All validation rules pass
-			#Process the data in form.cleaned_data
-			# form.save()
-			# message = 'You added Comment: %r' % str(request.POST['comment']) #+ ' - %r' % str(request.POST['email'])
-			# form = CommentAddForm() # Reset form after saving
-	# else:
-		# message = ''
+	if contx.method == 'POST': # If the form has been submitted...
+		form = CommentAddForm(contx.POST) # A form bound to the POST data
+		if form.is_valid(): # All validation rules pass
+			# Process the data in form.cleaned_data
+			form.save()
+			message = 'You added Comment: %r' % str(request.POST['comment']) #+ ' - %r' % str(request.POST['email'])
+			form = CommentAddForm() # Reset form after saving
+	else:
+		message = ''
 	form = CommentAddForm() # An unbound form
-	params = {
+	return {
 		#'request': request,
 		'form': form,
 		#'message': message,
-		#'page': page,
-		#'item': item,
-		#'job': job, 
+		'page': page,
+		'item': item,
+		'job': job, 
 		'client': client,
 	}
-	params.update(context)
-	return params
 
 	
 @register.inclusion_tag('widgets/comment_add.html', takes_context=True)

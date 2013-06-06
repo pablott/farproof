@@ -36,10 +36,16 @@ def show_item(item, job, client):
 		'job': job, 
 		'client': client
 	}
-	
-@register.inclusion_tag('widgets/page_odd.html')
-def page_odd(page, item, job, client):
+
+# Context has to be passed explicitly to tags that depend on page_odd 
+# like comment_add() template tag. I suspect this is caused by linking two 
+# template tags, one inside the other, and calling them from a parent view 
+@register.inclusion_tag('widgets/page_odd.html', takes_context=True)
+def page_odd(context, page, item, job, client):
+	request = context['request']
+	print('REQ: '+str(request))
 	return {
+		'contx': request,
 		'page': page,
 		'item': item,
 		'job': job, 
