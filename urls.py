@@ -11,6 +11,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls import *
 from farproof.client_list.views import *
 from farproof.uploader.uploader import *
+from farproof.client_list.templatetags.review import *
+
 
 urlpatterns = patterns('',
     # Example:
@@ -42,6 +44,8 @@ urlpatterns = patterns('',
     (r'^(\d+)/(\d+)/(\d+)/(\d+)/$', page_view),
     (r'^(\d+)/(\d+)/(\d+)/(\d+)/page_info/$', page_info),
     (r'^(\d+)/(\d+)/(\d+)/(\d+)/file_upload/$', file_upload),
+	
+    (r'^(\d+)/(\d+)/(\d+)/(\d+)/ajax/comment_add$', comment_add),
 )
 #(r'^(?P<category>\w+)/feedback/$', 'my_view') # Might be useful as wildcard capture method
 
