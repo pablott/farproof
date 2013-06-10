@@ -1,15 +1,28 @@
-{% load i18n %}
+﻿{% load i18n %}
 
 
-<div class="comment_add" style="border:black 2px solid;">
+<div class="comment_add">
 	Add a comment:
 	<form method="post">
 		{% csrf_token %}
 		{{ form.as_ul }}
-		<input type="text">
+		Status: 
+		<input class="ok" type="radio" name="status" value="OK" > Approved
+		<input type="radio" name="status" value="REJECTED"> Rejected
+		<div style="page_selection">
+			Also affects these pages: <br>
+			<ul>
+				{% for this_page in item.page_set.all %}
+					{% if this_page.number == page.number %}
+						<input type="checkbox" checked="checked" disabled="disabled">{{ this_page.number }}
+					{% else %}
+						<input type="checkbox" name="pages" value="{{ this_page.number }}">{{ this_page.number }}
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
 		<input type="submit" id="submit" value="Add Comment">
 	</form>
-	{{ message }}
 </div>	
 
 
@@ -17,10 +30,9 @@
 $('#submit').click(function(){
 	alert('btn pushed');
     $.ajax({
-        url: '../{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/ajax/comment_add',
         type:'POST',
         data: {
-            comment: id_comment,
+            comment: comment,
         },
         success: function(msg){
                 alert('Email Sent');

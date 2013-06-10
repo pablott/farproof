@@ -1,5 +1,5 @@
-from django import template
-from farproof.client_list.models import Comment
+﻿from django import template
+from farproof.client_list.models import Page, Revision, Comment
 from farproof.client_list.models import CommentAddForm
 #from django.core.context_processors import request
 
@@ -39,27 +39,71 @@ def affects_too(comment, page, item, job, client):
 
 
 @register.inclusion_tag('widgets/comment_add.html')
-def comment_add(contx, page, item, job, client):
-# TODO this takes 'request' as a string when called when it should be the POST data
-	# print(contx)
-	# if contx:
-		# request = contx['request']   
-	# else:
-		# request = 'rrr'
-	if contx.method == 'POST': # If the form has been submitted...
-		form = CommentAddForm(contx.POST) # A form bound to the POST data
-		if form.is_valid(): # All validation rules pass
-			# Process the data in form.cleaned_data
-			form.save()
-			message = 'You added Comment: %r' % str(request.POST['comment']) #+ ' - %r' % str(request.POST['email'])
-			form = CommentAddForm() # Reset form after saving
+def comment_add(request, page, item, job, client):
+	if request.method == 'POST': # If the form has been submitted...
+		post = request.POST.copy()
+		print(post)
+		print('POST received')
+		print(post['comment'])
+		pages = dict(post)['pages']
+		
+		
+		
+		# TODO add its own page to pages dict
+		# pages += u'page.number'
+		
+		
+		
+		
+		print(pages[0])
+		#p=pages.keys()
+		#print(p)
+		
+		# Form comment and save it:
+		t = post['comment']
+		status = post['status']
+		new_comment = Comment(comment=t)
+		new_comment.save()
+		
+		# Assign comment to the revision of each page in the "affects too" list.
+		# This revision can be:
+		# a) if the user adding the comment belongs to providers list, the current last_rev()
+		# b) if the user adding the comment belongs to clients list, a new revision (i.e.: last_rev()+1)
+		# TODO: create users subsystem
+		for i in pages:
+			current_page_num = int(i)
+			current_page = Page.objects.get(number=current_page_num, item=item)
+			current_rev = current_page.last_rev()
+			print('current_page: '+str(current_page))
+			print(current_rev)
+			
+			if 1: # If user belongs to provider
+				revision = current_rev
+				# TODO: add new revision if previous is OK or PENDING, 
+				# right now it doesn't add any new revision but it should
+				
+				
+				
+				
+			else: # If user belongs to client
+				new_rev_num = current_rev.rev_number+1
+				print('new_rev_num: '+str(new_rev_num))
+				new_revision = Revision(rev_number=new_rev_num, page=current_page, status=status)
+				print(new_revision)
+				new_revision.save()
+				revision = new_revision
+			
+			# Add each new revision to the new comment
+			new_comment.revision.add(revision)
+			print(new_comment)
+
+			
+		form = CommentAddForm() # Reset form after saving
 	else:
-		message = ''
+		print ('Empty form')
 	form = CommentAddForm() # An unbound form
 	return {
-		#'request': request,
 		'form': form,
-		#'message': message,
 		'page': page,
 		'item': item,
 		'job': job, 
