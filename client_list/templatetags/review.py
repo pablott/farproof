@@ -45,19 +45,11 @@ def comment_add(request, page, item, job, client):
 		print(post)
 		print('POST received')
 		print(post['comment'])
+		
+		# Add its own page to pages dict
 		pages = dict(post)['pages']
-		
-		
-		
-		# TODO add its own page to pages dict
-		# pages += u'page.number'
-		
-		
-		
-		
-		print(pages[0])
-		#p=pages.keys()
-		#print(p)
+		pages.append(page.number)
+		print(pages)
 		
 		# Form comment and save it:
 		t = post['comment']
@@ -77,15 +69,27 @@ def comment_add(request, page, item, job, client):
 			print('current_page: '+str(current_page))
 			print(current_rev)
 			
-			if 1: # If user belongs to provider
-				revision = current_rev
+			
+			
+			
+			# decide if a new revision has to be created or not
+			# 
+			if 1: # If user belongs to 'provider'
 				# TODO: add new revision if previous is OK or PENDING, 
 				# right now it doesn't add any new revision but it should
-				
-				
-				
-				
-			else: # If user belongs to client
+				if 'PENDING' in current_rev.status:
+					new_rev_num = current_rev.rev_number+1
+					new_revision = Revision(rev_number=new_rev_num, page=current_page, status=status)
+					new_revision.save()
+					revision = new_revision
+				else: #create a new revision
+					revision = current_rev
+					
+					
+					
+					
+					
+			else: # If user belongs to 'client'
 				new_rev_num = current_rev.rev_number+1
 				print('new_rev_num: '+str(new_rev_num))
 				new_revision = Revision(rev_number=new_rev_num, page=current_page, status=status)
@@ -96,7 +100,6 @@ def comment_add(request, page, item, job, client):
 			# Add each new revision to the new comment
 			new_comment.revision.add(revision)
 			print(new_comment)
-
 			
 		form = CommentAddForm() # Reset form after saving
 	else:
