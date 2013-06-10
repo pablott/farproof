@@ -42,10 +42,10 @@ def show_item(item, job, client):
 # template tags, one inside the other, and calling them from a parent view 
 @register.inclusion_tag('widgets/page_odd.html', takes_context=True)
 def page_odd(context, page, item, job, client):
-	request = context['request']
-	print('REQ: '+str(request))
+	context = context['request']
+	#print('REQ: '+str(request))
 	return {
-		'contx': request,
+		'context': context,
 		'page': page,
 		'item': item,
 		'job': job, 
