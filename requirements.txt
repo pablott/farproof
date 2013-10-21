@@ -1,6 +1,8 @@
 django_evolution
-ghostscript
-imagemagick
+runserver_plus
 dajax
 dajaxice
+
 jquery
+ghostscript
+imagemagick
