@@ -7,7 +7,7 @@ dajaxice_autodiscover()
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 # Deprecated for Django 1.5:
-#from django.conf.urls.defaults import *
+#from django.conf.urls import *
 from django.conf.urls import *
 from farproof.client_list.views import *
 from farproof.uploader.uploader import *
