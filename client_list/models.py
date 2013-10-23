@@ -34,7 +34,7 @@ class ClientAddForm(ModelForm):
 class Job(models.Model):
 	client = models.ForeignKey(Client)
 	name = models.CharField(max_length=256)
-	desc = models.CharField(max_length=256)
+	desc = models.CharField(max_length=256, blank=True, null=True)
 	active = models.BooleanField(default=True)
 	creation = models.DateTimeField(default="", auto_now_add=True)
 	modified = models.DateTimeField(default="", auto_now=True)
@@ -88,7 +88,7 @@ class JobAddForm(ModelForm):
 class Item(models.Model):
 	job = models.ForeignKey(Job)
 	name = models.CharField(max_length=256)
-	desc = models.CharField(max_length=256)
+	desc = models.CharField(max_length=256, blank=True, null=True)
 	creation = models.DateTimeField(default="", auto_now_add=True)
 	modified = models.DateTimeField(default="", auto_now=True)
 	def __unicode__(self):
