@@ -6,12 +6,15 @@
 		{{ item.page_set.count }} pages
 	</div>
 	
-	<div class="mini_summary"> 
-		PK: {{ item.pk }}/ID: {{ item.id }} <br>
+	<div class="body">
+		<div class="mini_summary"> 
+			PK: {{ item.pk }}/ID: {{ item.id }} <br>
+		</div>
+		
+		<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list">{{ item.name }}</a> <br>
+		{% if item.desc %}
+			<b>Description:</b> {{ item.desc }}
+		{% endif %}
 	</div>
-	
-	<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list">{{ item.name }}</a> <br>
-	<b>Pages:</b> {{ item.page_set.count }} <br>
-	<b>Description:</b> {{ item.desc }}
 </div>
 

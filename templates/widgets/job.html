@@ -11,25 +11,25 @@
 		<span class="ok"> XX approved items </span> </br>
 	</div>
 	
-	<div class="title"> <a href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a> </div>
-	<div class="summary">
-		<b>Added on</b> {{ job.creation|date:"D j M y, H:i" }} <br>
-		<b>Description:</b> {{ job.desc }} <br>
+	<div class="body">
+		<div class="title"> <a href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a> </div>
+		<div class="summary">
+			<b>Added on</b> {{ job.creation|date:"D j M y, H:i" }} <br>
+			<b>Description:</b> {{ job.desc }} <br>
 
+			{% if job.item_set.all %}
+				<b>{{ job.item_set.count }} items, {{ job.total_pages }} pages inside:</b> <br>
+				{% for item in job.item_set.all %}
+					<a href="/{{ job.client.pk }}/{{ job.pk }}/{{ item.pk }}/list/">{{ item.name }} ({{ item.page_set.count }} pages)</a> 
+					&nbsp;+&nbsp;
+				{% endfor %} <br>
+			{% endif %}
+		</div>
+		
 		{% if job.item_set.all %}
-			<b>{{ job.item_set.count }} items, {{ job.total_pages }} pages inside:</b> <br>
 			{% for item in job.item_set.all %}
-				<a href="/{{ job.client.pk }}/{{ job.pk }}/{{ item.pk }}/list/">{{ item.name }} ({{ item.page_set.count }} pages)</a> 
-				&nbsp;+&nbsp;
-			{% endfor %} <br>
+				{% show_item item job client %}
+			{% endfor %} 
 		{% endif %}
 	</div>
-	
-	{% if job.item_set.all %}
-		{% for item in job.item_set.all %}
-			{% show_item item job client %}
-		{% endfor %} 
-	{% endif %}
 </div>
-
-<hr>
