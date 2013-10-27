@@ -37,6 +37,14 @@ def show_item(item, job, client):
 		'client': client
 	}
 
+@register.inclusion_tag('widgets/item_list.html')
+def item_list(item, job, client):
+	return {
+		'item': item,
+		'job': job, 
+		'client': client
+	}
+	
 # Context has to be passed explicitly to tags that depend on page_odd 
 # like comment_add() template tag. I suspect this is caused by linking two 
 # template tags, one inside the other, and calling them from a parent view 
