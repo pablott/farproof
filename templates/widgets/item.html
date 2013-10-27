@@ -2,8 +2,9 @@
 
 <div class="container item">
 	<div class="folder">
-		<div class="tab">  </div>
-		{{ item.page_set.count }} pages
+		<div class="tab"> </div>
+		{{ item.page_set.count }} pages <br>
+		{% if item.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">Not approved</b> {% endif %}
 	</div>
 	
 	<div class="body">

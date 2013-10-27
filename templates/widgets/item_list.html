@@ -4,8 +4,13 @@
 
 {% if job.item_set.all %}
 	<b>{{ job.item_set.count }} items, {{ job.total_pages }} pages inside:</b> <br>
+	
 	{% for item in job.item_set.all %}
-		<a href="/{{ job.client.pk }}/{{ job.pk }}/{{ item.pk }}/list/">{{ item.name }} ({{ item.page_set.count }} pages)</a> 
+		{% if item.is_ready %} 
+			<a class="ok" {% else %} <a class="rejected"
+		{% endif %}
+		href="/{{ job.client.pk }}/{{ job.pk }}/{{ item.pk }}/list/">{{ item.name }} ({{ item.page_set.count }} pages)
+		</a> 
 		{% if not forloop.last %}&nbsp;+&nbsp;{% endif %}
 	{% endfor %} <br>
 {% endif %}

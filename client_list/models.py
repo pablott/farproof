@@ -50,7 +50,7 @@ class Job(models.Model):
 		approved_pages = 0
 		# TODO: use method Page.last_rev()
 		# (instead of reinventing the wheel)
-		# See below
+		# See below:
 		for item in self.item_set.all():
 			for page in item.page_set.all():
 				total_pages = total_pages+1
@@ -91,6 +91,25 @@ class Item(models.Model):
 	desc = models.CharField(max_length=256, blank=True, null=True)
 	creation = models.DateTimeField(default="", auto_now_add=True)
 	modified = models.DateTimeField(default="", auto_now=True)
+	
+	def is_ready(self):
+		total_pages = 0
+		approved_pages = 0
+		# TODO: use method Page.last_rev()
+		# (instead of reinventing the wheel)
+		# See below:
+		for page in self.page_set.all():
+			total_pages = total_pages+1
+			revisions = page.revision_set.order_by('-creation')
+			if revisions:
+				last_rev = revisions[0]
+				if last_rev.status == 'OK':
+					approved_pages=approved_pages+1
+		if total_pages == approved_pages:
+			return True
+		else:
+			return False
+	
 	def __unicode__(self):
 		return str(self.pk)+":"+self.name + " - " + self.job.name + " - " + self.job.client.name + " - " + str(self.modified)
 		
