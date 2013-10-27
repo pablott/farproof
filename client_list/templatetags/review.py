@@ -72,8 +72,7 @@ def comment_add(request, page, item, job, client):
 			
 			
 			
-			# decide if a new revision has to be created or not
-			# 
+			# Decide if a new revision has to be created or not
 			if 1: # If user belongs to 'provider'
 				# TODO: add new revision if previous is OK or PENDING, 
 				# right now it doesn't add any new revision but it should
