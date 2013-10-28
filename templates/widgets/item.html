@@ -4,12 +4,12 @@
 	<div class="folder">
 		<div class="tab"> </div>
 		{{ item.page_set.count }} pages <br>
-		{% if item.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">Not approved</b> {% endif %}
 	</div>
 	
 	<div class="body">
 		<div class="mini_summary"> 
 			PK: {{ item.pk }}/ID: {{ item.id }} <br>
+			{% if item.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">Not approved</b> {% endif %}
 		</div>
 		
 		<a class="title" href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list">{{ item.name }}</a> <br>
