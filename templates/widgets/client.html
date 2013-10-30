@@ -5,13 +5,17 @@
 	<div class="body">
 		<div class="mini_summary">
 			PK: {{ client.pk }}/ID: {{ client.id }} <br>
-			{{ client.job_set.count }} visible jobs </br>
+			{{ client.job_set.count }} total jobs </br>
 			<span class="unactive">({{ client.job_set.count }} hidden jobs)</span> <br>
 		</div>
 		
 		<a class="title" href="/{{ client.pk }}/">{{ client.name }}</a>
+		
 		<div class="summary">
-			{{ client.user_set.count }} person(s) will get notified 
+			{{ client.user_set.count }} person(s) will get notified <br>
+			{% if client.desc %}
+				<b>Description:</b> {{ client.desc }} 
+			{% endif %} 
 		</div>
 	</div>
 </div>

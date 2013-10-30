@@ -4,13 +4,16 @@
 	<div class="icon">  </div>
 	<div class="body">
 		<div class="mini_summary">
-			{{ client.user_set.count }} person(s) will get notified </br>
-			{{ client.job_set.count }} visible jobs </br>
-		</div>
-		
-		<a class="title" href="/{{ client.pk }}/">{{ client.name }}</a>
-		<div class="summary">
 			PK: {{ client.pk }}/ID: {{ client.id }} <br>
+			{{ client.job_set.count }} total jobs </br>
+		</div>
+
+		<a class="title" href="/{{ client.pk }}/">{{ client.name }}</a>
+
+		<div class="summary">
+			{% if client.desc %}
+				<b>Description:</b> {{ client.desc }} <br>
+			{% endif %}	
 		</div>
 	</div>
 </div>

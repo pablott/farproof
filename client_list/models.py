@@ -9,7 +9,7 @@ from django.forms.widgets import HiddenInput
 	
 class Client(models.Model):
 	name = models.CharField(max_length=256)
-	#email = models.EmailField(max_length=254)
+	desc = models.CharField(max_length=256, blank=True, null=True)
 	active = models.BooleanField(default=True)
 	creation = models.DateTimeField(default="", auto_now_add=True)
 	modified = models.DateTimeField(default="", auto_now=True)
@@ -28,7 +28,7 @@ class User(models.Model):
 class ClientAddForm(ModelForm):
 	class Meta:
 		model = Client
-		fields = ('name',)
+		fields = ('name','desc')
 		
 		
 class Job(models.Model):
@@ -50,7 +50,6 @@ class Job(models.Model):
 		approved_pages = 0
 		# TODO: use method Page.last_rev()
 		# (instead of reinventing the wheel)
-		# See below:
 		for item in self.item_set.all():
 			for page in item.page_set.all():
 				total_pages = total_pages+1
@@ -97,7 +96,6 @@ class Item(models.Model):
 		approved_pages = 0
 		# TODO: use method Page.last_rev()
 		# (instead of reinventing the wheel)
-		# See below:
 		for page in self.page_set.all():
 			total_pages = total_pages+1
 			revisions = page.revision_set.order_by('-creation')
@@ -105,7 +103,7 @@ class Item(models.Model):
 				last_rev = revisions[0]
 				if last_rev.status == 'OK':
 					approved_pages=approved_pages+1
-		if total_pages == approved_pages:
+		if total_pages == approved_pages and total_pages > 1 :
 			return True
 		else:
 			return False
