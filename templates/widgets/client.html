@@ -6,7 +6,7 @@
 		<div class="mini_summary">
 			PK: {{ client.pk }}/ID: {{ client.id }} <br>
 			{{ client.job_set.count }} total jobs </br>
-			<span class="unactive">({{ client.job_set.count }} hidden jobs)</span> <br>
+			<span class="shaded">({{ client.job_set.count }} hidden jobs)</span> <br>
 		</div>
 		
 		<a class="title" href="/{{ client.pk }}/">{{ client.name }}</a>
