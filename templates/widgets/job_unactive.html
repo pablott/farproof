@@ -11,7 +11,9 @@
 		<a class="title" href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a>
 		<div class="summary">
 			<b>Added on:</b> {{ job.creation|date:"D j M y, H:i" }} <br>
-			<b>Description:</b> {{ job.desc }} <br>
+			{% if job.desc %}
+				<b>Description:</b> {{ job.desc }} <br>
+			{% endif %}
 
 			{% if job.item_set.all %}
 				<b>{{ job.item_set.count }} items, {{ job.total_pages }} pages inside</b> <br>
