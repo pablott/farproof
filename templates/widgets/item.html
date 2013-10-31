@@ -13,12 +13,13 @@
 		</div>
 		
 		<a class="title" href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list">{{ item.name }}</a> <br>
-		{% if item.desc %}
 			<div class="summary">
+			{% if item.desc %}
 				<b>Description:</b> {{ item.desc }}
+			{% else %}
+				<br>
+			{% endif %}
 			</div>
-		{% endif %}
-		
 	</div>
 </div>
 
