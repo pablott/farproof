@@ -94,15 +94,11 @@ class Item(models.Model):
 	def is_ready(self):
 		total_pages = 0
 		approved_pages = 0
-		# TODO: use method Page.last_rev()
-		# (instead of reinventing the wheel)
 		for page in self.page_set.all():
 			total_pages = total_pages+1
-			revisions = page.revision_set.order_by('-creation')
-			if revisions:
-				last_rev = revisions[0]
-				if last_rev.status == 'OK':
-					approved_pages=approved_pages+1
+			last_rev = page.last_rev()
+			if last_rev.status == 'OK':
+				approved_pages = approved_pages+1
 		if total_pages == approved_pages and total_pages > 1 :
 			return True
 		else:
