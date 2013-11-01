@@ -46,19 +46,13 @@ class Job(models.Model):
 		return count
 	
 	def is_ready(self):
-		total_pages = 0
-		approved_pages = 0
-		# TODO: use method Page.last_rev()
-		# (instead of reinventing the wheel)
+		total_items = 0
+		approved_items = 0
 		for item in self.item_set.all():
-			for page in item.page_set.all():
-				total_pages = total_pages+1
-				revisions = page.revision_set.order_by('-creation')
-				if revisions:
-					last_rev = revisions[0]
-					if last_rev.status == 'OK':
-						approved_pages=approved_pages+1
-		if total_pages == approved_pages:
+			total_items = total_items+1
+			if item.is_ready():
+				approved_items=approved_items+1
+		if total_items == approved_items:
 			return True
 		else:
 			return False
