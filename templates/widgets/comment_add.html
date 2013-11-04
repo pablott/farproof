@@ -7,14 +7,14 @@
 		{% csrf_token %}
 		{{ form.as_ul }}
 		Status: 
-		<input class="ok" type="radio" name="status" value="OK" > Approved
-		<input type="radio" name="status" value="REJECTED"> Rejected
+		<input type="radio" name="status" value="OK" > <span class="ok">Approved</span>
+		<input type="radio" name="status" value="REJECTED"> <span class="rejected">Rejected</span>
 		<div style="page_selection">
 			Also affects these pages: <br>
 			<ul>
 				{% for this_page in item.page_set.all %}
 					{% if this_page.number == page.number %}
-						<input type="checkbox" checked="checked" disabled="disabled">{{ this_page.number }}
+						<input type="checkbox" name="pages" checked="checked" disabled="disabled">{{ this_page.number }}
 					{% else %}
 						<input type="checkbox" name="pages" value="{{ this_page.number }}">{{ this_page.number }}
 					{% endif %}
