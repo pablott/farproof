@@ -1,9 +1,11 @@
 ﻿{% load i18n %}
 {% load widgets %}
+{% load review %}
 
 
 {# TODO: unify odd and even since the only difference is the class #}
 <div class="page even">
+	{% comment_add context page item job client %}
 	{{ page.number }} <br>
 	{{ page.last_rev.status }} <br>
 	{{ page.last_rev.creation }} <br>
@@ -12,5 +14,5 @@
 			{% show_comment comment page item job client %}
 		{% endfor %}
 	{% endif %}
-	<img style="z-index:-10; opacity:.3" src="/media/img/item_sample/{{ page.number }}.png"></img>
+	<img style="z-index:-10;" src="/media/img/item_sample/{{ page.number }}.png"></img>
 </div>

@@ -51,7 +51,6 @@ def item_list(item, job, client):
 @register.inclusion_tag('widgets/page_odd.html', takes_context=True)
 def page_odd(context, page, item, job, client):
 	context = context['request']
-	#print('REQ: '+str(request))
 	return {
 		'context': context,
 		'page': page,
@@ -60,9 +59,11 @@ def page_odd(context, page, item, job, client):
 		'client': client
 	}
 
-@register.inclusion_tag('widgets/page_even.html')
-def page_even(page, item, job, client):
+@register.inclusion_tag('widgets/page_even.html', takes_context=True)
+def page_even(context, page, item, job, client):
+	context = context['request']
 	return {
+		'context': context,
 		'page': page,
 		'item': item,
 		'job': job, 
