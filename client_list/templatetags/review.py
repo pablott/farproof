@@ -40,12 +40,12 @@ def affects_too(comment, page, item, job, client):
 
 @register.inclusion_tag('widgets/comment_add.html')
 def comment_add(request, page, item, job, client):
-	if request.method == 'POST': #and 'valid'==page.number: # If the form has been retrieved...
+	if request.method == 'POST' and int(request.POST['page_from']) == page.number: #and 'valid'==page.number: # If the form has been retrieved...
 		post = request.POST.copy()
 		print(post)
 		
 		if int(post['page_from']) == page.number:
-		# if str('from_page-'+page.number)request.POST:
+		# if str('page_from-'+page.number)request.POST:
 			print('same')
 		else:
 			print('not same')
