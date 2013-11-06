@@ -40,69 +40,59 @@ def affects_too(comment, page, item, job, client):
 
 @register.inclusion_tag('widgets/comment_add.html')
 def comment_add(request, page, item, job, client):
-	if request.method == 'POST': # If the form has been submitted...
+	if request.method == 'POST': # If the form has been retrieved...
 		post = request.POST.copy()
 		print(post)
-		print('POST received')
-		print(post['comment'])
 		
-		# Add its own page to pages dict
+		# Extract variables form POST message
+		comment = post['comment']
+		new_status = post['status']
 		pages = dict(post)['pages']
-		pages.append(page.number)
-		print(pages)
+		# Does it duplicate POST message?
+		# pages = post.getlist('pages')
 		
-		# Form comment and save it:
-		t = post['comment']
-		status = post['status']
-		new_comment = Comment(comment=t)
+		# Explicitly append current page number
+		# (is not enough marking the cell as 'checked' in the html template)
+		# TODO: reorder (just for convenience) and sanitize (only integer numbers)
+		print('pages: '+str(pages))
+		# pages.append(page.number)
+		
+		# Create a comment and save it for later:
+		new_comment = Comment(comment=comment)
 		new_comment.save()
 		
-		# Assign comment to the revision of each page in the "affects too" list.
+		# Assign comment to a revision of its own page 
+		# and each page in the "affects too" list.
 		# This revision can be:
 		# a) if the user adding the comment belongs to providers list, the current last_rev()
 		# b) if the user adding the comment belongs to clients list, a new revision (i.e.: last_rev()+1)
-		# TODO: create users subsystem
+		print('PAGES AFFECTED:')
+		print('iter: \tcurr_pg_num: \tcurr_rev: \tnew_rev:')
+		c = 0
 		for i in pages:
 			current_page_num = int(i)
 			current_page = Page.objects.get(number=current_page_num, item=item)
 			current_rev = current_page.last_rev()
-			print('current_page: '+str(current_page))
-			print(current_rev)
 			
-			
-			
-			
-			# Decide if a new revision has to be created or not
-			if 1: # If user belongs to 'provider'
-				# TODO: add new revision if previous is OK or PENDING, 
-				# right now it doesn't add any new revision but it should
-				if 'PENDING' in current_rev.status:
-					new_rev_num = current_rev.rev_number+1
-					new_revision = Revision(rev_number=new_rev_num, page=current_page, status=status)
-					new_revision.save()
-					revision = new_revision
-				else: #create a new revision
-					revision = current_rev
-					
-					
-					
-					
-					
-			else: # If user belongs to 'client'
+			# Add new revision only when status has been changed
+			if current_rev.status != new_status:
 				new_rev_num = current_rev.rev_number+1
-				print('new_rev_num: '+str(new_rev_num))
-				new_revision = Revision(rev_number=new_rev_num, page=current_page, status=status)
-				print(new_revision)
+				new_revision = Revision(rev_number=new_rev_num, page=current_page, status=new_status)
 				new_revision.save()
 				revision = new_revision
+			else: # Do not create a new revision
+				revision = current_rev
 			
-			# Add each new revision to the new comment
+			print(str(c)+'\t\t'+str(current_page.number)+'\t\t'+str(current_rev.rev_number)+'\t\t'+str(revision.rev_number))
+			
+			# Associate new_comment to revision
 			new_comment.revision.add(revision)
-			print(new_comment)
-			
+			c = c+1
+
+		print("DONE\n")
 		form = CommentAddForm() # Reset form after saving
 	else:
-		print ('Empty form')
+		print ('Empty unbound form')
 	form = CommentAddForm() # An unbound form
 	return {
 		'form': form,
@@ -112,16 +102,3 @@ def comment_add(request, page, item, job, client):
 		'client': client,
 	}
 
-	
-@register.inclusion_tag('widgets/comment_add.html', takes_context=True)
-def comment_add2(context, page, item, job, client):
-	return template.RequestContext(context['request'], {
-		'request': request,
-		'form': form,
-		'message': message,
-		'page': page,
-		'item': item,
-		'job': job, 
-		'client': client,
-	})
-	
