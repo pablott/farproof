@@ -20,6 +20,7 @@
 					{% if this_page.number == page.number %}
 						<label for="{{ this_page.number }}">
 							<input type="checkbox" checked="checked" disabled="disabled" id="{{ this_page.number }}"> {{ this_page.number }}
+							<input type="hidden" checked="checked" name="pages" value="{{ this_page.number }}">
 						</label>
 					{% else %}
 						<label for="{{ this_page.number }}">
