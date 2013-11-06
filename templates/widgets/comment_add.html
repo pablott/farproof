@@ -3,7 +3,7 @@
 
 <div class="comment_add">
 	Add a comment:
-	<form method="post">
+	<form method="POST">
 		{% csrf_token %}
 		{{ form.as_ul }}
 		Status: 
@@ -30,7 +30,7 @@
 				{% endfor %}
 			</ul>
 		</div>
-		<input type="submit" id="submit" value="Add Comment">
+		<button type="submit" name="page_from" value="{{ page.number }}">Add Comment</button>
 	</form>
 </div>	
 

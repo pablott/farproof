@@ -40,16 +40,23 @@ def affects_too(comment, page, item, job, client):
 
 @register.inclusion_tag('widgets/comment_add.html')
 def comment_add(request, page, item, job, client):
-	if request.method == 'POST': # If the form has been retrieved...
+	if request.method == 'POST': #and 'valid'==page.number: # If the form has been retrieved...
 		post = request.POST.copy()
 		print(post)
+		
+		if int(post['page_from']) == page.number:
+		# if str('from_page-'+page.number)request.POST:
+			print('same')
+		else:
+			print('not same')
+		print(page.number)
 		
 		# Extract variables form POST message
 		comment = post['comment']
 		new_status = post['status']
-		pages = dict(post)['pages']
-		# Does it duplicate POST message?
-		# pages = post.getlist('pages')
+		# pages = dict(post)['pages']
+		# Does it duplicate POST message? no
+		pages = post.getlist('pages[]')
 		
 		# Explicitly append current page number
 		# (is not enough marking the cell as 'checked' in the html template)
@@ -93,7 +100,7 @@ def comment_add(request, page, item, job, client):
 		form = CommentAddForm() # Reset form after saving
 	else:
 		print ('Empty unbound form')
-	form = CommentAddForm() # An unbound form
+		form = CommentAddForm() # An unbound form
 	return {
 		'form': form,
 		'page': page,
