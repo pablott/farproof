@@ -40,44 +40,33 @@ def affects_too(comment, page, item, job, client):
 
 @register.inclusion_tag('widgets/comment_add.html')
 def comment_add(request, page, item, job, client):
-	if request.method == 'POST' and int(request.POST['page_from']) == page.number: #and 'valid'==page.number: # If the form has been retrieved...
+	if request.method == 'POST' and int(request.POST['from_page']) == page.number:
 		post = request.POST.copy()
 		print(post)
-		
-		if int(post['page_from']) == page.number:
-		# if str('page_from-'+page.number)request.POST:
-			print('same')
-		else:
-			print('not same')
-		print(page.number)
+		print('\nProcessing POST...')
 		
 		# Extract variables form POST message
+		# TODO: sanitize entries
 		comment = post['comment']
 		new_status = post['status']
-		# pages = dict(post)['pages']
-		# Does it duplicate POST message? no
 		pages = post.getlist('pages[]')
-		
-		# Explicitly append current page number
-		# (is not enough marking the cell as 'checked' in the html template)
-		# TODO: reorder (just for convenience) and sanitize (only integer numbers)
-		print('pages: '+str(pages))
-		# pages.append(page.number)
+		print('\tpages: '+str(pages)+'\n\tcomment: '+str(comment)+'\n\tnew_status: '+str(new_status)+'\n\tfrom_page: '+str(post['from_page']))
 		
 		# Create a comment and save it for later:
 		new_comment = Comment(comment=comment)
 		new_comment.save()
+		print('\nNew Comment saved.\n')
 		
 		# Assign comment to a revision of its own page 
 		# and each page in the "affects too" list.
 		# This revision can be:
 		# a) if the user adding the comment belongs to providers list, the current last_rev()
 		# b) if the user adding the comment belongs to clients list, a new revision (i.e.: last_rev()+1)
-		print('PAGES AFFECTED:')
+		print('Pages affected:')
 		print('iter: \tcurr_pg_num: \tcurr_rev: \tnew_rev:')
 		c = 0
-		for i in pages:
-			current_page_num = int(i)
+		for p in pages:
+			current_page_num = int(p)
 			current_page = Page.objects.get(number=current_page_num, item=item)
 			current_rev = current_page.last_rev()
 			
@@ -95,8 +84,8 @@ def comment_add(request, page, item, job, client):
 			# Associate new_comment to revision
 			new_comment.revision.add(revision)
 			c = c+1
-
-		print("DONE\n")
+			
+		print("\nNew Revisions added to pages "+str(pages)+' inside '+'\"'+str(job.name)+'\"/\"'+str(item.name)+'\".')
 		form = CommentAddForm() # Reset form after saving
 	else:
 		print ('Empty unbound form')
