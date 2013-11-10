@@ -50,7 +50,7 @@ def comment_add(request, page, item, job, client):
 		comment = post['comment']
 		new_status = post['status']
 		pages = post.getlist('pages[]')
-		print('\tpages: '+str(pages)+'\n\tcomment: '+str(comment)+'\n\tnew_status: '+str(new_status)+'\n\tfrom_page: '+str(post['from_page']))
+		print('\tpages: '+str(pages)+'\n\tcomment: '+str(comment)+'\n\tnew_status: '+str(new_status)+'\n\tfrom_page: '+str(post['from_page'])+'\n\tcalling_page: '+str(page.number))
 		
 		# Create a comment and save it for later:
 		new_comment = Comment(comment=comment)
@@ -63,7 +63,7 @@ def comment_add(request, page, item, job, client):
 		# a) if the user adding the comment belongs to providers list, the current last_rev()
 		# b) if the user adding the comment belongs to clients list, a new revision (i.e.: last_rev()+1)
 		print('Pages affected:')
-		print('iter: \tcurr_pg_num: \tcurr_rev: \tnew_rev:')
+		print('count: \tcurr_pg_num: \tcurr_rev: \tnew_rev: \tchanges rev?')
 		c = 0
 		for p in pages:
 			current_page_num = int(p)
@@ -76,16 +76,18 @@ def comment_add(request, page, item, job, client):
 				new_revision = Revision(rev_number=new_rev_num, page=current_page, status=new_status)
 				new_revision.save()
 				revision = new_revision
+				changes = 'Yes'
 			else: # Do not create a new revision
 				revision = current_rev
+				changes = 'No'
 			
-			print(str(c)+'\t\t'+str(current_page.number)+'\t\t'+str(current_rev.rev_number)+'\t\t'+str(revision.rev_number))
+			print(str(c)+'\t\t'+str(current_page.number)+'\t\t'+str(current_rev.rev_number)+'\t\t'+str(revision.rev_number)+'\t\t'+str(changes))
 			
 			# Associate new_comment to revision
 			new_comment.revision.add(revision)
 			c = c+1
 			
-		print("\nNew Revisions added to pages "+str(pages)+' inside '+'\"'+str(job.name)+'\"/\"'+str(item.name)+'\".')
+		print('\nNew Comment \"'+str(new_comment.comment)+'\" added to pages '+str(pages)+' inside '+'\"'+str(job.name)+'\"/\"'+str(item.name)+'\".')
 		form = CommentAddForm() # Reset form after saving
 	else:
 		print ('Empty unbound form')
