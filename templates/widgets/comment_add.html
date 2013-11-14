@@ -22,8 +22,8 @@
 						<input type="hidden" checked="checked" name="pages[]" value="{{ this_page.number }}">
 					</label>
 				{% else %}
-					<label for="{{ this_page.number }}"> {{ this_page.number }}
-						<input type="checkbox" name="pages[]" id="{{ this_page.number }}" value="{{ this_page.number }}"> 
+					<label for="{{ this_page.number }}">
+						<input type="checkbox" name="pages[]" id="{{ this_page.number }}" value="{{ this_page.number }}"> {{ this_page.number }}
 					</label>
 				{% endif %}
 			{% endfor %}
