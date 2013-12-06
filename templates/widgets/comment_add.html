@@ -1,9 +1,20 @@
 ﻿{% load i18n %}
 
 
+<script type="text/javascript">
+	// attach handler to form's submit event 
+	$('#comment_form').submit(function() { 
+		// submit the form 
+		$(this).ajaxSubmit(); 
+		// return false to prevent normal browser submit and page navigation 
+		return false; 
+	});
+</script>
+
+
 <div class="comment_add">
-	Add a comment:
-	<form method="POST">
+	Add comment to page {{page.number}}:
+	<form id="comment_form" method="POST">
 		{% csrf_token %}
 		{{ form.as_ul }}
 		Status: 
@@ -14,7 +25,7 @@
 			<input id="status_rejected" type="radio" name="status" value="REJECTED"> Rejected
 		</label>
 		<div class="page_selection">
-			Also affects these pages: <br>
+			Add this comment also to page(s)... <br>
 			{% for this_page in item.page_set.all %}
 				{% if this_page.number == page.number %}
 					<label for="{{ this_page.number }}">
@@ -28,7 +39,7 @@
 				{% endif %}
 			{% endfor %}
 		</div>
-		<button type="submit" name="from_page" value="{{ page.number }}">Add Comment</button>
+		<button  onsubmit="return false;" name="from_page" value="{{ page.number }}">Add Comment</button>
 	</form>
 </div>	
 
