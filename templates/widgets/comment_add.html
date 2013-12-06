@@ -16,8 +16,8 @@
 	Add comment to page {{page.number}}:
 	<form id="comment_form" method="POST">
 		{% csrf_token %}
-		{{ form.as_ul }}
-		Status: 
+		<textarea name="comment" value=""></textarea>
+		Status: <br>
 		<label class="ok" for="status_ok">
 			<input id="status_ok" type="radio" name="status" value="OK" > Approved
 		</label>

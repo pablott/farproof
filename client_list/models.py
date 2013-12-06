@@ -156,15 +156,6 @@ class Comment(models.Model):
 		return self.comment + " - " + str(self.revision.all())
 
 		
-class CommentAddForm(ModelForm):
-	class Meta:
-		model = Comment				
-		widgets = {
-           'revision': HiddenInput(),
-		   #'comment': ,
-      }
-	  
-		
 class Curve(models.Model):
 	revision = models.ForeignKey(Revision)
 	curve = models.CharField(max_length=200)
@@ -188,4 +179,3 @@ class ClientContent(models.Model):
 	render = models.CharField(max_length=30, default="")
 	def __unicode__(self):
 		return "pk:"+str(self.pk) + "file:"+self.file + " - rev pk:"+str(self.revision.pk)
-		

@@ -1,7 +1,5 @@
 ﻿from django import template
 from farproof.client_list.models import Page, Revision, Comment
-from farproof.client_list.models import CommentAddForm
-#from django.core.context_processors import request
 
 
 register = template.Library()
@@ -88,12 +86,9 @@ def comment_add(request, page, item, job, client):
 			c = c+1
 			
 		print('\nNew Comment \"'+str(new_comment.comment)+'\" added to pages '+str(pages)+' inside '+'\"'+str(job.name)+'\"/\"'+str(item.name)+'\".')
-		form = CommentAddForm() # Reset form after saving
 	else:
 		print ('Empty unbound form')
-		form = CommentAddForm() # An unbound form
 	return {
-		'form': form,
 		'page': page,
 		'item': item,
 		'job': job, 
