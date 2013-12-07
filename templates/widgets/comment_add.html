@@ -17,7 +17,6 @@
 	<form id="comment_form" method="POST">
 		{% csrf_token %}
 		<textarea maxlength="256" name="comment" value="" placeholder="Write a comment here..."></textarea>
-		Status: <br>
 		<label class="ok" for="status_ok">
 			<input id="status_ok" type="radio" name="status" value="OK" > Approved
 		</label>
@@ -25,7 +24,7 @@
 			<input id="status_rejected" type="radio" name="status" value="REJECTED"> Rejected
 		</label>
 		<div class="page_selection">
-			Add this comment also to page(s)... <br>
+			Also affects page(s)... <br>
 			{% for this_page in item.page_set.all %}
 				{% if this_page.number == page.number %}
 					<label for="{{ this_page.number }}">
