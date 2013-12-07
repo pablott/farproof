@@ -13,15 +13,15 @@
 
 
 <div class="comment_add">
-	Add comment to page {{page.number}}:
+	Add comment to page {{page.number}}
 	<form id="comment_form" method="POST">
 		{% csrf_token %}
-		<textarea maxlength="256" name="comment" value="" placeholder="Write a comment here..."></textarea>
+		<textarea maxlength="256" name="comment" value="" placeholder="Write comment here..."></textarea>
 		<label class="ok" for="status_ok">
-			<input id="status_ok" type="radio" name="status" value="OK" > Approved
+			<input id="status_ok" type="radio" name="status" value="OK" > Approve
 		</label>
 		<label class="rejected" for="status_rejected">
-			<input id="status_rejected" type="radio" name="status" value="REJECTED"> Rejected
+			<input id="status_rejected" type="radio" name="status" value="REJECTED"> Reject
 		</label>
 		<div class="page_selection">
 			Also affects page(s)... <br>
