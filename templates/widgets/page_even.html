@@ -6,11 +6,8 @@
 {# TODO: unify odd and even since the only difference is the class #}
 <div class="page even">
 	<div class="page_summary">
-		<h2>{{ page.number }}</h2>
+		<h3 class="{{ page.last_rev.status|lower }}">{{ page.number }}</h3>
 		Last comment on {{ page.last_rev.creation|date:"j M, H:i" }}
-		<div class="{{ page.last_rev.status|lower }}"> 
-			{{ page.last_rev.status }}
-		</div>
 	</div>
 	
 	{% comment_add context page item job client %}
