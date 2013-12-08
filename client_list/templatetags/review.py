@@ -17,7 +17,6 @@ def affects_too(comment, page, item, job, client):
 		if revision.pk == revision.page.last_rev().pk:
 			pass
 		else:
-			#print(revision.pk)
 			current_revisions = current_revisions.exclude(pk=revision.pk)
 	
 	# To query past revisions we need to go through the queryset
@@ -86,8 +85,6 @@ def comment_add(request, page, item, job, client):
 			c = c+1
 			
 		print('\nNew Comment \"'+str(new_comment.comment)+'\" added to pages '+str(pages)+' inside '+'\"'+str(job.name)+'\"/\"'+str(item.name)+'\".')
-	else:
-		print ('Empty unbound form')
 	return {
 		'page': page,
 		'item': item,
