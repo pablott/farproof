@@ -2,7 +2,6 @@
 
 {% if current_revisions or past_revisions %}
 <div class="affects_too">
-	<div class="btn_show_more">show more</div>
 	{% if current_revisions %}
 		<h4>Also affecting right now: </h4>
 		{% for revision in current_revisions %}
