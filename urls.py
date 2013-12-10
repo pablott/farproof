@@ -52,9 +52,8 @@ if settings.DEBUG:
     if _media_url.startswith('/'):
         _media_url = _media_url[1:]
         urlpatterns += patterns('',
-                                (r'^%s(?P<path>.*)$' % _media_url,
-                                serve,
-                                {'document_root': settings.MEDIA_ROOT}))
+			# (r'^user/(?P<path>.*)$'
+            (r'^%s(?P<path>.*)$' % _media_url, serve, {'document_root': settings.MEDIA_ROOT, 'show_indexes':True}))
     del _media_url, serve
 
 urlpatterns += staticfiles_urlpatterns()
