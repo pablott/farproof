@@ -31,7 +31,7 @@ PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 
 	
 
 
-def process(dpi, upload_dir, filename, client, job, item, SEPS=False): 
+def process(dpi, upload_dir, filename, client, job, item, SEPS): 
 	render_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'render')
 	if os.path.isdir(render_dir):
 		print("render_dir already exists: " + render_dir)
@@ -62,7 +62,7 @@ def process(dpi, upload_dir, filename, client, job, item, SEPS=False):
 	assign(render_dir, filename, client, job, item, SEPS)
 	
 	
-def assign(render_dir, filename, client, job, item, SEPS):
+def assign(render_dir, filename, client, job, item, SEPS=False):
 	# Check for page range in filename
 	seq = re.findall('(\d+)', filename)
 	start_pos = int(seq[0])
@@ -123,12 +123,13 @@ def assign(render_dir, filename, client, job, item, SEPS):
 		# Render individual separation files:
 		# TODO: It should process all separations (CMYK+spots) and import them with a name 
 		#		(maybe adding UI for this?).
-		print('processing separations into png...')
+		
 		# TODO, CAUTION: chdir() changes the dir for any actions that happens afterwards
 		#os.chdir(render_dir)
 		# http://stackoverflow.com/questions/431684/how-do-i-cd-in-python
 		sep_list = glob.glob(str(i+1)+'.tiff*.tif')
 		if SEPS:
+			print('processing separations into png...')
 			for org_sep_filename in sep_list:
 				print org_sep_filename
 				suffix = re.search('\((.*?)\)', org_sep_filename).group(1)

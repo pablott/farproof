@@ -40,12 +40,7 @@
 
 	<div id="sidebar">
 		<div class="btn_box_top">
-			<a href="/"><div class="btn btnM btnV top"> Client List </div></a>
-			<div class="btn btnM btnV bottom"> <div class="btn_icon btn_icon2">G</div> Configure FP </div>
-			<div class="btn btnM"> <div class="btn_icon btn_icon2"> + </div> Submit </div>
-		</div>
-		<div class="btn_box_bottom">
-			<a href="/"><div class="btn btnM delete"> <div class="btn_icon btn_icon1">X</div> Discard changes </div></a>
+			<a href="/"><div class="btn btnM btnV"> Client List </div></a>
 		</div>
 	</div>
 	
@@ -60,7 +55,7 @@
 		
 	
 	
-		<form action="/{{ client.pk }}/{{ job.pk}}/{{item.pk}}/{{page.number}}/file_upload/" method="post" enctype="multipart/form-data">
+		<form action="/{{ client.pk }}/{{ job.pk}}/{{item.pk}}/file_upload/" method="post" enctype="multipart/form-data">
 			<input name="uploads" type=file multiple>
 			<input type="submit" onclick="Dajaxice.client_list.sayhello(sayhello,{ 'page':{{page.number}} });"> 
 		</form>

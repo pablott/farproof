@@ -14,48 +14,35 @@ from django.template.loader import render_to_string
 from django.template import RequestContext
 from farproof.client_list.ajax import sayhello
 
-def file_upload(request, client_pk, job_pk, item_pk, page_num):
+def file_upload(request, client_pk, job_pk, item_pk):
 	client = Client.objects.get(pk=client_pk)
 	job = Job.objects.get(pk=job_pk, client=client)
 	item = Item.objects.get(pk=item_pk, job=job)
-	page = Page.objects.get(number=page_num, item=item)
 
 	if request.method == 'POST':
 		upload_list = request.FILES.getlist('uploads') # this is a MultiValueDict 
-		write_file(upload_list, client, job, item, page)
+		write_file(upload_list, client, job, item)
 		message = "Uploaded files: "
 		total_size = 0
 		for file in upload_list:
-			#http://stackoverflow.com/questions/117250/how-do-i-get-a-decimal-value-when-using-the-division-operator-in-python
+		# http://stackoverflow.com/questions/117250/how-do-i-get-a-decimal-value-when-using-the-division-operator-in-python
 			message = message + file.name +" - "+ file.content_type +" - "+ str(round(file.size/1048576.0, 2))+"MB"
 			total_size = total_size + file.size
 		message = message +" / "+ str(total_size/1048576.0) + "MB"
-		
-		# html = render_to_string('upload_content.html',
-			# {'message': message,
-			# 'page':page,
-			# }, context_instance = RequestContext(request)
-		# )
-		# return simplejson.dumps({'message':html})
-		# print(html)
-		#return sayhello(request, page.number)
-		
 	else:
 		upload_list = "empty"
 		message = "upload something"
-		
 	
 	return render_to_response('file_upload.html', {
 		'client': client,
 		'job': job,
 		'item': item,
-		'page': page,
 		'upload_list': upload_list,
 		'message': message,
 	})
 
 	
-def write_file(upload_list, client, job, item, page):
+def write_file(upload_list, client, job, item):
 	upload_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'uploads')
 	if os.path.isdir(upload_dir):
 		print("upload_dir already exists: " + upload_dir)
