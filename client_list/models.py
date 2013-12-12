@@ -4,7 +4,7 @@ from django.forms.widgets import HiddenInput
 #from datetime import datetime
 #from django.forms.models import inlineformset_factory
 #from django.forms.formsets import BaseFormSet
-
+from farproof.settings import CONTENTS_PATH
 	
 	
 class Client(models.Model):
@@ -156,26 +156,43 @@ class Comment(models.Model):
 		return self.comment + " - " + str(self.revision.all())
 
 		
+# File uploaded by the Provider to the server
+class CommonFile(models.Model):
+	revision = models.ForeignKey(Revision)
+	f = models.FileField(upload_to=CONTENTS_PATH, default="")
+	
+	class Meta:
+		abstract = True	
+
+
+# File uploaded by the Client as a correction
+class PDFFile(CommonFile):
+	revision = models.ForeignKey(Revision)
+	# TODO: implement
+	inks = pdfinfo.inks
+	pages = pdfinfo.pages
+	def __unicode__(self):
+		return "pk:"+str(self.pk) + "file:"+str(self.f.name) + " - rev pk:"+str(self.revision.pk)
+	
+		
+class RenderFile(CommonFile):
+	revision = models.ForeignKey(Revision)
+	is_sep = 
+	options = {
+				inprofile,
+				rgboutprofile,
+				cmykoutprofile,
+				render_intent,
+				overprint,
+				bpc,
+				preserve_k,
+	}
+	def __unicode__(self):
+		return "pk:"+str(self.pk) + "file:"+str(self.f.name) + " - rev pk:"+str(self.revision.pk)
+
+		
 class Curve(models.Model):
 	revision = models.ForeignKey(Revision)
 	curve = models.CharField(max_length=200)
 	def __unicode__(self):
 		return self.comment	+ " - " + self.page.item.client.name + "rev pk:"+str(self.revision.pk)
-		
-		
-# File uploaded by the Provider to the server
-class ProviderContent(models.Model):
-	revision = models.ForeignKey(Revision)
-	file = models.CharField(max_length=30, default="")
-	render = models.CharField(max_length=30, default="")
-	def __unicode__(self):
-		return "pk:"+str(self.pk) + "file:"+self.file + " - rev pk:"+str(self.revision.pk)
-
-
-# File uploaded by the Client as a correction
-class ClientContent(models.Model):
-	revision = models.ForeignKey(Revision)
-	file = models.CharField(max_length=30, default="")
-	render = models.CharField(max_length=30, default="")
-	def __unicode__(self):
-		return "pk:"+str(self.pk) + "file:"+self.file + " - rev pk:"+str(self.revision.pk)

@@ -8,7 +8,7 @@ from farproof.settings import CONTENTS_PATH
 from django.db import models
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
-fs = FileSystemStorage(location=CONTENTS_PATH)#, base_url='/user/')
+fs = FileSystemStorage(location=CONTENTS_PATH, base_url='/user/')
 fs.file_permissions_mode = 0644
 
 
@@ -64,8 +64,9 @@ def write_file(upload_list, client, job, item):
 			for chunk in file.chunks():
 				f = File(destination)
 				f.write(chunk)
-		process(150, upload_dir, filename, client, job, item, SEPS=False)
-		fs.delete(f)
+		process(150, f, client, job, item, SEPS=False)
+		print(f.name)
+		# fs.delete(f)
 
 
 # add PDF to last rev of a page:

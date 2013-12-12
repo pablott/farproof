@@ -1,0 +1,44 @@
+{% load i18n %}
+{% load widgets %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+	<meta charset="utf-8">
+	<link href="/media/css/common.css" rel="stylesheet" type="text/css">
+	<link href="/media/css/widgets/buttons.css" rel="stylesheet" type="text/css">
+	<link href="/media/css/widgets/client.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
+	<link href="/media/favicon.ico" rel="shortcut icon">
+	<title>FP - Uploads</title>
+</head>
+
+	
+<body>
+	<div id="topbar">
+		<ul>
+			<li> FP </li>
+			<li> Uploads </li>
+		</ul>
+	</div>
+
+	<div id="sidebar">
+		<div class="btn_box_top">
+			<div class="btn btnM btnV"> Client List </div>
+		</div>
+	</div>
+	
+	<div id="view">
+	{% if uploads %}
+		{% for file in uploads %}
+			a
+			{{ file.url }}
+		{% endfor %}
+	{% else %}
+		<p>No files uploaded.</p>
+	{% endif %}
+	
+	</div>	
+</body>
+</html>

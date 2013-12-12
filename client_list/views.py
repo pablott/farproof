@@ -9,8 +9,53 @@ from django.template import RequestContext
 
 #def serve(request, path, document_root, show_indexes=False)
 
-import subprocess
+import subprocess, os
 
+
+
+
+
+
+
+from django.db import models
+from django.core.files import File
+from django.core.files.storage import FileSystemStorage
+from farproof.settings import CONTENTS_PATH
+fs = FileSystemStorage(location=CONTENTS_PATH, base_url='/media/')
+fs.file_permissions_mode = 0644
+
+def uploads1(request, client_pk, job_pk, item_pk, page_num):
+	client = Client.objects.get(pk=client_pk)
+	job = Job.objects.get(pk=job_pk, client=client)
+	item = Item.objects.get(pk=item_pk, job=job)
+	page = Page.objects.get(number=page_num, item=item)
+	
+	print('\n uploads\n')
+	try:
+		page_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), '/pages/', str(page_num), str(page.last_rev().rev_number))
+		
+		print('\n\n serve_img:' + page_dir)
+		
+		response = HttpResponse()
+		response['Content-Type'] = 'image/jpg'
+		response['X-Accel-Redirect'] = os.path.join(CONTENTS_PATH, 'test.jpg')
+		response['Content-Disposition'] = 'attachment;filename=' + str(page_num) + '-render.jpg'
+	except Exception:
+		raise Http404
+	return response
+	
+	
+	
+def uploads2(request):
+	listdir = str(fs.listdir(CONTENTS_PATH))
+	f = fs.open('3-12.pdf', mode='r')
+	print (f.url())
+	uploads = [1,2,3]
+	return render_to_response('uploads.html', {
+		'uploads': uploads,
+	})	
+	
+	
 
 def main(request):
 	clients = Client.objects.filter(active=True).order_by('name') #TODO: make it case insensitive
