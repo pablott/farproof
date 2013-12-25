@@ -2,7 +2,7 @@
 
 from django.shortcuts import render_to_response # Add get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from farproof.client_list.models import Client, Job, Item, Page, Revision, Comment
+from farproof.client_list.models import Client, Job, Item, Page, Revision, Comment, PDFFile
 from farproof.client_list.models import ClientAddForm, JobAddForm, ItemAddForm
 from django.template import RequestContext
 #from django.core.context_processors import request
@@ -17,12 +17,12 @@ import subprocess, os
 
 
 
-from django.db import models
-from django.core.files import File
-from django.core.files.storage import FileSystemStorage
-from farproof.settings import CONTENTS_PATH
-fs = FileSystemStorage(location=CONTENTS_PATH, base_url='/media/')
-fs.file_permissions_mode = 0644
+# from django.db import models
+# from django.core.files import File
+# from django.core.files.storage import FileSystemStorage
+# from farproof.settings import CONTENTS_PATH
+# fs = FileSystemStorage(location=CONTENTS_PATH, base_url='/media/')
+# fs.file_permissions_mode = 0644
 
 def uploads1(request, client_pk, job_pk, item_pk, page_num):
 	client = Client.objects.get(pk=client_pk)
@@ -32,9 +32,9 @@ def uploads1(request, client_pk, job_pk, item_pk, page_num):
 	
 	print('\n uploads\n')
 	try:
-		page_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), '/pages/', str(page_num), str(page.last_rev().rev_number))
+		page_dir = os.path.join(str(CONTENTS_PATH), str(client.pk), str(job.pk), str(item.pk), '\\pages\\', str(page_num), str(page.last_rev().rev_number))
 		
-		print('\n\n serve_img:' + page_dir)
+		print('\n\n serve_img:' + page_dir + '\n' + CONTENTS_PATH)
 		
 		response = HttpResponse()
 		response['Content-Type'] = 'image/jpg'
@@ -55,8 +55,15 @@ def uploads2(request):
 		'uploads': uploads,
 	})	
 	
+def uploads3(request):
+	uploads = PDFFile.objects.all()
+	return render_to_response('uploads.html', {
+		'uploads': uploads,
+	})	
 	
 
+	
+	
 def main(request):
 	clients = Client.objects.filter(active=True).order_by('name') #TODO: make it case insensitive
 	clients_unactive = Client.objects.filter(active=False).order_by('name')

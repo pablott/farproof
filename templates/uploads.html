@@ -31,9 +31,9 @@
 	
 	<div id="view">
 	{% if uploads %}
-		{% for file in uploads %}
+		{% for f in uploads %}
 			a
-			{{ file.url }}
+			{{ f.url }}
 		{% endfor %}
 	{% else %}
 		<p>No files uploaded.</p>

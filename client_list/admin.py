@@ -1,5 +1,5 @@
 ﻿from django.contrib import admin
-from farproof.client_list.models import Client, User, Job, Item, Page, Revision, Comment, Curve, ProviderContent, ClientContent
+from farproof.client_list.models import Client, User, Job, Item, Page, Revision, Comment, PDFFile, RenderFile
 
 class ItemAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -15,6 +15,5 @@ admin.site.register(Item, ItemAdmin)
 admin.site.register(Page)
 admin.site.register(Revision)
 admin.site.register(Comment)
-admin.site.register(Curve)
-admin.site.register(ProviderContent)
-admin.site.register(ClientContent)
+admin.site.register(PDFFile)
+admin.site.register(RenderFile)

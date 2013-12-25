@@ -1,7 +1,7 @@
 # Processes and assigns files
 
 import os, subprocess, re, shutil, glob
-from farproof.client_list.models import Page, Revision
+from farproof.client_list.models import Page, Revision, PDFFile
 from farproof.settings import CONTENTS_PATH
 
 # See: http://ghostscript.com/doc/current/Use.htm

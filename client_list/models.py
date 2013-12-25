@@ -156,43 +156,49 @@ class Comment(models.Model):
 		return self.comment + " - " + str(self.revision.all())
 
 		
-# File uploaded by the Provider to the server
+		
+from django.core.files.storage import FileSystemStorage
+	
 class CommonFile(models.Model):
-	revision = models.ForeignKey(Revision)
-	f = models.FileField(upload_to=CONTENTS_PATH, default="")
+	fs = FileSystemStorage(location=CONTENTS_PATH, base_url='/user')
+	# fs.file_permissions_mode = 0644
+
+	f = models.FileField(upload_to='/sample', storage=fs, default="")
 	
 	class Meta:
 		abstract = True	
 
 
-# File uploaded by the Client as a correction
 class PDFFile(CommonFile):
-	revision = models.ForeignKey(Revision)
+	# item = models.ForeignKey(Item)
 	# TODO: implement
-	inks = pdfinfo.inks
-	pages = pdfinfo.pages
+	# inks = pdfinfo.inks
+	# pages = pdfinfo.pages
 	def __unicode__(self):
 		return "pk:"+str(self.pk) + "file:"+str(self.f.name) + " - rev pk:"+str(self.revision.pk)
 	
 		
 class RenderFile(CommonFile):
-	revision = models.ForeignKey(Revision)
-	is_sep = 
-	options = {
-				inprofile,
-				rgboutprofile,
-				cmykoutprofile,
-				render_intent,
-				overprint,
-				bpc,
-				preserve_k,
-	}
+	# revision = models.ForeignKey(Revision)
+	# TODO: implement
+	# Set these options when processing file
+	# color_space = RGB or CMYK
+	# channel = RGB or CMYK or seps C|M|Y|K|named_color
+	# options = {
+				# in_profile,
+				# rgb_outprofile,
+				# cmyk_outprofile,
+				# render_intent,
+				# overprint,
+				# bpc,
+				# preserve_k,
+	# }
 	def __unicode__(self):
 		return "pk:"+str(self.pk) + "file:"+str(self.f.name) + " - rev pk:"+str(self.revision.pk)
 
 		
-class Curve(models.Model):
-	revision = models.ForeignKey(Revision)
-	curve = models.CharField(max_length=200)
-	def __unicode__(self):
-		return self.comment	+ " - " + self.page.item.client.name + "rev pk:"+str(self.revision.pk)
+# class Curve(models.Model):
+	# revision = models.ForeignKey(Revision)
+	# curve = models.CharField(max_length=200)
+	# def __unicode__(self):
+		# return self.comment	+ " - " + self.page.item.client.name + "rev pk:"+str(self.revision.pk)

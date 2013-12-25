@@ -1,15 +1,15 @@
 import os, subprocess
 from django.shortcuts import render_to_response # Add get_object_or_404
-from farproof.client_list.models import Client, Job, Item, Page, Revision
+from farproof.client_list.models import Client, Job, Item, Page, Revision, PDFFile
 from farproof.process.process import process
 from farproof.settings import CONTENTS_PATH
 
 # For saving (and serving) PDF uploaded by user:
-from django.db import models
-from django.core.files import File
-from django.core.files.storage import FileSystemStorage
-fs = FileSystemStorage(location=CONTENTS_PATH, base_url='/user/')
-fs.file_permissions_mode = 0644
+# from django.db import models
+# from django.core.files import File
+# from django.core.files.storage import FileSystemStorage
+# fs = FileSystemStorage(location=CONTENTS_PATH, base_url='/user/')
+# fs.file_permissions_mode = 0644
 
 
 #TODO: JSON and MD5 client-side checksum verified by server-side checksum
@@ -60,13 +60,12 @@ def write_file(upload_list, client, job, item):
 
 	for file in upload_list:
 		filename = file.name
-		with open(os.path.join(upload_dir, filename), 'wb+') as destination:
+		with open(os.path.join(upload_dir, filename), 'wb+') as content:
 			for chunk in file.chunks():
-				f = File(destination)
-				f.write(chunk)
+				f = PDFFile(f=content)
+				f.save()
 		process(150, f, client, job, item, SEPS=False)
 		print(f.name)
-		# fs.delete(f)
 
 
 # add PDF to last rev of a page:
