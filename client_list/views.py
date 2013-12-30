@@ -2,7 +2,7 @@
 
 from django.shortcuts import render_to_response # Add get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from farproof.client_list.models import Client, Job, Item, Page, Revision, Comment, PDFFile
+from farproof.client_list.models import Client, Job, Item, Page, Revision, Comment, PDFFile, RenderFile
 from farproof.client_list.models import ClientAddForm, JobAddForm, ItemAddForm
 from django.template import RequestContext
 #from django.core.context_processors import request
@@ -56,9 +56,11 @@ def uploads2(request):
 	})	
 	
 def uploads3(request):
-	uploads = PDFFile.objects.all()
+	pdfs = PDFFile.objects.all()
+	renders = RenderFile.objects.all()
 	return render_to_response('uploads.html', {
-		'uploads': uploads,
+		'pdfs': pdfs,
+		'renders': renders,
 	})	
 	
 

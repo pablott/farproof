@@ -30,15 +30,27 @@
 	</div>
 	
 	<div id="view">
-	{% if uploads %}
-		{% for f in uploads %}
-			a
-			{{ f.url }}
-		{% endfor %}
-	{% else %}
-		<p>No files uploaded.</p>
-	{% endif %}
-	
+		<div class="summary">
+			{% if pdfs %}
+				{% for pdf in pdfs %}
+					pk: {{ pdf.pk }} <br>
+					url: {{ pdf.f.name }} <br>
+					file: <a href="{{ pdf.f.url }}">{{ pdf.f.url }}</a> <br><br>
+				{% endfor %}
+			{% else %}
+				<p>No PDF files.</p>
+			{% endif %}
+			<hr>
+			{% if renders %}
+				{% for render in renders %}
+					pk: {{ render.pk }} <br>
+					url: {{ render.f.name }} <br>
+					file: <a href="{{ render.f.url }}">{{ render.f.url }}</a> <br><br>
+				{% endfor %}
+			{% else %}
+				<p>No render files.</p>
+			{% endif %}
+		</div>	
 	</div>	
 </body>
 </html>
