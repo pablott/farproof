@@ -30,8 +30,8 @@ BPC = '-dBlackPtComp=1' #0:Don't, #1:Do
 PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 2:PRESERVE K PLANE (littleCMS)
 	
 
-
-def process(dpi, f, client, job, item, SEPS): 
+from django.core.files import File
+def process(dpi, pdf, client, job, item, SEPS): 
 	render_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'render')
 	if os.path.isdir(render_dir):
 		print("render_dir already exists: " + render_dir)
@@ -43,7 +43,7 @@ def process(dpi, f, client, job, item, SEPS):
 	# RGB devices don't support overprint, conversion from CMYK tiff is neccesary
 	# TODO: make CMYK_PROFILE and OVERPRINT work together
 	# TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK)
-	print('PDF to TIFF... ' + f.name +' ->> '+ render_dir)
+	print('PDF to TIFF... ' + os.path.join(CONTENTS_PATH, pdf.f.url) +' ->> '+ render_dir)
 	tiff_render_proc = subprocess.Popen([
 		gs,
 		'-sDEVICE=tiffsep', '-r' + str(dpi), #tiff24nc, tiff32nc, tiffsep
@@ -53,17 +53,17 @@ def process(dpi, f, client, job, item, SEPS):
 		TEXT,
 		RENDER_INTENT,
 		OVERPRINT,
-		'-sOUTPUTFILE=' + os.path.join(render_dir, "%d.tiff"), f.name, #'-sstdout=' "D:/tmp/file.txt",
+		'-sOUTPUTFILE=' + os.path.join(render_dir, "%d.tiff"), File(pdf.f), #'-sstdout=' "D:/tmp/file.txt",
 	]) 
 	
 	# Wait for render to finish and spawn the assign process
 	tiff_render_proc.wait()
 	print("finished rendering TIFF, converting to JPEG...")
-	assign(render_dir, f, client, job, item, SEPS)
+	assign(render_dir, pdf, client, job, item, SEPS)
 	
 	
-def assign(render_dir, f, client, job, item, SEPS=False):
-	filename = os.path.basename(os.path.normpath(f.name))
+def assign(render_dir, pdf, client, job, item, SEPS=False):
+	filename = os.path.basename(os.path.normpath(pdf.f.name))
 	print('\n\n\n   '+filename)
 
 	# Check for page range in filename
@@ -120,7 +120,7 @@ def assign(render_dir, f, client, job, item, SEPS=False):
 		# Finally, move rendered files to the proper item's subfolder.
 		jpg_render_proc.wait()
 		print("removing intermediate files... " + os.path.join(render_dir, origin_filename))
-		os.remove(os.path.join(render_dir, origin_filename))
+		# os.remove(os.path.join(render_dir, origin_filename))
 
 		
 		# Render individual separation files:

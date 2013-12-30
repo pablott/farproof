@@ -43,6 +43,7 @@ urlpatterns = patterns('',
     (r'^(\d+)/(\d+)/(\d+)/file_upload/$', file_upload),
     (r'^(\d+)/(\d+)/(\d+)/(\d+)/page_info/$', page_info),
 	(r'^uploads/$', uploads3),
+	(r'^user/$', uploads3),
 	(r'^user/(\d+)/(\d+)/(\d+)/(\d+)/$', uploads1),
 )
 #(r'^(?P<category>\w+)/feedback/$', 'my_view') # Might be useful as wildcard capture method

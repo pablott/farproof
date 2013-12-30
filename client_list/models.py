@@ -163,7 +163,7 @@ class CommonFile(models.Model):
 	fs = FileSystemStorage(location=CONTENTS_PATH, base_url='/user')
 	# fs.file_permissions_mode = 0644
 
-	f = models.FileField(upload_to='/sample', storage=fs, default="")
+	f = models.FileField(upload_to='sample', storage=fs, default="")
 	
 	class Meta:
 		abstract = True	
@@ -175,7 +175,7 @@ class PDFFile(CommonFile):
 	# inks = pdfinfo.inks
 	# pages = pdfinfo.pages
 	def __unicode__(self):
-		return "pk:"+str(self.pk) + "file:"+str(self.f.name) + " - rev pk:"+str(self.revision.pk)
+		return "pk:"+str(self.pk) + " file:"+str(self.f.name)
 	
 		
 class RenderFile(CommonFile):
@@ -194,7 +194,7 @@ class RenderFile(CommonFile):
 				# preserve_k,
 	# }
 	def __unicode__(self):
-		return "pk:"+str(self.pk) + "file:"+str(self.f.name) + " - rev pk:"+str(self.revision.pk)
+		return "pk:"+str(self.pk) + " file:"+str(self.f.name)
 
 		
 # class Curve(models.Model):

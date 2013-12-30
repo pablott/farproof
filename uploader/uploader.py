@@ -2,7 +2,7 @@ import os, subprocess
 from django.shortcuts import render_to_response # Add get_object_or_404
 from farproof.client_list.models import Client, Job, Item, Page, Revision, PDFFile
 from farproof.process.process import process
-from farproof.settings import CONTENTS_PATH
+# from farproof.settings import CONTENTS_PATH
 
 # For saving (and serving) PDF uploaded by user:
 # from django.db import models
@@ -29,13 +29,14 @@ def file_upload(request, client_pk, job_pk, item_pk):
 	if request.method == 'POST':
 		upload_list = request.FILES.getlist('uploads') # this is a MultiValueDict 
 		write_file(upload_list, client, job, item)
-		message = "Uploaded files: "
-		total_size = 0
-		for file in upload_list:
+		
+		# message = "Uploaded files: "
+		# total_size = 0
+		# for file in upload_list:
 		# http://stackoverflow.com/questions/117250/how-do-i-get-a-decimal-value-when-using-the-division-operator-in-python
-			message = message + file.name +" - "+ file.content_type +" - "+ str(round(file.size/1048576.0, 2))+"MB"
-			total_size = total_size + file.size
-		message = message +" / "+ str(total_size/1048576.0) + "MB"
+			# message = message + file.name +" - "+ file.content_type +" - "+ str(round(file.size/1048576.0, 2))+"MB"
+			# total_size = total_size + file.size
+		# message = message +" / "+ str(total_size/1048576.0) + "MB"
 	else:
 		upload_list = "empty"
 		message = "upload something"
@@ -45,27 +46,61 @@ def file_upload(request, client_pk, job_pk, item_pk):
 		'job': job,
 		'item': item,
 		'upload_list': upload_list,
-		'message': message,
+		# 'message': message,
 	})
 
-	
+from django.core.files import File
+# from django.core.files.temp import NamedTemporaryFile
 def write_file(upload_list, client, job, item):
-	upload_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'uploads')
-	if os.path.isdir(upload_dir):
-		print("upload_dir already exists: " + upload_dir)
-		pass
-	else:
-		print("creating upload_dir... " + upload_dir)
-		os.makedirs(upload_dir) # TODO: don't stop on OSError and jump to writing chunks
+	# upload_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'uploads')
+	# if os.path.isdir(upload_dir):
+		# print("upload_dir already exists: " + upload_dir)
+		# pass
+	# else:
+		# print("creating upload_dir... " + upload_dir)
+		# os.makedirs(upload_dir) # TODO: don't stop on OSError and jump to writing chunks
 
 	for file in upload_list:
-		filename = file.name
-		with open(os.path.join(upload_dir, filename), 'wb+') as content:
-			for chunk in file.chunks():
-				f = PDFFile(f=content)
-				f.save()
-		process(150, f, client, job, item, SEPS=False)
-		print(f.name)
+		print('Saving file: '+file.name)
+		new_file = PDFFile()
+		new_file.save()
+		new_file.f = File(file)
+		new_file.save()
+		
+		process(150, new_file, client, job, item, SEPS=False)
+
+		
+		
+		
+	# for file in upload_list:
+		# print(upload_list)
+		# new_file = PDFFile()
+		# new_file.save()
+		
+		# new_file_temp = NamedTemporaryFile()
+		# for chunk in file.chunks():
+				# new_file_temp.write(chunk)
+		# new_file_temp.write(file)
+		# new_file_temp.flush()
+		
+		# new_file.f.save('sample.pdf', File(file))
+		# new_file.save()
+		
+		
+		# with new_file as destination:
+			# for chunk in file.chunks():
+				# new_file = PDFFile(f=destination)
+				# new_file.write(chunk)
+		
+		# filename = file.name
+		# with open(os.path.join(upload_dir, filename), 'wb+') as content:
+		# with new_file as content:
+			# for chunk in file.chunks():
+				# new_file = PDFFile(f=content)
+				# new_file.save()
+				# print(new_file.name)
+				
+		# process(150, new_file, client, job, item, SEPS=False)
 
 
 # add PDF to last rev of a page:
