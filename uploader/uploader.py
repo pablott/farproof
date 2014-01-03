@@ -1,18 +1,11 @@
 import os, subprocess
+from django.core.files import File
 from django.shortcuts import render_to_response # Add get_object_or_404
 from farproof.client_list.models import Client, Job, Item, Page, Revision, PDFFile
 from farproof.process.process import process
-# from farproof.settings import CONTENTS_PATH
-
-# For saving (and serving) PDF uploaded by user:
-# from django.db import models
-# from django.core.files import File
-# from django.core.files.storage import FileSystemStorage
-# fs = FileSystemStorage(location=CONTENTS_PATH, base_url='/user/')
-# fs.file_permissions_mode = 0644
 
 
-#TODO: JSON and MD5 client-side checksum verified by server-side checksum
+# TODO: JSON and MD5 client-side checksum verified by server-side checksum
 
 # This first function gets files from POST 
 # and writes them using the write_file() function below
@@ -49,17 +42,7 @@ def file_upload(request, client_pk, job_pk, item_pk):
 		# 'message': message,
 	})
 
-from django.core.files import File
-# from django.core.files.temp import NamedTemporaryFile
 def write_file(upload_list, client, job, item):
-	# upload_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'uploads')
-	# if os.path.isdir(upload_dir):
-		# print("upload_dir already exists: " + upload_dir)
-		# pass
-	# else:
-		# print("creating upload_dir... " + upload_dir)
-		# os.makedirs(upload_dir) # TODO: don't stop on OSError and jump to writing chunks
-
 	for file in upload_list:
 		print('Saving file: '+file.name)
 		new_file = PDFFile()
@@ -67,40 +50,7 @@ def write_file(upload_list, client, job, item):
 		new_file.f = File(file)
 		new_file.save()
 		
-		process(150, new_file, client, job, item, SEPS=False)
-
-		
-		
-		
-	# for file in upload_list:
-		# print(upload_list)
-		# new_file = PDFFile()
-		# new_file.save()
-		
-		# new_file_temp = NamedTemporaryFile()
-		# for chunk in file.chunks():
-				# new_file_temp.write(chunk)
-		# new_file_temp.write(file)
-		# new_file_temp.flush()
-		
-		# new_file.f.save('sample.pdf', File(file))
-		# new_file.save()
-		
-		
-		# with new_file as destination:
-			# for chunk in file.chunks():
-				# new_file = PDFFile(f=destination)
-				# new_file.write(chunk)
-		
-		# filename = file.name
-		# with open(os.path.join(upload_dir, filename), 'wb+') as content:
-		# with new_file as content:
-			# for chunk in file.chunks():
-				# new_file = PDFFile(f=content)
-				# new_file.save()
-				# print(new_file.name)
-				
-		# process(150, new_file, client, job, item, SEPS=False)
+		process(150, new_file, client, job, item, SEPS=True)
 
 
 # add PDF to last rev of a page:
