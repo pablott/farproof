@@ -7,7 +7,7 @@ from farproof.client_list.models import Page, Revision, PDFFile
 from farproof.settings import CONTENTS_PATH
 
 #####################################################################
-# 	GhosScript processing options :									#
+# 	Processing options :											#
 #####################################################################
 # See: http://ghostscript.com/doc/current/Use.htm					#
 # and: http://ghostscript.com/doc/current/Devices.htm#TIFF			#
@@ -35,7 +35,7 @@ OVERPRINT = ' -dSimulateOverprint=true' #Only for CMYK outputs
 BPC = ' -dBlackPtComp=1' #0:Don't, #1:Do
 PRESERVE_K = ' -dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 2:PRESERVE K PLANE (littleCMS)
 #####################################################################
-# 	End of GhosScript processing options.							#
+# 	End of processing options.										#
 #####################################################################
 
 
@@ -43,39 +43,33 @@ PRESERVE_K = ' -dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS),
 # TODO: make CMYK_PROFILE and OVERPRINT work together
 # TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK)
 def process(dpi, pdf, client, job, item, SEPS): 
-	output_file = NamedTemporaryFile(suffix='-%d.tiff')
-	input_file = pdf.f
-	command = gs + DEVICE + ' -r' + str(dpi) + COMMON + COLOR + GRAPHICS + TEXT + RENDER_INTENT + OVERPRINT + ' -sOUTPUTFILE=' + output_file.name +' '+ input_file.path
-	print('PDF to TIFF... ' + input_file.path + ' ->> ' + output_file.name)
+	tiff_file = NamedTemporaryFile(suffix='-%d.tiff')
+	pdf_file = pdf.f
+	command = gs + DEVICE + ' -r' + str(dpi) + COMMON + COLOR + GRAPHICS + TEXT + RENDER_INTENT + OVERPRINT + ' -sOUTPUTFILE=' + tiff_file.name +' '+ pdf_file.path
+	print('PDF to TIFF... ' + pdf_file.path + ' ->> ' + tiff_file.name)
 	print(command)
 	tiff_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE)
 	tiff_render_proc.communicate()
 	
+	# Spawn the assign process:
 	print("Done rendering TIFF files, converting to JPEG...")
-	# Spawn the assign process
-	# assign(output_file, render_dir, pdf, client, job, item, SEPS)
-	# assign(render_dir, pdf, client, job, item, SEPS)
+	assign(tiff_file, pdf_file, client, job, item, SEPS)
 	
 	
-def assign(render_dir, pdf, client, job, item, SEPS=False):
-	# render_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'render')
-	# if os.path.isdir(render_dir):
-		# print("render_dir already exists: " + render_dir)
-		# pass
-	# else:
-		# print("creating render_dir... " + render_dir)
-		# os.makedirs(render_dir) # TODO: don't stop on OSError and jump to writing chunks
-	
-	filename = os.path.basename(os.path.normpath(pdf.f.name))
-	print('\n\n\n   '+filename)
+def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
+	# Extract prefix formfrom NamedTemporaryFile
+	prefix = os.path.basename(os.path.normpath(tiff_file.name)).split('-')[0]
+	tmpdir = os.path.dirname(tiff_file.name)
+	print('Prefix: ' + str(prefix))
 
-	# Check for page range in filename
+	# Check for page range in filename:
+	filename = os.path.basename(os.path.normpath(pdf_file.path))
 	seq = re.findall('(\d+)', filename)
 	start_pos = int(seq[0])
-	end_pos = int(seq[-1])
-	span = (end_pos-start_pos)+1 # sum +1 because the range is including both extremes
+	end_pos = int(seq[1])
+	span = (end_pos-start_pos)+1 # sum +1 because the range includes both extremes
 	
-	# Use initial number to rename jpgs and send them to their proper page folder
+	# Use initial number to rename JPEGs and send them to their proper page folder:
 	for i in range(0,span):
 		current_pos = i+start_pos
 		# Check if current_page really has a Revision 
@@ -87,63 +81,58 @@ def assign(render_dir, pdf, client, job, item, SEPS=False):
 		else:
 			next_rev = 0
 		
-		# Construct page_dir, new_filename and original_filename
-		page_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'pages', str(current_pos), str(next_rev))
-		origin_filename = str(i+1) +".tiff"
-		new_filename = str(current_pos) +"-render.jpg"
-		
-		# Create required dirs recursively only if they don't exist
+		# Create recquired dirs recursively only if they don't exist
 		if os.path.isdir(page_dir):
 			print("page_dir already exists: " + page_dir)
 			pass
 		else:
-			print("creating page_dir... " + page_dir)
+			print("Creating page_dir... " + page_dir)
 			os.makedirs(page_dir)
+		page_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'pages', str(current_pos), str(next_rev))
 		
-		# Remove target dir files if they exists
-		if os.path.isfile(page_dir + new_filename):
-			os.remove(page_dir + new_filename)
+		# Construct jpeg_filename and tiff_file:
+		tiff_file = os.path.join(tmpdir, (prefix + '-' + str(i+1) + '.tiff'))
+		jpeg_filename = str(current_pos) + '.jpg'
+		
+		# Remove page_dir files if they exists
+		if os.path.isfile(page_dir + jpeg_filename):
+			os.remove(page_dir + jpeg_filename)
 			
-		print('TIFF to JPG... ' + os.path.join(render_dir, origin_filename) +' ->> '+ os.path.join(page_dir, new_filename))
+		print('TIFF to JPEG... ' + tiff_file + ' ->> ' + os.path.join(page_dir, jpeg_filename))
 		
 		# IMPORTANT: shell=True is required!! turning path into str also is.
 		# Order of passed arguments DOES matter.
 		jpg_render_proc = subprocess.Popen([
 			'convert', 
 			'-quality', JPEGQ,
-			str(os.path.join(render_dir, origin_filename)),
+			tiff_file,
 			'+profile', 'icm',
 			'-black-point-compensation',
 			'-profile', r'D:\tmp\profiles\CoatedFOGRA27.icc',
 			'-intent', 'relative',
 			'-profile', r'D:\tmp\profiles\sRGB.icm',
-			str(os.path.join(page_dir, new_filename)),
+			str(os.path.join(page_dir, jpeg_filename)),
 		], shell=True) 
 		
-		# Finally, move rendered files to the proper item's subfolder.
+		# Finally, remove rendered files.
 		jpg_render_proc.wait()
-		print("removing intermediate files... " + os.path.join(render_dir, origin_filename))
-		# os.remove(os.path.join(render_dir, origin_filename))
+		print("Removing intermediate files... " +  tiff_file)
+		os.remove(tiff_file)
 
 		
-		# Render individual separation files:
-		# TODO: It should process all separations (CMYK+spots) and import them with a name 
-		#		(maybe adding UI for this?).
+		# Rendering of individual separation files:
+		sep_list = glob.glob(os.path.join(tmpdir, (prefix + '-' + str(i+1) + '.tiff*.tif')))
+		print(sep_list)
 		
-		# TODO, CAUTION: chdir() changes the dir for any actions that happens afterwards
-		#os.chdir(render_dir)
-		# http://stackoverflow.com/questions/431684/how-do-i-cd-in-python
-		sep_list = glob.glob(str(i+1)+'.tiff*.tif')
 		if SEPS:
-			print('processing separations into png...')
-			for org_sep_filename in sep_list:
-				print org_sep_filename
-				suffix = re.search('\((.*?)\)', org_sep_filename).group(1)
-				dst_sep_filename = str(current_pos) +'-'+ suffix +'.png'
-				
+			print('Processing separations into PNG...')
+			for tif_sep_file in sep_list:
+				print (tif_sep_file)
+				suffix = re.search('\((.*?)\)', tif_sep_file).group(1)
+				png_sep_filename = str(current_pos) +'-'+ suffix +'.png'
 				sep_render_proc = subprocess.Popen([
 					'convert', 
-					str(os.path.join(render_dir, org_sep_filename)),
+					str(os.path.join(tmpdir, tif_sep_file)),
 					# http://www.imagemagick.org/Usage/color_mods/#linear
 					# TODO: tint seps before saving.
 					# The following fx tints each ink (although it takes a LOOOONG time)
@@ -152,20 +141,19 @@ def assign(render_dir, pdf, client, job, item, SEPS=False):
 					# 'convert image.jpg color_layer.png -compose blend -composite result.jpg'
 					# FOGRA27	->	sRGB
 					# cyan		->	0,158,224
-					# This works: C:\Users\Pablo>convert D:\tmp\pdf\1\10\26\render\9.tiff(Black).tif xc:rgb(0,158,224) -fx 1-(1-v.p{0,0})*(1-u) 000.png
-					#'-size', '100x100',
-					#'canvas:rgb(0,158,224)',
-					#'-fx', '1-(1-v.p{0,0})*(1-u)',
-					str(os.path.join(page_dir, dst_sep_filename)),
+					# '-size', '100x100',
+					# 'canvas:rgb(0,158,224)',
+					# '-fx', '1-(1-v.p{0,0})*(1-u)',
+					str(os.path.join(page_dir, png_sep_filename)),
 				], shell=True)
 				
-				# Finally, move rendered separations to the proper item's subfolder.
+				# Finally, move rendered separations to the proper item's subfolder:
 				sep_render_proc.wait()
-				print("removing intermediate sep files... " + os.path.join(render_dir, org_sep_filename))
-				os.remove(os.path.join(render_dir, org_sep_filename))
+				print("Removing intermediate separation files... \n\t" + os.path.join(tmpdir, tif_sep_file))
+				os.remove(os.path.join(tmpdir, tif_sep_file))
 		else:
-			for org_sep_filename in sep_list:
-				print("removing intermediate sep files... " + os.path.join(render_dir, org_sep_filename))
-				os.remove(os.path.join(render_dir, org_sep_filename))
+			for sep_file in sep_list:
+				print("Removing unused intermediate separation files... \n\t" + os.path.join(tmpdir, sep_file))
+				os.remove(os.path.join(tmpdir, sep_file))
 			
-	print('Render of '+filename+' done!')
+	print('Render of ' + pdf_file.path + ' done!')
