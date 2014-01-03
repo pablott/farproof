@@ -1,68 +1,71 @@
 # Processes and assigns files
 
 import os, subprocess, re, shutil, glob
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 from farproof.client_list.models import Page, Revision, PDFFile
 from farproof.settings import CONTENTS_PATH
 
-# See: http://ghostscript.com/doc/current/Use.htm
-# and: http://ghostscript.com/doc/current/Devices.htm#TIFF
-# and: http://ghostscript.com/doc/current/GS9_Color_Management.pdf
+#####################################################################
+# 	GhosScript processing options :									#
+#####################################################################
+# See: http://ghostscript.com/doc/current/Use.htm					#
+# and: http://ghostscript.com/doc/current/Devices.htm#TIFF			#
+# and: http://ghostscript.com/doc/current/GS9_Color_Management.pdf	#
+# CAUTION: is very important that variables are written like this:	#
+#          ' -var1 -var2' (note space at beginning)					#
+#####################################################################
+# Common options:
+gs = r'D:\tmp\gs\bin\gswin64c.exe'
+COMMON = ' -dNOPAUSE -dBATCH -dQUIET'
 
-# CAUTION: is very important that variables are written like this:
-#'-var1 -var2', (with the '' included)
-gs = r'D:\tmp\gs\bin\gswin64c.exe',
-COMMON = '-dNOPAUSE -dBATCH -dQUIET', # REQUIRES the trailing comma for some odd reason
-
-
-# Render Options:
-GRAPHICS = '-dGraphicsAlphaBits=2'
+# Render options:
+DEVICE = ' -sDEVICE=tiffsep' #Output devices: tiff24nc, tiff32nc, tiffsep
+GRAPHICS = ' -dGraphicsAlphaBits=2'
 JPEGQ = '100'
-TEXT = '-dTextAlphaBits=4 -dAlignToPixels=0'
-COLOR = '-dUseCIEColor -dDOINTERPOLATE' #-dCOLORSCREEN'
+TEXT = ' -dTextAlphaBits=4 -dAlignToPixels=0'
+COLOR = ' -dUseCIEColor -dDOINTERPOLATE' #-dCOLORSCREEN'
 
-# Color Management: 
-ICC_FOLDER = '-sICCProfilesDir=' "D:/tmp/profiles/"
-RGB_PROFILE = '-sOutputICCProfile=sRGB.icm'
-CMYK_PROFILE = '-sOutputICCProfile=CoatedFOGRA27.icc' #-sProofProfile
-RENDER_INTENT = '-dRenderIntent=1' #0:Perceptual, 1:Colorimetric, 2:Saturation, 3:Absolute Colorimetric
-OVERPRINT = '-dSimulateOverprint=true' #Only for CMYK outputs
-BPC = '-dBlackPtComp=1' #0:Don't, #1:Do
-PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 2:PRESERVE K PLANE (littleCMS)
-	
+# Color management: 
+ICC_FOLDER = ' -sICCProfilesDir=' "D:/tmp/profiles/"
+RGB_PROFILE = ' -sOutputICCProfile=sRGB.icm'
+CMYK_PROFILE = ' -sOutputICCProfile=CoatedFOGRA27.icc' #-sProofProfile
+RENDER_INTENT = ' -dRenderIntent=1' #0:Perceptual, 1:Colorimetric, 2:Saturation, 3:Absolute Colorimetric
+OVERPRINT = ' -dSimulateOverprint=true' #Only for CMYK outputs
+BPC = ' -dBlackPtComp=1' #0:Don't, #1:Do
+PRESERVE_K = ' -dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 2:PRESERVE K PLANE (littleCMS)
+#####################################################################
+# 	End of GhosScript processing options.							#
+#####################################################################
 
-from django.core.files import File
+
+# RGB devices don't support overprint, conversion from CMYK tiff is neccesary
+# TODO: make CMYK_PROFILE and OVERPRINT work together
+# TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK)
 def process(dpi, pdf, client, job, item, SEPS): 
-	render_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'render')
-	if os.path.isdir(render_dir):
-		print("render_dir already exists: " + render_dir)
-		pass
-	else:
-		print("creating render_dir... " + render_dir)
-		os.makedirs(render_dir) # TODO: don't stop on OSError and jump to writing chunks
-		
-	# RGB devices don't support overprint, conversion from CMYK tiff is neccesary
-	# TODO: make CMYK_PROFILE and OVERPRINT work together
-	# TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK)
-	print('PDF to TIFF... ' + os.path.join(CONTENTS_PATH, pdf.f.url) +' ->> '+ render_dir)
-	tiff_render_proc = subprocess.Popen([
-		gs,
-		'-sDEVICE=tiffsep', '-r' + str(dpi), #tiff24nc, tiff32nc, tiffsep
-		COMMON,
-		COLOR, 
-		GRAPHICS,
-		TEXT,
-		RENDER_INTENT,
-		OVERPRINT,
-		'-sOUTPUTFILE=' + os.path.join(render_dir, "%d.tiff"), File(pdf.f), #'-sstdout=' "D:/tmp/file.txt",
-	]) 
+	output_file = NamedTemporaryFile(suffix='-%d.tiff')
+	input_file = pdf.f
+	command = gs + DEVICE + ' -r' + str(dpi) + COMMON + COLOR + GRAPHICS + TEXT + RENDER_INTENT + OVERPRINT + ' -sOUTPUTFILE=' + output_file.name +' '+ input_file.path
+	print('PDF to TIFF... ' + input_file.path + ' ->> ' + output_file.name)
+	print(command)
+	tiff_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE)
+	tiff_render_proc.communicate()
 	
-	# Wait for render to finish and spawn the assign process
-	tiff_render_proc.wait()
-	print("finished rendering TIFF, converting to JPEG...")
-	assign(render_dir, pdf, client, job, item, SEPS)
+	print("Done rendering TIFF files, converting to JPEG...")
+	# Spawn the assign process
+	# assign(output_file, render_dir, pdf, client, job, item, SEPS)
+	# assign(render_dir, pdf, client, job, item, SEPS)
 	
 	
 def assign(render_dir, pdf, client, job, item, SEPS=False):
+	# render_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'render')
+	# if os.path.isdir(render_dir):
+		# print("render_dir already exists: " + render_dir)
+		# pass
+	# else:
+		# print("creating render_dir... " + render_dir)
+		# os.makedirs(render_dir) # TODO: don't stop on OSError and jump to writing chunks
+	
 	filename = os.path.basename(os.path.normpath(pdf.f.name))
 	print('\n\n\n   '+filename)
 
