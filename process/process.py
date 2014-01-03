@@ -13,7 +13,8 @@ from farproof.settings import CONTENTS_PATH
 # and: http://ghostscript.com/doc/current/Devices.htm#TIFF			#
 # and: http://ghostscript.com/doc/current/GS9_Color_Management.pdf	#
 # CAUTION: is very important that variables are written like this:	#
-#          ' -var1 -var2' (note space at beginning)					#
+#          ' -var1 -var2' (note space at beginning of quotes)		#
+# CAUTION: order of passed arguments DOES matter!!					#
 #####################################################################
 # Common options:
 gs = r'D:\tmp\gs\bin\gswin64c.exe'
@@ -83,10 +84,10 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 		
 		# Create recquired dirs recursively only if they don't exist
 		if os.path.isdir(page_dir):
-			print("page_dir already exists: " + page_dir)
+			print("page_dir already exists: \n\t" + page_dir)
 			pass
 		else:
-			print("Creating page_dir... " + page_dir)
+			print("Creating page_dir... \n\t" + page_dir)
 			os.makedirs(page_dir)
 		page_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'pages', str(current_pos), str(next_rev))
 		
@@ -98,10 +99,9 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 		if os.path.isfile(page_dir + jpeg_filename):
 			os.remove(page_dir + jpeg_filename)
 			
-		print('TIFF to JPEG... ' + tiff_file + ' ->> ' + os.path.join(page_dir, jpeg_filename))
+		print('TIFF to JPEG... \n\t' + tiff_file + ' ->> ' + os.path.join(page_dir, jpeg_filename))
 		
 		# IMPORTANT: shell=True is required!! turning path into str also is.
-		# Order of passed arguments DOES matter.
 		jpg_render_proc = subprocess.Popen([
 			'convert', 
 			'-quality', JPEGQ,
@@ -114,9 +114,9 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 			str(os.path.join(page_dir, jpeg_filename)),
 		], shell=True) 
 		
-		# Finally, remove rendered files.
+		# Finally, remove intermediate TIFF files:
 		jpg_render_proc.wait()
-		print("Removing intermediate files... " +  tiff_file)
+		print("Removing intermediate TIFF files...\n\t " +  tiff_file)
 		os.remove(tiff_file)
 
 		
