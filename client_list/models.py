@@ -160,8 +160,7 @@ class Comment(models.Model):
 class CommonFile(models.Model):
 	fs = FileSystemStorage(location=CONTENTS_PATH, base_url='/user')
 	# fs.file_permissions_mode = 0644
-
-	f = models.FileField(upload_to='sample', storage=fs, default="")
+	f = models.FileField(upload_to='uploads', storage=fs, default="")
 	
 	class Meta:
 		abstract = True	
