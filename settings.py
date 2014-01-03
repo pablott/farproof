@@ -70,8 +70,8 @@ MEDIA_ROOT = os.path.join(ROOT_DIR, 'farproof-html') #.replace('\\', '/'),
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = '/media/'
 
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
+# URL prefix for admin media -- CSS, JavaScript and images. 
+# Make sure to use a trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/admin/'
 
@@ -80,10 +80,13 @@ SECRET_KEY = 'u%8g^o)8b+%xxa-1j^8i@zkv!&0(a8h!pg7j(8lrlc-n1t88dz'
 
 ROOT_URLCONF = 'farproof.urls'
 
-# Folder where PDFs and rendered files (color and separations) are stored.
+# Folder where PDFs and rendered files are stored.
 # Down this path the following structure will be created:
 # /client.pk/job.pk/item.pk/pages|render|uploads
-CONTENTS_PATH = r'D:\tmp\pdf'
+CONTENTS_PATH = r'D:\content'
+
+# Folder where ICC profiles are stored.
+PROFILES_DIR = r'D:\tmp\profiles'
 
 TEMPLATE_DIRS = (
 	os.path.join(FARPROOF_DIR, 'templates')#.replace('\\', '/'),

@@ -4,7 +4,7 @@ import os, subprocess, re, shutil, glob
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from farproof.client_list.models import Page, Revision, PDFFile
-from farproof.settings import CONTENTS_PATH
+from farproof.settings import CONTENTS_PATH, PROFILES_DIR
 
 #####################################################################
 # 	Processing options :											#
@@ -28,7 +28,7 @@ TEXT = ' -dTextAlphaBits=4 -dAlignToPixels=0'
 COLOR = ' -dUseCIEColor -dDOINTERPOLATE' #-dCOLORSCREEN'
 
 # Color management: 
-ICC_FOLDER = ' -sICCProfilesDir=' "D:/tmp/profiles/"
+ICC_FOLDER = ' -sICCProfilesDir=' + PROFILES_DIR
 RGB_PROFILE = ' -sOutputICCProfile=sRGB.icm'
 CMYK_PROFILE = ' -sOutputICCProfile=CoatedFOGRA27.icc' #-sProofProfile
 RENDER_INTENT = ' -dRenderIntent=1' #0:Perceptual, 1:Colorimetric, 2:Saturation, 3:Absolute Colorimetric
@@ -83,13 +83,13 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 			next_rev = 0
 		
 		# Create recquired dirs recursively only if they don't exist
+		page_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'pages', str(current_pos), str(next_rev))
 		if os.path.isdir(page_dir):
 			print("page_dir already exists: \n\t" + page_dir)
 			pass
 		else:
 			print("Creating page_dir... \n\t" + page_dir)
 			os.makedirs(page_dir)
-		page_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'pages', str(current_pos), str(next_rev))
 		
 		# Construct jpeg_filename and tiff_file:
 		tiff_file = os.path.join(tmpdir, (prefix + '-' + str(i+1) + '.tiff'))
@@ -108,9 +108,9 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 			tiff_file,
 			'+profile', 'icm',
 			'-black-point-compensation',
-			'-profile', r'D:\tmp\profiles\CoatedFOGRA27.icc',
+			'-profile', str(os.path.join(PROFILES_DIR, 'CoatedFOGRA27.icc')),
 			'-intent', 'relative',
-			'-profile', r'D:\tmp\profiles\sRGB.icm',
+			'-profile', str(os.path.join(PROFILES_DIR, 'sRGB.icm')),
 			str(os.path.join(page_dir, jpeg_filename)),
 		], shell=True) 
 		
