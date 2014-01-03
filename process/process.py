@@ -40,13 +40,13 @@ PRESERVE_K = ' -dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS),
 #####################################################################
 
 
-# RGB devices don't support overprint, conversion from CMYK tiff is neccesary
-# TODO: make CMYK_PROFILE and OVERPRINT work together
-# TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK)
+# RGB devices don't support overprint, conversion from CMYK tiff is neccesary.
+# TODO: make CMYK_PROFILE and OVERPRINT work together.
+# TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK).
 def process(dpi, pdf, client, job, item, SEPS): 
 	tiff_file = NamedTemporaryFile(suffix='-%d.tiff')
 	pdf_file = pdf.f
-	command = gs + DEVICE + ' -r' + str(dpi) + COMMON + COLOR + GRAPHICS + TEXT + RENDER_INTENT + OVERPRINT + ' -sOUTPUTFILE=' + tiff_file.name +' '+ pdf_file.path
+	command = gs + DEVICE + ' -r' + str(dpi) + COMMON + COLOR + GRAPHICS + TEXT + RENDER_INTENT + OVERPRINT + ' -sOUTPUTFILE=' + tiff_file.name + ' ' + pdf_file.path
 	print('PDF to TIFF... ' + pdf_file.path + ' ->> ' + tiff_file.name)
 	print(command)
 	tiff_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE)
@@ -58,7 +58,7 @@ def process(dpi, pdf, client, job, item, SEPS):
 	
 	
 def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
-	# Extract prefix formfrom NamedTemporaryFile
+	# Extract prefix from NamedTemporaryFile:
 	prefix = os.path.basename(os.path.normpath(tiff_file.name)).split('-')[0]
 	tmpdir = os.path.dirname(tiff_file.name)
 	print('Prefix: ' + str(prefix))
@@ -68,7 +68,7 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 	seq = re.findall('(\d+)', filename)
 	start_pos = int(seq[0])
 	end_pos = int(seq[1])
-	span = (end_pos-start_pos)+1 # sum +1 because the range includes both extremes
+	span = (end_pos-start_pos)+1 # sum +1 because the range includes both extremes.
 	
 	# Use initial number to rename JPEGs and send them to their proper page folder:
 	for i in range(0,span):
@@ -100,7 +100,6 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 			os.remove(page_dir + jpeg_filename)
 			
 		print('TIFF to JPEG... \n\t' + tiff_file + ' ->> ' + os.path.join(page_dir, jpeg_filename))
-		
 		# IMPORTANT: shell=True is required!! turning path into str also is.
 		jpg_render_proc = subprocess.Popen([
 			'convert', 
