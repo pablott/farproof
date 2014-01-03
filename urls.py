@@ -42,9 +42,7 @@ urlpatterns = patterns('',
     (r'^(\d+)/(\d+)/(\d+)/(\d+)/$', page_view),
     (r'^(\d+)/(\d+)/(\d+)/file_upload/$', file_upload),
     (r'^(\d+)/(\d+)/(\d+)/(\d+)/page_info/$', page_info),
-	(r'^uploads/$', uploads3),
-	(r'^user/$', uploads3),
-	(r'^user/(\d+)/(\d+)/(\d+)/(\d+)/$', uploads1),
+	(r'^uploads/$', uploads),
 )
 #(r'^(?P<category>\w+)/feedback/$', 'my_view') # Might be useful as wildcard capture method
 
@@ -55,7 +53,6 @@ if settings.DEBUG:
     if _media_url.startswith('/'):
         _media_url = _media_url[1:]
         urlpatterns += patterns('',
-			# (r'^user/(?P<path>.*)$'
             (r'^%s(?P<path>.*)$' % _media_url, serve, {'document_root': settings.MEDIA_ROOT, 'show_indexes':True}))
     del _media_url, serve
 
