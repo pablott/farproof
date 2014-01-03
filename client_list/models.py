@@ -1,3 +1,4 @@
+from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.forms import ModelForm, forms
 from django.forms.widgets import HiddenInput
@@ -155,9 +156,6 @@ class Comment(models.Model):
 	def __unicode__(self):
 		return self.comment + " - " + str(self.revision.all())
 
-		
-		
-from django.core.files.storage import FileSystemStorage
 	
 class CommonFile(models.Model):
 	fs = FileSystemStorage(location=CONTENTS_PATH, base_url='/user')
