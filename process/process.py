@@ -18,23 +18,24 @@ from farproof.settings import CONTENTS_PATH, PROFILES_DIR
 #####################################################################
 # Common options:
 gs = r'D:\tmp\gs\bin\gswin64c.exe'
-COMMON = ' -dNOPAUSE -dBATCH -dQUIET'
+convert = r'C:\Program Files (x86)\ImageMagick-6.8.7-Q16\convert.exe'
+COMMON = '-dNOPAUSE -dBATCH -dQUIET'
 
 # Render options:
-DEVICE = ' -sDEVICE=tiffsep' #Output devices: tiff24nc, tiff32nc, tiffsep
-GRAPHICS = ' -dGraphicsAlphaBits=2'
+DEVICE = '-sDEVICE=tiffsep' #Output devices: tiff24nc, tiff32nc, tiffsep
+GRAPHICS = '-dGraphicsAlphaBits=2'
 JPEGQ = '100'
-TEXT = ' -dTextAlphaBits=4 -dAlignToPixels=0'
-COLOR = ' -dUseCIEColor -dDOINTERPOLATE' #-dCOLORSCREEN'
+TEXT = '-dTextAlphaBits=4 -dAlignToPixels=0'
+COLOR = '-dUseCIEColor -dDOINTERPOLATE' #-dCOLORSCREEN'
 
 # Color management: 
-ICC_FOLDER = ' -sICCProfilesDir=' + PROFILES_DIR
-RGB_PROFILE = ' -sOutputICCProfile=sRGB.icm'
-CMYK_PROFILE = ' -sOutputICCProfile=CoatedFOGRA27.icc' #-sProofProfile
-RENDER_INTENT = ' -dRenderIntent=1' #0:Perceptual, 1:Colorimetric, 2:Saturation, 3:Absolute Colorimetric
-OVERPRINT = ' -dSimulateOverprint=true' #Only for CMYK outputs
-BPC = ' -dBlackPtComp=1' #0:Don't, #1:Do
-PRESERVE_K = ' -dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 2:PRESERVE K PLANE (littleCMS)
+ICC_FOLDER = '-sICCProfilesDir=' + PROFILES_DIR
+RGB_PROFILE = '-sOutputICCProfile=sRGB.icm'
+CMYK_PROFILE = '-sOutputICCProfile=CoatedFOGRA27.icc' #-sProofProfile
+RENDER_INTENT = '-dRenderIntent=1' #0:Perceptual, 1:Colorimetric, 2:Saturation, 3:Absolute Colorimetric
+OVERPRINT = '-dSimulateOverprint=true' #Only for CMYK outputs
+BPC = '-dBlackPtComp=1' #0:Don't, #1:Do
+PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 2:PRESERVE K PLANE (littleCMS)
 #####################################################################
 # 	End of processing options.										#
 #####################################################################
@@ -46,7 +47,8 @@ PRESERVE_K = ' -dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS),
 def process(dpi, pdf, client, job, item, SEPS): 
 	tiff_file = NamedTemporaryFile(suffix='-%d.tiff')
 	pdf_file = pdf.f
-	command = gs + DEVICE + ' -r' + str(dpi) + COMMON + COLOR + GRAPHICS + TEXT + RENDER_INTENT + OVERPRINT + ' -sOUTPUTFILE=' + tiff_file.name + ' ' + pdf_file.path
+	command = [gs, DEVICE, '-r' + str(dpi), COMMON, COLOR, GRAPHICS, TEXT, RENDER_INTENT, OVERPRINT, '-sOUTPUTFILE=' + tiff_file.name, pdf_file.path]
+	
 	print('PDF to TIFF... ' + pdf_file.path + ' ->> ' + tiff_file.name)
 	print(command)
 	tiff_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE)
@@ -82,7 +84,7 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 		else:
 			next_rev = 0
 		
-		# Create recquired dirs recursively only if they don't exist
+		# Create recquired dirs recursively only if they don't exist:
 		page_dir = os.path.join(CONTENTS_PATH, str(client.pk), str(job.pk), str(item.pk), 'pages', str(current_pos), str(next_rev))
 		if os.path.isdir(page_dir):
 			print("page_dir already exists: \n\t" + page_dir)
@@ -99,22 +101,14 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 		if os.path.isfile(page_dir + jpeg_filename):
 			os.remove(page_dir + jpeg_filename)
 			
-		print('TIFF to JPEG... \n\t' + tiff_file + ' ->> ' + os.path.join(page_dir, jpeg_filename))
 		# IMPORTANT: shell=True is required!! turning path into str also is.
-		jpg_render_proc = subprocess.Popen([
-			'convert', 
-			'-quality', JPEGQ,
-			tiff_file,
-			'+profile', 'icm',
-			'-black-point-compensation',
-			'-profile', str(os.path.join(PROFILES_DIR, 'CoatedFOGRA27.icc')),
-			'-intent', 'relative',
-			'-profile', str(os.path.join(PROFILES_DIR, 'sRGB.icm')),
-			str(os.path.join(page_dir, jpeg_filename)),
-		], shell=True) 
+		command = [convert,'-quality', JPEGQ, tiff_file, '+profile', 'icm', '-black-point-compensation', '-profile', os.path.join(PROFILES_DIR, 'CoatedFOGRA27.icc'), '-intent', 'relative', '-profile', os.path.join(PROFILES_DIR, 'sRGB.icm'), os.path.join(page_dir, jpeg_filename)]
+
+		print('TIFF to JPEG... \n\t' + tiff_file + ' ->> ' + os.path.join(page_dir, jpeg_filename))
+		print(command)
+		jpg_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE)
+		jpg_render_proc.communicate()
 		
-		# Finally, remove intermediate TIFF files:
-		jpg_render_proc.wait()
 		print("Removing intermediate TIFF files...\n\t " +  tiff_file)
 		os.remove(tiff_file)
 		
