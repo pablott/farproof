@@ -171,6 +171,7 @@ class PDFFile(CommonFile):
 	# TODO: implement
 	# inks = pdfinfo.inks
 	# pages = pdfinfo.pages
+	# hash = sha256 string
 	def __unicode__(self):
 		return "pk:"+str(self.pk) + " file:"+str(self.f.name)
 	
