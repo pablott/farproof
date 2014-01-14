@@ -4,7 +4,7 @@ import os, subprocess, re, shutil, glob
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from farproof.client_list.models import Page, Revision, PDFFile
-from farproof.settings import CONTENTS_PATH, PROFILES_DIR
+from farproof.settings import CONTENTS_PATH, PROFILES_DIR, TEMP_PATH
 
 #####################################################################
 # 	Processing options :											#
@@ -44,7 +44,7 @@ PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 
 # TODO: make CMYK_PROFILE and OVERPRINT work together.
 # TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK).
 def process(dpi, pdf, client, job, item, SEPS): 
-	tiff_file = NamedTemporaryFile(suffix='-%d.tiff')
+	tiff_file = NamedTemporaryFile(suffix='-%d.tiff', dir=TEMP_PATH)
 	pdf_file = pdf.f
 	
 	command = [gs, DEVICE, '-r' + str(dpi), '-dNOPAUSE', '-dBATCH', '-dQUIET', '-dUseCIEColor', '-dDOINTERPOLATE', GRAPHICS, TEXT_ALPHA_BITS, TEXT_ALIGN_TO_PIXELS, RENDER_INTENT, OVERPRINT, '-sOUTPUTFILE=' + tiff_file.name, pdf_file.path]	
@@ -93,7 +93,7 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 			os.makedirs(page_dir)
 		
 		# Construct jpeg_filename and tiff_file:
-		tiff_file = os.path.join(tmpdir, (prefix + '-' + str(i+1) + '.tiff'))
+		tiff_file = os.path.join(TEMP_PATH, (prefix + '-' + str(i+1) + '.tiff'))
 		jpeg_filename = str(current_pos) + '.jpg'
 		
 		# Remove page_dir files if they exists
@@ -111,7 +111,7 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 		os.remove(tiff_file)
 		
 		# Rendering of individual separation files:
-		sep_list = glob.glob(os.path.join(tmpdir, (prefix + '-' + str(i+1) + '.tiff*.tif')))
+		sep_list = glob.glob(os.path.join(TEMP_PATH, (prefix + '-' + str(i+1) + '.tiff*.tif')))
 		
 		if SEPS:
 			print('Processing separations into PNG...')
@@ -120,7 +120,7 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 				png_sep_filename = str(current_pos) +'-'+ suffix +'.png'
 				sep_render_proc = subprocess.Popen([
 					'convert', 
-					str(os.path.join(tmpdir, tif_sep_file)),
+					str(os.path.join(TEMP_PATH, tif_sep_file)),
 					# http://www.imagemagick.org/Usage/color_mods/#linear
 					# TODO: tint seps before saving.
 					# The following fx tints each ink (although it takes a LOOOONG time)
@@ -137,11 +137,11 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 				
 				# Finally, move rendered separations to the proper item's subfolder:
 				sep_render_proc.wait()
-				print("Removing intermediate separation files... \n\t" + os.path.join(tmpdir, tif_sep_file))
-				os.remove(os.path.join(tmpdir, tif_sep_file))
+				print("Removing intermediate separation files... \n\t" + os.path.join(TEMP_PATH, tif_sep_file))
+				os.remove(os.path.join(TEMP_PATH, tif_sep_file))
 		else:
 			for sep_file in sep_list:
-				print("Removing unused intermediate separation files... \n\t" + os.path.join(tmpdir, sep_file))
-				os.remove(os.path.join(tmpdir, sep_file))
+				print("Removing unused intermediate separation files... \n\t" + os.path.join(TEMP_PATH, sep_file))
+				os.remove(os.path.join(TEMP_PATH, sep_file))
 			
 	print('Render of ' + pdf_file.path + ' done!')
