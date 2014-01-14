@@ -116,7 +116,7 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 		if SEPS:
 			print('Processing separations into PNG...')
 			for tif_sep_file in sep_list:
-				suffix = re.search('\((.*?)\)', tif_sep_file).group(1)
+				suffix = re.search('\((.*?)\)', tif_sep_file).group(1).lower()
 				png_sep_filename = str(current_pos) +'-'+ suffix +'.png'
 				sep_render_proc = subprocess.Popen([
 					'convert', 
