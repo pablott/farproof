@@ -86,7 +86,7 @@ ROOT_URLCONF = 'farproof.urls'
 CONTENTS_PATH = r'D:\contents'
 
 # Folder where ICC profiles are stored.
-PROFILES_DIR = r'D:\tmp\profiles'
+PROFILES_PATH = r'D:\tmp\profiles'
 
 # 
 TEMP_PATH = os.path.abspath('D:/tmp/render/')

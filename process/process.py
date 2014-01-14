@@ -4,7 +4,7 @@ import os, subprocess, re, shutil, glob
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from farproof.client_list.models import Page, Revision, PDFFile
-from farproof.settings import CONTENTS_PATH, PROFILES_DIR, TEMP_PATH
+from farproof.settings import CONTENTS_PATH, PROFILES_PATH, TEMP_PATH
 
 #####################################################################
 # 	Processing options :											#
@@ -28,7 +28,7 @@ TEXT_ALPHA_BITS = '-dTextAlphaBits=4'
 TEXT_ALIGN_TO_PIXELS = '-dAlignToPixels=0'
 
 # Color management: 
-ICC_FOLDER = '-sICCProfilesDir=' + PROFILES_DIR
+ICC_FOLDER = '-sICCProfilesDir=' + PROFILES_PATH
 RGB_PROFILE = '-sOutputICCProfile=sRGB.icm'
 CMYK_PROFILE = '-sOutputICCProfile=CoatedFOGRA27.icc' #-sProofProfile
 RENDER_INTENT = '-dRenderIntent=1' #0:Perceptual, 1:Colorimetric, 2:Saturation, 3:Absolute Colorimetric
@@ -100,7 +100,7 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 		if os.path.isfile(page_dir + jpeg_filename):
 			os.remove(page_dir + jpeg_filename)
 			
-		command = [convert, '-quality', JPEGQ, tiff_file, '+profile', 'icm', '-black-point-compensation', '-profile', os.path.join(PROFILES_DIR, 'CoatedFOGRA27.icc'), '-intent', 'relative', '-profile', os.path.join(PROFILES_DIR, 'sRGB.icm'), os.path.join(page_dir, jpeg_filename)]
+		command = [convert, '-quality', JPEGQ, tiff_file, '+profile', 'icm', '-black-point-compensation', '-profile', os.path.join(PROFILES_PATH, 'CoatedFOGRA27.icc'), '-intent', 'relative', '-profile', os.path.join(PROFILES_PATH, 'sRGB.icm'), os.path.join(page_dir, jpeg_filename)]
 
 		print('TIFF to JPEG... \n\t' + tiff_file + ' ->> ' + os.path.join(page_dir, jpeg_filename))
 		print(command)
