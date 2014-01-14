@@ -83,10 +83,10 @@ ROOT_URLCONF = 'farproof.urls'
 # Folder where PDFs and rendered files are stored.
 # Down this path the following structure will be created:
 # /client.pk/job.pk/item.pk/pages|render|uploads
-CONTENTS_PATH = r'D:\contents'
+CONTENTS_PATH = os.path.abspath('D:/contents')
 
 # Folder where ICC profiles are stored.
-PROFILES_PATH = r'D:\tmp\profiles'
+PROFILES_PATH = os.path.abspath('D:/tmp/profiles')
 
 # 
 TEMP_PATH = os.path.abspath('D:/tmp/render/')
