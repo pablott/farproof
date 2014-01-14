@@ -17,8 +17,8 @@ from farproof.settings import CONTENTS_PATH, PROFILES_DIR
 # CAUTION: order of passed arguments DOES matter!!					#
 #####################################################################
 # Common options:
-gs = r'D:\tmp\gs\bin\gswin64c.exe'
-convert = r'C:\Program Files (x86)\ImageMagick-6.8.7-Q16\convert.exe'
+gs = os.path.normpath('D:/tmp/gs/bin/gswin64c.exe')
+convert = os.path.abspath('C:\Program Files (x86)\ImageMagick-6.8.7-Q16\convert.exe')
 COMMON = '-dNOPAUSE -dBATCH -dQUIET'
 
 # Render options:
@@ -47,18 +47,18 @@ PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 
 def process(dpi, pdf, client, job, item, SEPS): 
 	tiff_file = NamedTemporaryFile(suffix='-%d.tiff')
 	pdf_file = pdf.f
-	command = [gs, DEVICE, '-r' + str(dpi), COMMON, COLOR, GRAPHICS, TEXT, RENDER_INTENT, OVERPRINT, '-sOUTPUTFILE=' + tiff_file.name, pdf_file.path]
 	
+	command = [gs, DEVICE, '-r' + str(dpi), COMMON, COLOR, GRAPHICS, TEXT, RENDER_INTENT, OVERPRINT, '-sOUTPUTFILE=' + tiff_file.name, pdf_file.path]	
 	print('PDF to TIFF... ' + pdf_file.path + ' ->> ' + tiff_file.name)
 	print(command)
 	tiff_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE)
-	tiff_render_proc.communicate()
 	
 	# Spawn the assign process:
+	tiff_render_proc.communicate()
 	print("Done rendering TIFF files, converting to JPEG...")
 	assign(tiff_file, pdf_file, client, job, item, SEPS)
-	
-	
+
+		
 def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 	# Extract prefix from NamedTemporaryFile:
 	prefix = os.path.basename(os.path.normpath(tiff_file.name)).split('-')[0]
@@ -101,13 +101,12 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 		if os.path.isfile(page_dir + jpeg_filename):
 			os.remove(page_dir + jpeg_filename)
 			
-		# IMPORTANT: shell=True is required!! turning path into str also is.
-		command = [convert,'-quality', JPEGQ, tiff_file, '+profile', 'icm', '-black-point-compensation', '-profile', os.path.join(PROFILES_DIR, 'CoatedFOGRA27.icc'), '-intent', 'relative', '-profile', os.path.join(PROFILES_DIR, 'sRGB.icm'), os.path.join(page_dir, jpeg_filename)]
+		command = [convert, '-quality', JPEGQ, tiff_file, '+profile', 'icm', '-black-point-compensation', '-profile', os.path.join(PROFILES_DIR, 'CoatedFOGRA27.icc'), '-intent', 'relative', '-profile', os.path.join(PROFILES_DIR, 'sRGB.icm'), os.path.join(page_dir, jpeg_filename)]
 
 		print('TIFF to JPEG... \n\t' + tiff_file + ' ->> ' + os.path.join(page_dir, jpeg_filename))
 		print(command)
-		jpg_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE)
-		jpg_render_proc.communicate()
+		jpeg_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE)
+		jpeg_render_proc.communicate()
 		
 		print("Removing intermediate TIFF files...\n\t " +  tiff_file)
 		os.remove(tiff_file)
