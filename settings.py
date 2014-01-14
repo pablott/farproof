@@ -88,6 +88,9 @@ CONTENTS_PATH = r'D:\contents'
 # Folder where ICC profiles are stored.
 PROFILES_DIR = r'D:\tmp\profiles'
 
+# 
+TEMP_PATH = os.path.abspath('D:/tmp/render/')
+
 TEMPLATE_DIRS = (
 	os.path.join(FARPROOF_DIR, 'templates')#.replace('\\', '/'),
 	# Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
