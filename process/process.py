@@ -19,14 +19,13 @@ from farproof.settings import CONTENTS_PATH, PROFILES_DIR
 # Common options:
 gs = os.path.normpath('D:/tmp/gs/bin/gswin64c.exe')
 convert = os.path.abspath('C:\Program Files (x86)\ImageMagick-6.8.7-Q16\convert.exe')
-COMMON = '-dNOPAUSE -dBATCH -dQUIET'
 
 # Render options:
 DEVICE = '-sDEVICE=tiffsep' #Output devices: tiff24nc, tiff32nc, tiffsep
 GRAPHICS = '-dGraphicsAlphaBits=2'
 JPEGQ = '100'
-TEXT = '-dTextAlphaBits=4 -dAlignToPixels=0'
-COLOR = '-dUseCIEColor -dDOINTERPOLATE' #-dCOLORSCREEN'
+TEXT_ALPHA_BITS = '-dTextAlphaBits=4'
+TEXT_ALIGN_TO_PIXELS = '-dAlignToPixels=0'
 
 # Color management: 
 ICC_FOLDER = '-sICCProfilesDir=' + PROFILES_DIR
@@ -48,7 +47,7 @@ def process(dpi, pdf, client, job, item, SEPS):
 	tiff_file = NamedTemporaryFile(suffix='-%d.tiff')
 	pdf_file = pdf.f
 	
-	command = [gs, DEVICE, '-r' + str(dpi), COMMON, COLOR, GRAPHICS, TEXT, RENDER_INTENT, OVERPRINT, '-sOUTPUTFILE=' + tiff_file.name, pdf_file.path]	
+	command = [gs, DEVICE, '-r' + str(dpi), '-dNOPAUSE', '-dBATCH', '-dQUIET', '-dUseCIEColor', '-dDOINTERPOLATE', GRAPHICS, TEXT_ALPHA_BITS, TEXT_ALIGN_TO_PIXELS, RENDER_INTENT, OVERPRINT, '-sOUTPUTFILE=' + tiff_file.name, pdf_file.path]	
 	print('PDF to TIFF... ' + pdf_file.path + ' ->> ' + tiff_file.name)
 	print(command)
 	tiff_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE)
