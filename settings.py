@@ -88,7 +88,7 @@ CONTENTS_PATH = os.path.abspath('D:/contents')
 # Folder where ICC profiles are stored.
 PROFILES_PATH = os.path.abspath('D:/tmp/profiles')
 
-# 
+# Folder for temporary render files.
 TEMP_PATH = os.path.abspath('D:/tmp/render/')
 
 TEMPLATE_DIRS = (
