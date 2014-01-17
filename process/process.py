@@ -50,7 +50,7 @@ def process(dpi, pdf, client, job, item, SEPS):
 	command = [gs, DEVICE, '-r' + str(dpi), '-dNOPAUSE', '-dBATCH', '-dQUIET', '-dUseCIEColor', '-dDOINTERPOLATE', GRAPHICS, TEXT_ALPHA_BITS, TEXT_ALIGN_TO_PIXELS, RENDER_INTENT, OVERPRINT, '-sOUTPUTFILE=' + tiff_file.name, pdf_file.path]	
 	print('PDF to TIFF... ' + pdf_file.path + ' ->> ' + tiff_file.name)
 	print(command)
-	tiff_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE)
+	tiff_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 	
 	# Spawn the assign process:
 	tiff_render_proc.communicate()
@@ -104,7 +104,7 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 
 		print('TIFF to JPEG... \n\t' + tiff_file + ' ->> ' + os.path.join(page_dir, jpeg_filename))
 		print(command)
-		jpeg_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE)
+		jpeg_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 		jpeg_render_proc.communicate()
 		
 		print("Removing intermediate TIFF files...\n\t " +  tiff_file)
