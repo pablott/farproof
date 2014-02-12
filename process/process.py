@@ -104,7 +104,8 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 
 		print('TIFF to JPEG... \n\t' + tiff_file + ' ->> ' + os.path.join(page_dir, jpeg_filename))
 		print(command)
-		jpeg_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+		# print(tiff_render_proc.stdout.read())
+		jpeg_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
 		jpeg_render_proc.communicate()
 		
 		print("Removing intermediate TIFF files...\n\t " +  tiff_file)
