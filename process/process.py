@@ -18,12 +18,12 @@ from farproof.settings import CONTENTS_PATH, PROFILES_PATH, TEMP_PATH
 #####################################################################
 # Common options:
 gs = os.path.normpath('D:/tmp/gs/bin/gswin64c.exe')
-convert = os.path.abspath('C:\Program Files (x86)\ImageMagick-6.8.7-Q16\convert.exe')
+convert = os.path.normpath('C:/imagemagick-6.8.8-Q16/convert.exe')
 
 # Render options:
-DEVICE = '-sDEVICE=tiffsep' #Output devices: tiff24nc, tiff32nc, tiffsep
+DEVICE = '-sDEVICE=tiff24nc' #Output devices: tiff24nc, tiff32nc, tiffsep
 GRAPHICS = '-dGraphicsAlphaBits=2'
-JPEGQ = '100'
+JPEGQ = '80'
 TEXT_ALPHA_BITS = '-dTextAlphaBits=4'
 TEXT_ALIGN_TO_PIXELS = '-dAlignToPixels=0'
 
@@ -44,18 +44,80 @@ PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 
 # TODO: make CMYK_PROFILE and OVERPRINT work together.
 # TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK).
 def process(dpi, pdf, client, job, item, SEPS): 
-	tiff_file = NamedTemporaryFile(suffix='-%d.tiff', dir=TEMP_PATH)
+	# tiff_file = NamedTemporaryFile(suffix='-%d.tiff', dir=TEMP_PATH)
 	pdf_file = pdf.f
 	
-	command = [gs, DEVICE, '-r' + str(dpi), '-dNOPAUSE', '-dBATCH', '-dQUIET', '-dUseCIEColor', '-dDOINTERPOLATE', GRAPHICS, TEXT_ALPHA_BITS, TEXT_ALIGN_TO_PIXELS, RENDER_INTENT, OVERPRINT, '-sOUTPUTFILE=' + tiff_file.name, pdf_file.path]	
-	print('PDF to TIFF... ' + pdf_file.path + ' ->> ' + tiff_file.name)
-	print(command)
-	tiff_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+	command1 = [gs, DEVICE, '-r'+str(dpi), '-dNOPAUSE', '-dBATCH', '-dQUIET', '-dFirstPage=1', '-dLastPage=1', '-sstdout=%stderr', '-sOutputFile=-', pdf_file.path]
+	print(command1)
+	command2 = [convert, '-quality', JPEGQ, '-size', '72x72', '-depth', '8', '-', '-']
+	print(command2)
+
+	tiff_render_proc = subprocess.Popen(command1, stdout=subprocess.PIPE, bufsize=-1)
+	jpeg_render_proc = subprocess.Popen(command2, stdin=file("D:/tmp/test-rgb.tif", "r"), stdout=file("D:/tmp/samplergb.jpg", "w"), bufsize=-1)
+	# tiff_out = tiff_render_proc.communicate()[0]
+	# print(tiff_out)
+	# tiff_out = file("D:/tmp/xxxsample.tiff", "w")
+	# tiff_render_proc.stdout.close()
+	# jpeg_out = jpeg_render_proc.communicate()[0]
+	# print(jpeg_out)
+	
+		
+		
+	# jpeg_out = tiff_render_proc.communicate()[0]
+	# print(jpeg_out)
+	
+	# jpeg_render_proc = subprocess.Popen(command2, stdin=tiff_render_proc.stdout, stdout=file("D:/tmp/xxxsample.jpg", "w"))
+	
+	
+	# tiff_render_proc = subprocess.Popen(command1, stdout=file("D:/tmp/xxxsample.tiff", "w"))
+	# tiff_out = file("D:/tmp/xxxsample.tiff", "w")
+	# tiff_out = tiff_render_proc.communicate()
+	# print(tiff_out)
+	
+	# jpeg_render_proc = subprocess.Popen(command2, stdout=file("D:/tmp/xxxsample.jpg", "w"))
+	# jpeg_render_proc.stdout.close()
+	# jpeg_out = jpeg_render_proc = file("D:/tmp/xxxsample.jpg", "w")
+	# jpeg_render_proc.communicate()
+	
+	
+	
+	
+	
+	# jpeg_out = file("D:/tmp/xxxsample.jpg", "w")
+	# jpeg_out = jpeg_render_proc.communicate()[1]
+	
+	# tiff_render_proc.stdout.close()
+	# output = jpeg_render_proc.communicate()[0]
+	# print(otuput)
+	# jpeg_render_proc.communicate()
+	
+	
+	# jpegfile = open('D:/tmp/xxxsample.jpg', 'w')
+	# jpegfile = jpeg_render_proc.communicate()[0]
+	# jpegfile.close()
+	
+	# outfile = open('D:/tmp/file.txt', 'w')
+	# outfile = tiff_render_proc.stdout.read()
+	# outfile.close()
+	# # print(outfile)
+	# #print the output from stdin into the file
+	# # output = tiff_render_proc.stdin.read()
+	# # print output
+	# #close the file!
+	
+	
 	
 	# Spawn the assign process:
-	tiff_render_proc.communicate()
-	print("Done rendering TIFF files, converting to JPEG...")
-	assign(tiff_file, pdf_file, client, job, item, SEPS)
+	# tiff_render_proc.communicate()
+	# outfile = tiff_render_proc.stdout.read()
+	
+				#NOOOOOO tiff_render_proc.stdout.close()
+	# output = jpeg_render_proc.communicate(input='xxx2sample.jpg')[0]
+	# jpeg_render_proc.communicate(outfile)[0]
+	
+	# print("/n/n/n/nDONE")
+	# print("Done rendering TIFF files, converting to JPEG...")
+	# assign(tiff_file, pdf_file, client, job, item, SEPS)
 
 		
 def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
@@ -105,7 +167,7 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 		print('TIFF to JPEG... \n\t' + tiff_file + ' ->> ' + os.path.join(page_dir, jpeg_filename))
 		print(command)
 		# print(tiff_render_proc.stdout.read())
-		jpeg_render_proc = subprocess.Popen(command, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
+		jpeg_render_proc = subprocess.Popen(command)
 		jpeg_render_proc.communicate()
 		
 		print("Removing intermediate TIFF files...\n\t " +  tiff_file)
