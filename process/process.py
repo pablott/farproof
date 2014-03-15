@@ -15,7 +15,14 @@ from farproof.settings import CONTENTS_PATH, PROFILES_PATH, TEMP_PATH
 # CAUTION: is very important that variables are written like this:	#
 #          ' -var1 -var2' (note space at beginning of quotes)		#
 # CAUTION: order of passed arguments DOES matter!!					#
+#																	#
+# RGB devices don't support overprint, 								#
+# conversion from CMYK tiff is neccesary.							#
+# TODO: make CMYK_PROFILE and OVERPRINT work together.				#
+# TODO: explore -sSourceObjectICC to set the rendering of 			#
+# RGB to CMYK (and maybe CMYK to CMYK).								#
 #####################################################################
+
 # Common options:
 gs = os.path.normpath('D:/tmp/gs/bin/gswin64c.exe')
 convert = os.path.normpath('C:/imagemagick-6.8.8-Q16/convert.exe')
@@ -40,15 +47,7 @@ PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 
 #####################################################################
 
 
-# RGB devices don't support overprint, conversion from CMYK tiff is neccesary.
-# TODO: make CMYK_PROFILE and OVERPRINT work together.
-# TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK).
-import sys, tempfile
-from subprocess import Popen, PIPE
 def process(dpi, pdf, client, job, item, SEPS): 
-# RGB devices don't support overprint, conversion from CMYK tiff is neccesary.
-# TODO: make CMYK_PROFILE and OVERPRINT work together.
-# TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK).
 	tiff_file = NamedTemporaryFile(suffix='-%d.tiff', dir=TEMP_PATH)
 	pdf_file = pdf.f
 	
