@@ -21,7 +21,7 @@ gs = os.path.normpath('D:/tmp/gs/bin/gswin64c.exe')
 convert = os.path.normpath('C:/imagemagick-6.8.8-Q16/convert.exe')
 
 # Render options:
-DEVICE = '-sDEVICE=tiff24nc' #Output devices: tiff24nc, tiff32nc, tiffsep
+DEVICE = '-sDEVICE=tiffsep' #Output devices: tiff24nc, tiff32nc, tiffsep
 GRAPHICS = '-dGraphicsAlphaBits=2'
 JPEGQ = '80'
 TEXT_ALPHA_BITS = '-dTextAlphaBits=4'
@@ -43,87 +43,24 @@ PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 
 # RGB devices don't support overprint, conversion from CMYK tiff is neccesary.
 # TODO: make CMYK_PROFILE and OVERPRINT work together.
 # TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK).
+import sys, tempfile
+from subprocess import Popen, PIPE
 def process(dpi, pdf, client, job, item, SEPS): 
-	# tiff_file = NamedTemporaryFile(suffix='-%d.tiff', dir=TEMP_PATH)
+# RGB devices don't support overprint, conversion from CMYK tiff is neccesary.
+# TODO: make CMYK_PROFILE and OVERPRINT work together.
+# TODO: explore -sSourceObjectICC to set the rendering of RGB to CMYK (and maybe CMYK to CMYK).
+	tiff_file = NamedTemporaryFile(suffix='-%d.tiff', dir=TEMP_PATH)
 	pdf_file = pdf.f
 	
-	command1 = [gs, DEVICE, '-r'+str(dpi), '-dNOPAUSE', '-dBATCH', '-dQUIET', '-dFirstPage=1', '-dLastPage=1', '-sstdout=%stderr', '-sOutputFile=-', pdf_file.path]
-	print(command1)
-	command2 = [convert, '-quality', JPEGQ, '-size', '72x72', '-depth', '8', '-', '-']
-	print(command2)
-
-	tiff_render_proc = subprocess.Popen(command1, stdout=subprocess.PIPE, bufsize=-1)
-	jpeg_render_proc = subprocess.Popen(command2, stdin=file("D:/tmp/test-rgb.tif", "r"), stdout=file("D:/tmp/samplergb.jpg", "w"), bufsize=-1)
-	# tiff_out = tiff_render_proc.communicate()[0]
-	# print(tiff_out)
-	# tiff_out = file("D:/tmp/xxxsample.tiff", "w")
-	# tiff_render_proc.stdout.close()
-	# jpeg_out = jpeg_render_proc.communicate()[0]
-	# print(jpeg_out)
+	cmd1 = [gs, DEVICE, '-r' + str(dpi), '-dNOPAUSE', '-dBATCH', '-dQUIET', '-dUseCIEColor', '-dDOINTERPOLATE', GRAPHICS, TEXT_ALPHA_BITS, TEXT_ALIGN_TO_PIXELS, RENDER_INTENT, OVERPRINT, '-sOUTPUTFILE=' + tiff_file.name, pdf_file.path]
+	print(cmd1)
 	
-		
-		
-	# jpeg_out = tiff_render_proc.communicate()[0]
-	# print(jpeg_out)
+	tiff_render_proc = subprocess.Popen(cmd1, stdin=subprocess.PIPE)
+	tiff_render_proc.communicate()
+	print("Done rendering TIFF files, converting to JPEG...")
 	
-	# jpeg_render_proc = subprocess.Popen(command2, stdin=tiff_render_proc.stdout, stdout=file("D:/tmp/xxxsample.jpg", "w"))
-	
-	
-	# tiff_render_proc = subprocess.Popen(command1, stdout=file("D:/tmp/xxxsample.tiff", "w"))
-	# tiff_out = file("D:/tmp/xxxsample.tiff", "w")
-	# tiff_out = tiff_render_proc.communicate()
-	# print(tiff_out)
-	
-	# jpeg_render_proc = subprocess.Popen(command2, stdout=file("D:/tmp/xxxsample.jpg", "w"))
-	# jpeg_render_proc.stdout.close()
-	# jpeg_out = jpeg_render_proc = file("D:/tmp/xxxsample.jpg", "w")
-	# jpeg_render_proc.communicate()
-	
-	
-	
-	
-	
-	# jpeg_out = file("D:/tmp/xxxsample.jpg", "w")
-	# jpeg_out = jpeg_render_proc.communicate()[1]
-	
-	# tiff_render_proc.stdout.close()
-	# output = jpeg_render_proc.communicate()[0]
-	# print(otuput)
-	# jpeg_render_proc.communicate()
-	
-	
-	# jpegfile = open('D:/tmp/xxxsample.jpg', 'w')
-	# jpegfile = jpeg_render_proc.communicate()[0]
-	# jpegfile.close()
-	
-	# outfile = open('D:/tmp/file.txt', 'w')
-	# outfile = tiff_render_proc.stdout.read()
-	# outfile.close()
-	# # print(outfile)
-	# #print the output from stdin into the file
-	# # output = tiff_render_proc.stdin.read()
-	# # print output
-	# #close the file!
-	
-	
-	
-	# Spawn the assign process:
-	# tiff_render_proc.communicate()
-	# outfile = tiff_render_proc.stdout.read()
-	
-				#NOOOOOO tiff_render_proc.stdout.close()
-	# output = jpeg_render_proc.communicate(input='xxx2sample.jpg')[0]
-	# jpeg_render_proc.communicate(outfile)[0]
-	
-	# print("/n/n/n/nDONE")
-	# print("Done rendering TIFF files, converting to JPEG...")
-	# assign(tiff_file, pdf_file, client, job, item, SEPS)
-
-		
-def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 	# Extract prefix from NamedTemporaryFile:
 	prefix = os.path.basename(os.path.normpath(tiff_file.name)).split('-')[0]
-	tmpdir = os.path.dirname(tiff_file.name)
 	print('Prefix: ' + str(prefix))
 
 	# Check for page range in filename:
@@ -162,12 +99,12 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 		if os.path.isfile(page_dir + jpeg_filename):
 			os.remove(page_dir + jpeg_filename)
 			
-		command = [convert, '-quality', JPEGQ, tiff_file, '+profile', 'icm', '-black-point-compensation', '-profile', os.path.join(PROFILES_PATH, 'CoatedFOGRA27.icc'), '-intent', 'relative', '-profile', os.path.join(PROFILES_PATH, 'sRGB.icm'), os.path.join(page_dir, jpeg_filename)]
+		cmd2 = [convert, '-quality', JPEGQ, tiff_file, '+profile', 'icm', '-black-point-compensation', '-profile', os.path.join(PROFILES_PATH, 'CoatedFOGRA27.icc'), '-intent', 'relative', '-profile', os.path.join(PROFILES_PATH, 'sRGB.icm'), os.path.join(page_dir, jpeg_filename)]
 
 		print('TIFF to JPEG... \n\t' + tiff_file + ' ->> ' + os.path.join(page_dir, jpeg_filename))
-		print(command)
+		print(cmd2)
 		# print(tiff_render_proc.stdout.read())
-		jpeg_render_proc = subprocess.Popen(command)
+		jpeg_render_proc = subprocess.Popen(cmd2)
 		jpeg_render_proc.communicate()
 		
 		print("Removing intermediate TIFF files...\n\t " +  tiff_file)
@@ -184,14 +121,14 @@ def assign(tiff_file, pdf_file, client, job, item, SEPS=False):
 				sep_render_proc = subprocess.Popen([
 					'convert', 
 					str(os.path.join(TEMP_PATH, tif_sep_file)),
-					# http://www.imagemagick.org/Usage/color_mods/#linear
-					# TODO: tint seps before saving.
-					# The following fx tints each ink (although it takes a LOOOONG time)
-					# imagemagick is not fast, a canvas solution might be more efficient
-					# http://stackoverflow.com/questions/11973086/duplicate-photoshops-color-blend-mode-in-imagemagick
-					# 'convert image.jpg color_layer.png -compose blend -composite result.jpg'
-					# FOGRA27	->	sRGB
-					# cyan		->	0,158,224
+					# # http://www.imagemagick.org/Usage/color_mods/#linear
+					# # TODO: Tint seps before saving. Suggestions: -map palette or -fx as follows:
+					# # fx tints each ink (although it takes a LOOOONG time)
+					# # imagemagick is not fast, a canvas solution might be more efficient
+					# # http://stackoverflow.com/questions/11973086/duplicate-photoshops-color-blend-mode-in-imagemagick
+					# # 'convert image.jpg color_layer.png -compose blend -composite result.jpg'
+					# # FOGRA27	->	sRGB
+					# # cyan		->	0,158,224
 					# '-size', '100x100',
 					# 'canvas:rgb(0,158,224)',
 					# '-fx', '1-(1-v.p{0,0})*(1-u)',
