@@ -73,7 +73,7 @@ class JobAddForm(ModelForm):
 		# won't be able to assign the current Client object to 'client' in the processed POST.
 		# The solution is using HiddenInput() widget for 'client' field. This way client name gets passed
 		# to POST but is hidden in the template.
-		exclude = ('active')
+		exclude = ('active',)
 		widgets = {
             'client': HiddenInput(),
         }
