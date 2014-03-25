@@ -45,12 +45,12 @@ def file_upload(request, client_pk, job_pk, item_pk):
 def write_file(upload_list, client, job, item):
 	for file in upload_list:
 		print('Saving file: '+file.name)
-		new_file = PDFFile()
-		new_file.save()
-		new_file.f = File(file)
-		new_file.save()
+		pdf = PDFFile()
+		pdf.save()
+		pdf.f = File(file)
+		pdf.save()
 		
-		process.delay(150, new_file, client, job, item, SEPS=False)
+		process.delay(150, pdf, client, job, item, SEPS=False)
 
 
 # add PDF to last rev of a page:
