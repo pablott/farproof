@@ -1,3 +1,4 @@
+celery
 django_evolution
 runserver_plus
 django-debug-toolbar

@@ -199,6 +199,8 @@ INSTALLED_APPS = (
 	'dajaxice',
 	'dajax',
 	'debug_toolbar',
+	'djcelery',
+	'celery',
 )
 
 DEBUG_TOOLBAR_PANELS = [
@@ -216,6 +218,18 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.redirects.RedirectsPanel',
 ]
 
+import djcelery
+djcelery.setup_loader()
+BROKER_HOST = "127.0.0.1"
+BROKER_PORT = 5672
+BROKER_VHOST = "/"
+BROKER_USER = "guest"
+BROKER_PASSWORD = "guest"
+# CELERY_ACCEPT_CONTENT = [json]
+CELERY_BACKEND = 'amqp'
+CELERY_RESULT_EXCHANGE = 'amqp'
+CELERY_IMPORTS = ("farproof.process.process", )
+
 INTERNAL_IPS = ('127.0.0.1',)
 
-DAJAXICE_DEBUG = True
+# DAJAXICE_DEBUG = True

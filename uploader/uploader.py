@@ -50,7 +50,7 @@ def write_file(upload_list, client, job, item):
 		new_file.f = File(file)
 		new_file.save()
 		
-		process(150, new_file, client, job, item, SEPS=False)
+		process.delay(150, new_file, client, job, item, SEPS=False)
 
 
 # add PDF to last rev of a page:

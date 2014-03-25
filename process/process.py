@@ -1,10 +1,12 @@
 # Processes and assigns files
+from __future__ import absolute_import # Required by celery
 
 import os, subprocess, re, shutil, glob
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from farproof.client_list.models import Page, Revision, PDFFile
 from farproof.settings import CONTENTS_PATH, PROFILES_PATH, TEMP_PATH
+from farproof.celery import app
 
 #####################################################################
 # 	Processing options :											#
@@ -47,6 +49,7 @@ PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 
 #####################################################################
 
 
+@app.task
 def process(dpi, pdf, client, job, item, SEPS): 
 	# Check for page range in filename:
 	filename = os.path.basename(os.path.normpath(pdf.f.path))
@@ -103,6 +106,7 @@ def process(dpi, pdf, client, job, item, SEPS):
 		jpeg_render_proc = subprocess.Popen(cmd2)
 		jpeg_render_proc.communicate()
 		print("Removing TIFF file...\n\t " +  tiff_file.name)
+		# Closing is necessary or else the temporary file doesn't get deleted:
 		tiff_file.close()
 		
 		# Rendering of individual separation files:
