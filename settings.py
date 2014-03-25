@@ -195,12 +195,12 @@ INSTALLED_APPS = (
 	'django.contrib.admindocs',
 	'farproof.client_list',
 	'django_extensions',
-	'django_evolution',
 	'dajaxice',
 	'dajax',
 	'debug_toolbar',
 	'djcelery',
 	'celery',
+	'south',
 )
 
 DEBUG_TOOLBAR_PANELS = [
