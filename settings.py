@@ -81,15 +81,13 @@ SECRET_KEY = 'u%8g^o)8b+%xxa-1j^8i@zkv!&0(a8h!pg7j(8lrlc-n1t88dz'
 ROOT_URLCONF = 'farproof.urls'
 
 # Folder where PDFs and rendered files are stored.
-# Down this path the following structure will be created:
-# /client.pk/job.pk/item.pk/pages|render|uploads
 CONTENTS_PATH = os.path.abspath('D:/contents')
-
-# Folder where ICC profiles are stored.
-PROFILES_PATH = os.path.abspath('D:/tmp/profiles')
 
 # Folder for temporary render files.
 TEMP_PATH = os.path.abspath('D:/tmp/render/')
+
+# Folder where ICC profiles are stored.
+PROFILES_PATH = os.path.join(CONTENTS_PATH, 'profiles')
 
 TEMPLATE_DIRS = (
 	os.path.join(FARPROOF_DIR, 'templates')#.replace('\\', '/'),
