@@ -9,9 +9,9 @@ FARPROOF_DIR = os.path.abspath(os.path.dirname(__file__))
 ROOT_DIR = os.path.dirname(FARPROOF_DIR)
 STATIC_ROOT = os.path.join(ROOT_DIR, 'static') 
 
-
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+# ALLOWED_HOSTS = ['127.0.0.1',]
 
 ADMINS = (
 	('Pablo Trabajos', 'pablo.trabajos.tamayo@gmail.com'),
@@ -203,6 +203,16 @@ INSTALLED_APPS = (
 	'south',
 )
 
+import djcelery
+djcelery.setup_loader()
+BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERY_BACKEND = 'amqp'
+CELERY_RESULT_EXCHANGE = 'amqp'
+# CELERY_IMPORTS = ("farproof.process.process",)
+# CELERY_ALWAYS_EAGER = True
+# CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+# CELERY_ACCEPT_CONTENT = ['pickle',]
+
 DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.versions.VersionsPanel',
     'debug_toolbar.panels.timer.TimerPanel',
@@ -217,18 +227,6 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.logging.LoggingPanel',
     'debug_toolbar.panels.redirects.RedirectsPanel',
 ]
-
-import djcelery
-djcelery.setup_loader()
-BROKER_HOST = "127.0.0.1"
-BROKER_PORT = 5672
-BROKER_VHOST = "/"
-BROKER_USER = "guest"
-BROKER_PASSWORD = "guest"
-# CELERY_ACCEPT_CONTENT = [json]
-CELERY_BACKEND = 'amqp'
-CELERY_RESULT_EXCHANGE = 'amqp'
-CELERY_IMPORTS = ("farproof.process.process", )
 
 INTERNAL_IPS = ('127.0.0.1',)
 
