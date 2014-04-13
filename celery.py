@@ -5,8 +5,6 @@ from celery import Celery
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'farproof.settings')
 app = Celery('farproof',
-			 broker='amqp://',
-			 backend='amqp://',
 			 include=['farproof.process.process'])
 
 # Optional configuration, see the application user guide.
