@@ -206,7 +206,7 @@ djcelery.setup_loader()
 BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 CELERY_BACKEND = 'amqp'
 CELERY_RESULT_EXCHANGE = 'amqp'
-# CELERY_IMPORTS = ("farproof.process.process",)
+CELERY_IMPORTS = ("farproof.process.process",)
 # CELERY_ALWAYS_EAGER = True
 # CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 # CELERY_ACCEPT_CONTENT = ['pickle',]

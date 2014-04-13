@@ -4,8 +4,7 @@ import os
 from celery import Celery
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'farproof.settings')
-app = Celery('farproof',
-			 include=['farproof.process.process'])
+app = Celery('farproof')
 
 # Optional configuration, see the application user guide.
 app.conf.update(
