@@ -43,67 +43,12 @@ def file_upload(request, client_pk, job_pk, item_pk):
 	})
 
 def write_file(upload_list, client, job, item):
-	for file in upload_list:
-		print('Saving file: '+file.name)
+	for f in upload_list:
+		print('Saving file: '+f.name)
 		pdf = PDFFile()
 		pdf.save()
-		pdf.f = File(file)
+		pdf.f = File(f)
 		pdf.save()
 		
 		process.delay(150, pdf, client, job, item, SEPS=False)
-
-
-# add PDF to last rev of a page:
-# create a temp file with pdf
-# read first figure from filename (this is the starting absolute position)
-# get number of pages from pdf (use pyPDF)
-# construct array: number of pages = [first_page,pdf_num_pages]
-# run gs and output all pages to a temp tiff (optional: run separations)
-# A: run cmyk tiff to rgb jpeg
-# B: run cmyk sep to rgb png
-# folder structure:
-# /client/job/item/page/rev/: in this folder only files related to page previews
-# /client/job/item/page/rev/render/render.jpg: page previews in RGB jpg
-# /client/job/item/page/rev/seps/C|M|Y|K|S(N).png: page separations in rgb png
-# /client/job/item/pdf/date?/original filename.pdf: storage for uploaded pdf
-
-
-# with number of pages, create a new revision assigned to each page starting from first_page
-# each Revision has a FileField attached to it
-# - FileField for render.jpg
-# - FileField for seps png
-# - FileField for uploaded PDF
-# FileField is filled with path /client/job/item/page/rev/
-# so assignation works like: N-result.jpg <-> N-original.pdf <-> N-seps.tiff <-> N-Page item 
-# where N is the abs. page number
-# there is another FileField for Revision for the uploaded pdf
-# that points to /client/job/item/pdf/date?/original filename.pdf
-
-
-# then user can add Comment to Revision using comment system
-# create directory based on client.pk/job.pk/item.pk/page_num/rev
-
-# FUNCTIONS:
-# upload (upload_list, dirname, filename)
-# upload file to temp folder 
-# returns (uploaded_file)
-
-# process (uploaded_file)
-# create cmyk tiff->seps & jpg render in a temp folder
-# returns (processed_files, seps)
-
-# rename (processed_files, seps)
-# copies file to real folder in /client/job/item/page/rev/render|seps
-# move uploaded pdf somewhere safe
-# returns (Revision with processed_file & uploaded_file attached)
-
-# process_spots (seps)
-# interface for approving which spot colors get loaded 
-# returns save2item_conf (list of spot colors)
-
-# comment (Revision)
-# gets last created Revision for that page and adds Comment before publishing
-# returns (Comment associated to Revision)
-
-	
-
+		
