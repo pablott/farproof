@@ -1,36 +1,65 @@
-# Processes and assigns files
-from __future__ import absolute_import # Required by celery
+# Required by celery:
+from __future__ import absolute_import 
+from farproof.celery import app
 
 import os, subprocess, re, shutil, glob
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
-from farproof.client_list.models import Page, Revision, PDFFile
-from farproof.settings import CONTENTS_PATH, PROFILES_PATH, TEMP_PATH
-from farproof.celery import app
+from farproof.client_list.models import Client, Job, Item, Page, Revision, PDFFile
+from farproof.settings import CONTENTS_PATH, TEMP_PATH, PROFILES_PATH
 
 #####################################################################
-# 	Processing options :											#
+# 	Saving PDF, render and assignment to pages.						#
+#####################################################################
+# Renders PDF to a temporary file and sends it to a celery queue.	#
+# TODO: Use 3 queues instead of one:								#
+# 	nr.		name		task					priority			#
+#	-------------------------------------------------------------	#
+# 	1		render		PDF render to TIFF		top					#
+# 	2		compose		TIFF to RGB JPG			medium/top			#
+# 	3		seps		TIFF to grayscale PNG	low					#
+# 																	#
+# Page numbering is taken from PDF filename and used 				#
+# as page's absolute position.										#
+# Folder structure:													#
+# C: Client PK														#
+# J: Job PK															#
+# I: Item PK														#
+# P: Page relative number 	TODO: should be absolute number 		#
+#							to preserve folder structure 			#
+#							in case of change of relative number.	#
+# R: Revision number												#
+# /TEMP_PATH/render/						Temporary render files	#
+# /CONTENTS_PATH/							User files				#
+# /CONTENTS_PATH/profiles/					ICC color profiles		#
+# /CONTENTS_PATH/uploads/				 	Uploaded PDF files		#
+# /CONTENTS_PATH/C/J/I/pages/ 				Page previews			#
+# 		/.../P/R/render/{page_number}.jpg	Previews in RGB JPG		#
+# 		/.../P/R/render/{page_number}-c|m|y|k|SPOT.png				#
+#											Seps in grayscale PNG	#
+#####################################################################
+
+#####################################################################
+# 	Processing options.												#
 #####################################################################
 # See: http://ghostscript.com/doc/current/Use.htm					#
 # and: http://ghostscript.com/doc/current/Devices.htm#TIFF			#
 # and: http://ghostscript.com/doc/current/GS9_Color_Management.pdf	#
-# CAUTION: is very important that variables are written like this:	#
-#          ' -var1 -var2' (note space at beginning of quotes)		#
 # CAUTION: order of passed arguments DOES matter!!					#
 #																	#
 # RGB devices don't support overprint, 								#
 # conversion from CMYK tiff is neccesary.							#
+#																	#
 # TODO: make CMYK_PROFILE and OVERPRINT work together.				#
 # TODO: explore -sSourceObjectICC to set the rendering of 			#
-# RGB to CMYK (and maybe CMYK to CMYK).								#
+# 		RGB to CMYK (and maybe CMYK to CMYK).						#
 #####################################################################
-
 # Common options:
 gs = os.path.normpath('D:/tmp/gs/bin/gswin64c.exe')
 convert = os.path.normpath('C:/imagemagick-6.8.8-Q16/convert.exe')
 
 # Render options:
-DEVICE = '-sDEVICE=tiffsep' #Output devices: tiff24nc, tiff32nc, tiffsep
+DEVICE = '-sDEVICE=tiffsep' # Output devices: tiff24nc, tiff32nc, tiffsep
 GRAPHICS = '-dGraphicsAlphaBits=2'
 JPEGQ = '80'
 TEXT_ALPHA_BITS = '-dTextAlphaBits=4'
@@ -39,11 +68,11 @@ TEXT_ALIGN_TO_PIXELS = '-dAlignToPixels=0'
 # Color management: 
 ICC_FOLDER = '-sICCProfilesDir=' + PROFILES_PATH
 RGB_PROFILE = '-sOutputICCProfile=sRGB.icm'
-CMYK_PROFILE = '-sOutputICCProfile=CoatedFOGRA27.icc' #-sProofProfile
-RENDER_INTENT = '-dRenderIntent=1' #0:Perceptual, 1:Colorimetric, 2:Saturation, 3:Absolute Colorimetric
-OVERPRINT = '-dSimulateOverprint=true' #Only for CMYK outputs
-BPC = '-dBlackPtComp=1' #0:Don't, #1:Do
-PRESERVE_K = '-dKPreserve=0' #0:No preservation, 1:PRESERVE K ONLY (littleCMS), 2:PRESERVE K PLANE (littleCMS)
+CMYK_PROFILE = '-sOutputICCProfile=CoatedFOGRA27.icc' # -sProofProfile
+RENDER_INTENT = '-dRenderIntent=1' # 0:Perceptual, 1:Colorimetric, 2:Saturation, 3:Absolute Colorimetric
+OVERPRINT = '-dSimulateOverprint=true' # Only for CMYK outputs
+BPC = '-dBlackPtComp=1' # 0:Don't, 1:Do
+PRESERVE_K = '-dKPreserve=0' # 0:No preservation, 1:PRESERVE K ONLY (littleCMS), 2:PRESERVE K PLANE (littleCMS)
 #####################################################################
 # 	End of processing options.										#
 #####################################################################
@@ -59,7 +88,7 @@ def process(dpi, pdf, client, job, item, SEPS):
 	span = (end_pos-start_pos)+1 # sum +1 because the range includes both extremes.
 
 	# Render page by page and send them to their proper folder:
-	for i in range(0,span):
+	for i in range(0, span):
 		page_current_pos = i+start_pos 	# Item's page position 
 		pdf_current_pos = i+1 			# PDF page position
 		
@@ -73,7 +102,7 @@ def process(dpi, pdf, client, job, item, SEPS):
 		tiff_render_proc = subprocess.Popen(cmd1)
 		tiff_render_proc.communicate()
 		print("Done rendering TIFF files, converting to JPEG...")	
-	
+		
 		# Check if current_page really has a Revision 
 		# (because if not, last_rev will return '0' and not a Revision object).
 		current_page = Page.objects.get(number=page_current_pos, item=item)
