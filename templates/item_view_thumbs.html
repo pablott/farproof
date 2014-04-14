@@ -39,7 +39,7 @@
 				Mark checkboxes to select pages for deletion.<br>
 				<br>
 				{% if pages %}
-					{% if first_page.number|divisibleby:2 %}even{% else %}odd{% endif %}
+					{% if first_page.rel_num|divisibleby:2 %}even{% else %}odd{% endif %}
 				{% endif %}
 			</div>
 		</div>
@@ -56,13 +56,13 @@
 		2a) if this happens in the first iteration, add a dummy odd page too, else
 		2b) following iterations get only an odd page (no dummy)
 	At the same time (in a separate loop), it checks where to group pages 
-	in pairs based on "page.number".
+	in pairs based on "page.rel_num".
 	Thanks to: http://stackoverflow.com/questions/11964972/django-template-for-tag-add-li-every-4th-element
 	-->
 		{% if pages %}
 			<div class="thumb_container">
 				{% for page in pages %}
-					{% if page.number|divisibleby:2 %}
+					{% if page.rel_num|divisibleby:2 %}
 						{% page_thumb_even page item job client %}
 					{% else %}
 						{% if forloop.counter == 1 %}
@@ -74,7 +74,7 @@
 					{% endif %}
 					
 					{# if the the forloop counter is divisible by 2, close the thumb container tag and open a new one #}
-					{% if not page.number|divisibleby:2 %}</div><div class="thumb_container">{% endif %}
+					{% if not page.rel_num|divisibleby:2 %}</div><div class="thumb_container">{% endif %}
 					
 				{% endfor %}
 			</div>

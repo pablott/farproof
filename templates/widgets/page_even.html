@@ -6,7 +6,7 @@
 {# TODO: unify odd and even since the only difference is the class #}
 <div class="page even">
 	<div class="page_summary">
-		<h3 class="{{ page.last_rev.status|lower }}">{{ page.number }}</h3>
+		<h3 class="{{ page.last_rev.status|lower }}">{{ page.rel_num }}</h3>
 		Last comment on {{ page.last_rev.creation|date:"j M, H:i" }}
 	</div>
 	
@@ -20,5 +20,5 @@
 		</div>
 	{% endif %}
 	
-	<img style="z-index:-10;" src="/media/{{ client.pk }}/{{ job.pk}}/{{ item.pk }}/pages/{{ page.number }}/{{ page.last_rev.rev_number }}/{{ page.number }}-render.jpg"></img>
+	<img style="z-index:-10;" src="/media/{{ client.pk }}/{{ job.pk}}/{{ item.pk }}/pages/{{ page.abs_num }}/{{ page.last_rev.rev_number }}/{{ page.abs_num }}.jpg"></img>
 </div>

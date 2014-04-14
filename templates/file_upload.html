@@ -46,7 +46,7 @@
 	
 	<div id="view">
 	
-		<button onclick="Dajaxice.client_list.sayhello(sayhello,{ 'page':{{page.number}} });">dajax</button>
+		<button onclick="Dajaxice.client_list.sayhello(sayhello,{ 'page':{{page.rel_num}} });">dajax</button>
 		
 		
 		
@@ -57,7 +57,7 @@
 	
 		<form action="/{{ client.pk }}/{{ job.pk}}/{{item.pk}}/file_upload/" method="post" enctype="multipart/form-data">
 			<input name="uploads" type=file multiple>
-			<input type="submit" onclick="Dajaxice.client_list.sayhello(sayhello,{ 'page':{{page.number}} });"> 
+			<input type="submit" onclick="Dajaxice.client_list.sayhello(sayhello,{ 'page':{{page.rel_num}} });"> 
 		</form>
 		<br>
 		<div style="background-color:green; height:80px; width:80px" id="message"></div> 

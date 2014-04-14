@@ -61,22 +61,22 @@
 			{% if pages %}
 			<div class="">
 				{% for page in pages %}
-					{% if page.number|divisibleby:2 %}
+					{% if page.rel_num|divisibleby:2 %}
 						{% if forloop.last %}
-							<div style="margin-left:-50%">{{ page.number }}  </div>
+							<div style="margin-left:-50%">{{ page.rel_num }}  </div>
 						{% else %}
-							{{ page.number }}
+							{{ page.rel_num }}
 						{% endif %}
 					{% else %}
 						{% if forloop.counter == 1 %}
-							* - {{ page.number }}
+							* - {{ page.rel_num }}
 						{% else %}
-							 - {{ page.number }}
+							 - {{ page.rel_num }}
 						{% endif %}
 					{% endif %}
 					
 					{# if the the forloop counter is divisible by 2, close the thumb container tag and open a new one #}
-					{% if not page.number|divisibleby:2 %}</div><div class="">{% endif %}
+					{% if not page.rel_num|divisibleby:2 %}</div><div class="">{% endif %}
 					
 				{% endfor %}
 				</div>
@@ -101,7 +101,7 @@
 			{% if pages %}
 			<div class="thumb_container">
 				{% for page in pages %}
-					{% if page.number|divisibleby:2 %}
+					{% if page.rel_num|divisibleby:2 %}
 						{% page_thumb_even page item job client %}
 					{% else %}
 						{% if forloop.counter == 1 %}
@@ -113,7 +113,7 @@
 					{% endif %}
 					
 					{# if the the forloop counter is divisible by 2, close the thumb container tag and open a new one #}
-					{% if not page.number|divisibleby:2 %}</div><div class="thumb_container">{% endif %}
+					{% if not page.rel_num|divisibleby:2 %}</div><div class="thumb_container">{% endif %}
 					
 				{% endfor %}
 				</div>
@@ -127,7 +127,7 @@
 <script type="text/javascript"> 
 function navFullLeft () {
     $("#navFullLeft").click(function () {
-		next_page = {{first_page.number}};
+		next_page = {{first_page.rel_num}};
 		// Send request for next_page:
 		//$(".debug").html("next_page:"+next_page);
 		window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
@@ -136,7 +136,7 @@ function navFullLeft () {
 
 function navFullRight () {
     $("#navFullRight").click(function () {
-		next_page = {{last_page.number}};
+		next_page = {{last_page.rel_num}};
 		// Send request for next_page:
 		//$(".debug").html("next_page:"+next_page);
 		window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
@@ -148,15 +148,15 @@ function navLeft () {
 		// next_page is calculated checking if current page is even or odd,
 		// depending on that it skips 1 or 2 pages so it always jumps to 
 		// the next diptych 
-		if ( {{page.number}}%2 == 0 ) {
-			next_page = {{page.number}}-1;
+		if ( {{page.rel_num}}%2 == 0 ) {
+			next_page = {{page.rel_num}}-1;
 		}else{
-			next_page = {{page.number}}-2;
+			next_page = {{page.rel_num}}-2;
 		};
 		
 		// Then it is sanitized so it doesn't exceed the page range:
-		if ( next_page > {{last_page.number}} | next_page < {{first_page.number}} ) {
-			next_page = {{first_page.number}};
+		if ( next_page > {{last_page.rel_num}} | next_page < {{first_page.rel_num}} ) {
+			next_page = {{first_page.rel_num}};
 		};
 		
 		// Send request for next_page:
@@ -170,15 +170,15 @@ function navRight () {
 		// next_page is calculated checking if current page is even or odd,
 		// depending on that it skips 1 or 2 pages so it always jumps to 
 		// the next diptych 
-		if ( {{page.number}}%2 == 0 ) {
-			next_page = {{page.number}}+2;
+		if ( {{page.rel_num}}%2 == 0 ) {
+			next_page = {{page.rel_num}}+2;
 		}else{
-			next_page = {{page.number}}+1;
+			next_page = {{page.rel_num}}+1;
 		};
 		
 		// Then it is sanitized so it doesn't exceed the page range:
-		if ( next_page > {{last_page.number}} | next_page < {{first_page.number}} ) {
-			next_page = {{last_page.number}};
+		if ( next_page > {{last_page.rel_num}} | next_page < {{first_page.rel_num}} ) {
+			next_page = {{last_page.rel_num}};
 		};
 		
 		// Send request for next_page:

@@ -9,15 +9,15 @@
 	<meta charset="utf-8">
 	<link href="/media/css/common.css" rel="stylesheet" type="text/css">
 	<link href="/media/css/widgets/pages.css" rel="stylesheet" type="text/css">
-	<title>FP - {{ client.name }} - {{ job.name}} - {{item.name}} - {{ page.number }}</title>
+	<title>FP - {{ client.name }} - {{ job.name}} - {{item.name}} - {{ page.rel_num }}</title>
 </head>
 
 <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list/"><- Back to item</a> <br>
-<h1>{{ page.number }}</h1>
+<h1>{{ page.rel_num }}</h1>
 
 
 <div class="thumb_container">
-	{% if page.number|divisibleby:2 %}
+	{% if page.rel_num|divisibleby:2 %}
 		{% page_thumb_even page item job client %}
 	{% else %}
 		{% page_thumb_odd page item job client %}
@@ -43,8 +43,7 @@
 			<li> <h5>#: {{ revision.rev_number }} / PK: {{ revision.pk }} -- {{ revision.creation }} </h5></li>
 			<ul> 
 				<li>Status: {{ revision.status }}</li>
-				<li>Belongs to page: {{ revision.page.number }}</li>
-				<li>Client correction: {{ revision.clientcontent.corr_ref }}</li>
+				<li>Belongs to page: {{ revision.page.rel_num }}</li>
 				<li>Comments:
 					<ul>
 						{% for comment in revision.comment_set.all %}

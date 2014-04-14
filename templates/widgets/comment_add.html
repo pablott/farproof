@@ -13,7 +13,7 @@
 
 
 <div class="comment_add">
-	Add comment to page {{page.number}}
+	Add comment to page {{page.rel_num}}
 	<form id="comment_form" method="POST">
 		{% csrf_token %}
 		<textarea maxlength="256" name="comment" value="" placeholder="Write comment here..."></textarea>
@@ -26,19 +26,19 @@
 		<div class="page_selection">
 			Also affects page(s)... <br>
 			{% for this_page in item.page_set.all %}
-				{% if this_page.number == page.number %}
-					<label for="{{ this_page.number }}">
-						<input type="checkbox" checked="checked" disabled="disabled" id="{{ this_page.number }}"> {{ this_page.number }}
-						<input type="hidden" checked="checked" name="pages[]" value="{{ this_page.number }}">
+				{% if this_page.rel_num == page.rel_num %}
+					<label for="{{ this_page.rel_num }}">
+						<input type="checkbox" checked="checked" disabled="disabled" id="{{ this_page.rel_num }}"> {{ this_page.rel_num }}
+						<input type="hidden" checked="checked" name="pages[]" value="{{ this_page.rel_num }}">
 					</label>
 				{% else %}
-					<label for="{{ this_page.number }}">
-						<input type="checkbox" name="pages[]" id="{{ this_page.number }}" value="{{ this_page.number }}"> {{ this_page.number }}
+					<label for="{{ this_page.rel_num }}">
+						<input type="checkbox" name="pages[]" id="{{ this_page.rel_num }}" value="{{ this_page.rel_num }}"> {{ this_page.rel_num }}
 					</label>
 				{% endif %}
 			{% endfor %}
 		</div>
-		<button class="btn" onsubmit="return false;" name="from_page" value="{{ page.number }}">Add Comment</button>
+		<button class="btn" onsubmit="return false;" name="from_page" value="{{ page.rel_num }}">Add Comment</button>
 	</form>
 </div>	
 

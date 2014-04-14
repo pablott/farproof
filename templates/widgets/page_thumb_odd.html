@@ -1,9 +1,9 @@
 {% load i18n %}
 
 
-<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/">
+<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.rel_num }}/">
 	<div class="page_thumb odd">
-		<div class="page_number">{{ page.number }}<br>PK:{{ page.pk }}</div>
+		<div class="page_number">{{ page.rel_num }}<br>PK:{{ page.pk }}</div>
 			{# get all comments associated with last revision: #}
 			<div class="page_status {{ page.last_rev.status|lower }}" title="Last comments: {% for comment in page.last_rev.comment_set.all %} --{{ comment.comment }}<br>{% endfor %}"> 
 				{{ page.last_rev.status }}

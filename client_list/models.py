@@ -116,7 +116,8 @@ class ItemAddForm(ModelForm):
 		
 class Page(models.Model):
 	item = models.ForeignKey(Item)
-	number = models.IntegerField(default="0")
+	abs_num = models.IntegerField(default="1")
+	rel_num = models.IntegerField(default="1")
 	def last_rev(self):
 		revisions = self.revision_set.filter(page=self).order_by('-creation')
 		if revisions:
@@ -126,10 +127,10 @@ class Page(models.Model):
 		return last_rev
 		
 	def __unicode__(self):
-		return "page:"+str(self.number) + "/pk:"+str(self.pk) + " - " + self.item.name + " - " + self.item.job.name + " - " + self.item.job.client.name
+		return "page:"+str(self.abs_num) + "/pk:"+str(self.pk) + " - " + self.item.name + " - " + self.item.job.name + " - " + self.item.job.client.name
 
 	class Meta(object):
-		unique_together = ("number", "item")
+		unique_together = ("abs_num", "item")
 
 	
 class Revision(models.Model):
@@ -144,7 +145,7 @@ class Revision(models.Model):
 	)
 	status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='PENDING')
 	def __unicode__(self):
-		return "rev:"+str(self.rev_number)+"/pk:"+str(self.pk) + " - " + "page:"+ str(self.page.number) + " - " + self.page.item.name + " - " + self.page.item.job.name + " - " + self.page.item.job.client.name
+		return "rev:"+str(self.rev_number)+"/pk:"+str(self.pk) + " - " + "page:"+ str(self.page.abs_num) + " - " + self.page.item.name + " - " + self.page.item.job.name + " - " + self.page.item.job.client.name
 
 	class Meta(object):
 		unique_together = ("rev_number", "page")		

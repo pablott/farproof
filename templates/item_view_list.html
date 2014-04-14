@@ -67,7 +67,7 @@
 				{% for page in pages %}
 				<ul>
 					<li class="checkbox"><input type="checkbox" name="option1" value="page1"></li>
-					<li class="page"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.number }}/">{{ page.number }}</a> </li>
+					<li class="page"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.rel_num }}/">{{ page.rel_num }}</a> </li>
 					<li class="comments">{{ page.last_rev.comment_set.count }}(XX{{ revision_set.comment_set.count }})</li>
 					<li class="revisions">{{ page.last_rev.rev_number }}({{ page.revision_set.count }})</li>
 					<li class="status {{ page.last_rev.status|lower }}">{{ page.last_rev.status }}</li>
