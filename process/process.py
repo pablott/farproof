@@ -61,9 +61,9 @@ convert = os.path.normpath('C:/imagemagick-6.8.8-Q16/convert.exe')
 # Render options:
 DEVICE = '-sDEVICE=tiffsep' # Output devices: tiff24nc, tiff32nc, tiffsep
 GRAPHICS = '-dGraphicsAlphaBits=2'
-JPEGQ = '80'
 TEXT_ALPHA_BITS = '-dTextAlphaBits=4'
 TEXT_ALIGN_TO_PIXELS = '-dAlignToPixels=0'
+JPEGQ = '80'
 
 # Color management: 
 ICC_FOLDER = '-sICCProfilesDir=' + PROFILES_PATH
