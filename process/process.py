@@ -105,7 +105,7 @@ def process(dpi, pdf, client, job, item, SEPS):
 		
 		# Check if current_page really has a Revision 
 		# (because if not, last_rev will return '0' and not a Revision object).
-		current_page = Page.objects.get(number=page_current_pos, item=item)
+		current_page = Page.objects.get(abs_num=page_current_pos, item=item)
 		current_rev = current_page.last_rev()
 		if current_rev:
 			next_rev = current_rev.rev_number+1
