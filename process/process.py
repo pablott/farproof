@@ -68,7 +68,7 @@ JPEGQ = '80'
 # Color management: 
 ICC_FOLDER = '-sICCProfilesDir=' + PROFILES_PATH
 RGB_PROFILE = '-sOutputICCProfile=sRGB.icm'
-CMYK_PROFILE = '-sOutputICCProfile=CoatedFOGRA27.icc' # -sProofProfile
+CMYK_PROFILE = '-sOutputICCProfile=CoatedFOGRA39.icc' # -sProofProfile
 RENDER_INTENT = '-dRenderIntent=1' # 0:Perceptual, 1:Colorimetric, 2:Saturation, 3:Absolute Colorimetric
 OVERPRINT = '-dSimulateOverprint=true' # Only for CMYK outputs
 BPC = '-dBlackPtComp=1' # 0:Don't, 1:Do
@@ -128,7 +128,7 @@ def process(dpi, pdf, client, job, item, SEPS):
 		if os.path.isfile(page_dir + jpeg_filename):
 			os.remove(page_dir + jpeg_filename)
 			
-		cmd2 = [convert, '-quality', JPEGQ, tiff_file.name, '+profile', 'icm', '-black-point-compensation', '-profile', os.path.join(PROFILES_PATH, 'CoatedFOGRA27.icc'), '-intent', 'relative', '-profile', os.path.join(PROFILES_PATH, 'sRGB.icm'), os.path.join(page_dir, jpeg_filename)]
+		cmd2 = [convert, '-quality', JPEGQ, tiff_file.name, '+profile', 'icm', '-black-point-compensation', '-profile', os.path.join(PROFILES_PATH, 'CoatedFOGRA39.icc'), '-intent', 'relative', '-profile', os.path.join(PROFILES_PATH, 'sRGB.icm'), os.path.join(page_dir, jpeg_filename)]
 
 		print('TIFF to JPEG... \n\t' + tiff_file.name + ' ->> ' + os.path.join(page_dir, jpeg_filename))
 		print(cmd2)
