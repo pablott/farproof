@@ -302,7 +302,6 @@ def file_upload(request, client_pk, job_pk, item_pk):
 	item = Item.objects.get(pk=item_pk, job=job)
 
 	return render_to_response('file_upload.html', {
-		# 'task_id': task_id,
 		'client': client,
 		'job': job,
 		'item': item,
