@@ -117,6 +117,7 @@ MIDDLEWARE_CLASSES = (
 
 # https://docs.djangoproject.com/en/1.3/howto/static-files/#with-a-context-processor
 TEMPLATE_CONTEXT_PROCESSORS = (
+	# 'django.contrib.auth.context_processors.auth',
 	'django.core.context_processors.debug',
 	'django.core.context_processors.i18n',
 	'django.core.context_processors.media',
@@ -131,15 +132,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 STATICFILES_FINDERS = (
 	'django.contrib.staticfiles.finders.FileSystemFinder',
 	'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-	'dajaxice.finders.DajaxiceFinder',
 )
 
 STATICFILES_DIRS = (
 	#os.path.join(ROOT_DIR, 'static'),
-	#'C:\Python27\Lib\site-packages\dajaxice'
-	# "/home/special.polls.com/polls/static",
-	# "/home/polls.com/polls/static",
-	# "/opt/webfiles/common",
 )
 
 STATIC_URL = '/static/'
@@ -172,11 +168,6 @@ LOGGING = {
 			'level': 'ERROR',
 			'propagate': True,
 		},
-		'dajaxice': {
-			'handlers': ['console'],
-			'level': 'WARNING',
-			'propagate': False,
-		}
 	}
 }
 
@@ -193,8 +184,6 @@ INSTALLED_APPS = (
 	'django.contrib.admindocs',
 	'farproof.client_list',
 	'django_extensions',
-	'dajaxice',
-	'dajax',
 	'debug_toolbar',
 	'djcelery',
 	'celery',
@@ -209,7 +198,7 @@ CELERY_RESULT_EXCHANGE = 'amqp'
 CELERY_IMPORTS = ("farproof.process.process",)
 # CELERY_ALWAYS_EAGER = True
 # CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
-# CELERY_ACCEPT_CONTENT = ['pickle',]
+# CELERY_ACCEPT_CONTENT = ['json',]
 
 DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.versions.VersionsPanel',
@@ -225,7 +214,5 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.logging.LoggingPanel',
     'debug_toolbar.panels.redirects.RedirectsPanel',
 ]
-
 INTERNAL_IPS = ('127.0.0.1',)
 
-# DAJAXICE_DEBUG = True

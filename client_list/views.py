@@ -296,3 +296,15 @@ def page_info(request, client_pk, job_pk, item_pk, page_num):
 		raise Http404
 	
 	
+def file_upload(request, client_pk, job_pk, item_pk):
+	client = Client.objects.get(pk=client_pk)
+	job = Job.objects.get(pk=job_pk, client=client)
+	item = Item.objects.get(pk=item_pk, job=job)
+
+	return render_to_response('file_upload.html', {
+		# 'task_id': task_id,
+		'client': client,
+		'job': job,
+		'item': item,
+	})
+	

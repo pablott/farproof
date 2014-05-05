@@ -1,11 +1,7 @@
 ﻿# Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
-
-from dajaxice.core import dajaxice_autodiscover, dajaxice_config
-dajaxice_autodiscover()
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-
 from django.conf.urls import *
 from farproof.client_list.views import *
 from farproof.uploader.uploader import *
@@ -21,9 +17,6 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
-	
-	# URL manager for Dajaxice:
-	url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
 	
 	#TODO Add 404 templates when a client, job, item or page is not found
     (r'^$', main),
@@ -43,6 +36,8 @@ urlpatterns = patterns('',
     (r'^(\d+)/(\d+)/(\d+)/file_upload/$', file_upload),
     (r'^(\d+)/(\d+)/(\d+)/(\d+)/page_info/$', page_info),
 	(r'^uploads/$', uploads),
+    (r'^(\d+)/(\d+)/(\d+)/uploader$', uploader),
+    (r'^queue_poll$', queue_poll),
 )
 #(r'^(?P<category>\w+)/feedback/$', 'my_view') # Might be useful as wildcard capture method
 

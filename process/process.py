@@ -1,6 +1,7 @@
 # Required by celery:
 from __future__ import absolute_import 
-from farproof.celery import app
+# from farproof.celery import app
+from celery import task, current_task
 
 import os, subprocess, re, shutil, glob
 from django.core.files import File
@@ -77,9 +78,14 @@ PRESERVE_K = '-dKPreserve=0' # 0:No preservation, 1:PRESERVE K ONLY (littleCMS),
 # 	End of processing options.										#
 #####################################################################
 
+from time import sleep
 
-@app.task
-def process(dpi, pdf, client, job, item, SEPS): 
+@task
+def process(dpi, pdf, client_pk, job_pk, item_pk, SEPS): 
+	client = Client.objects.get(pk=client_pk)
+	job = Job.objects.get(pk=job_pk, client=client)
+	item = Item.objects.get(pk=item_pk, job=job)
+
 	# Check for page range in filename:
 	filename = os.path.basename(os.path.normpath(pdf.f.path))
 	seq = re.findall('(\d+)', filename)
@@ -91,6 +97,11 @@ def process(dpi, pdf, client, job, item, SEPS):
 	for i in range(0, span):
 		page_current_pos = i+start_pos 	# Item's page position 
 		pdf_current_pos = i+1 			# PDF page position
+	
+		process_percent = int(100 * float(i) / float(span))
+		sleep(0.5)
+		current_task.update_state(state='PROGRESS', 
+			meta={'process_percent': process_percent, 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span})
 		
 		# Extract prefix from NamedTemporaryFile:
 		tiff_file = NamedTemporaryFile(suffix='-'+str(pdf_current_pos)+'.tiff', dir=TEMP_PATH)
@@ -169,5 +180,4 @@ def process(dpi, pdf, client, job, item, SEPS):
 			for sep_file in sep_list:
 				print("Removing unused separation file... \n\t" + os.path.join(TEMP_PATH, sep_file))
 				os.remove(os.path.join(TEMP_PATH, sep_file))
-			
 	print('Render of ' + pdf.f.path + ' done!')

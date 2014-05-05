@@ -1,6 +1,6 @@
 {% load i18n %}
 {% load uploader %}
-{% load dajaxice_templatetags %}
+
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
@@ -12,23 +12,9 @@
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
 	<script src="/media/js/jquery-1.8.1.js"></script>
-
 	<link href="/media/favicon.ico" rel="shortcut icon">
-	<script src="/media/js/jquery-1.8.1.js"></script>
 	<title>FP - File Upload</title>
-	
-	{% dajaxice_js_import %}
-	<script>
-		function sayhello(data){
-			alert(data.message);
-			$( '#message' ).html( data.message );
-		}
-	</script>
-	
-	
-
 </head>
-
 	
 <body>
 	<div id="topbar">
@@ -45,23 +31,49 @@
 	</div>
 	
 	<div id="view">
-	
-		<button onclick="Dajaxice.client_list.sayhello(sayhello,{ 'page':{{page.rel_num}} });">dajax</button>
-		
-		
-		
-		
-		
-		
-	
-	
-		<form action="/{{ client.pk }}/{{ job.pk}}/{{item.pk}}/file_upload/" method="post" enctype="multipart/form-data">
-			<input name="uploads" type=file multiple>
-			<input type="submit" onclick="Dajaxice.client_list.sayhello(sayhello,{ 'page':{{page.rel_num}} });"> 
+		<form enctype="multipart/form-data">
+			<input id="fileinput" name="uploads" type=file multiple>
+			<input id="submit" type="button" value="send"> 
 		</form>
 		<br>
-		<div style="background-color:green; height:80px; width:80px" id="message"></div> 
+		<div style="background-color:rgba(10,10,200,.5); height:20px; width:600px">
+			<div class="bar" style="background-color:green; width:0%; height:100%;"></div>
+			<div id="message">0%</div>
+		</div> 
 	</div>
 	
+	<script>
+		// Check queue status with task_id variable with state of the current task.
+		var PollState = function(task_id) {
+			$.ajax({
+				url: "/queue_poll",
+				type: "POST",
+				data: "task_id=" + task_id,
+			}).done(function(task){
+				// Update process bar with progress:
+				if (task.process_percent) {
+					$('.bar').css({'width': task.process_percent + '%'});
+					$('#message').html(task.process_percent + '% - ' + task.filename + ' - ' + task_id + ' - Page ' + task.pdf_current_pos + '/' + task.span);
+				};
+				setTimeout(PollState(task_id), 3000);
+			});	
+		};
+	
+		$('#submit').click(function(){
+			var formData = new FormData($('form')[0]);
+			$.ajax({
+				url: '/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/uploader',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				// jQuery must not process data or AJAX data gets malformed.
+				contentType: false,
+				processData: false,
+				}).done(function(task_id){
+					alert(task_id);
+					PollState(task_id);
+				});
+		});		
+	</script>
 </body>
 </html>
