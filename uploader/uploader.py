@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from celery.result import AsyncResult
+from celery.task.control import inspect
 from farproof.client_list.models import PDFFile
 from farproof.process.process import process
 
@@ -18,7 +19,6 @@ def uploader(request, client_pk, job_pk, item_pk):
 	data = 'empty'
 	if request.is_ajax():
 		uploads = request.FILES.getlist('uploads') # this is a MultiValueDict 
-		print(uploads)
 		for f in uploads:
 			print('Saving file: '+f.name)
 			pdf = PDFFile()
@@ -26,33 +26,38 @@ def uploader(request, client_pk, job_pk, item_pk):
 			pdf.f = File(f)
 			pdf.save()
 			
-			task = process.delay(32, pdf, client_pk, job_pk, item_pk, SEPS=False)
+			task = process.delay(32, pdf, client_pk, job_pk, item_pk, SEPS=True)
 			request.session['task_id'] = task.id
 			data = task.id
 	else:
-		data = 'Not file list in AJAX request.'
+		data = 'No file list in AJAX request.'
 		
 	json_data = json.dumps(data)
-
-	return HttpResponse(json_data, mimetype='application/json')
+	return HttpResponse(json_data, content_type='application/json')
 
 
 @csrf_exempt
 def queue_poll(request):
-	data = 'empty'
+	task_list = []
 	if request.is_ajax():
-		if 'task_id' in request.POST.keys() and request.POST['task_id']:
-			task_id = request.POST['task_id']
-			# print(task_id)
+		# Query active tasks:
+		active_tasks = inspect().active()
+		for t in active_tasks['celery@pc-PC']: # TODO: get queue name dynamically.
+			task_id = t.get('id')
 			task = AsyncResult(task_id)
-			data = task.result or task.state
-		else:
-			data = 'No task_id found.'
+			
+			# Associate UUID to task_state so the client end of the polling
+			# mechanism can identify task one by one, like this:
+			# [{task_id, task_state}]
+			state = task.result or task.state
+			state.update({'id': task_id})
+			task_list.append(state)
+		# print task_list
 	else:
-		data = 'Not an AJAX request.'
-
-	json_data = json.dumps(data)
-
-	return HttpResponse(json_data, mimetype='application/json')
+		task_list = 'Not an AJAXed task list.'
+			
+	json_data = json.dumps(task_list)
+	print json_data
+	return HttpResponse(json_data, content_type='application/json')		
 
 	

@@ -33,47 +33,67 @@
 	<div id="view">
 		<form enctype="multipart/form-data">
 			<input id="fileinput" name="uploads" type=file multiple>
-			<input id="submit" type="button" value="send"> 
+			<input id="submit" class="btn btnM btnV" type="button" value="Submit"> 
 		</form>
-		<br>
-		<div style="background-color:rgba(10,10,200,.5); height:20px; width:600px">
-			<div class="bar" style="background-color:green; width:0%; height:100%;"></div>
-			<div id="message">0%</div>
-		</div> 
+		<div id="queue_container"> </div> 
 	</div>
 	
 	<script>
-		// Check queue status with task_id variable with state of the current task.
-		var PollState = function(task_id) {
-			$.ajax({
-				url: "/queue_poll",
-				type: "POST",
-				data: "task_id=" + task_id,
-			}).done(function(task){
-				// Update process bar with progress:
-				if (task.process_percent) {
-					$('.bar').css({'width': task.process_percent + '%'});
-					$('#message').html(task.process_percent + '% - ' + task.filename + ' - ' + task_id + ' - Page ' + task.pdf_current_pos + '/' + task.span);
+	// Check queue status with task_id variable with state of the current task.
+	var PollState = function() {
+		$.ajax({
+			url: "/queue_poll",
+			type: "POST",
+		}).done(function(task_list){
+			// Update process bar with progress:
+			for(e in task_list) {
+				task = task_list[e]
+				if ($('.task#'+task.id).length < 1) {
+					$('<div/>', {
+						id: task.id,
+						'class': 'task',
+					}).appendTo('#queue_container');
+					$('<div/>', {
+						'class': 'bar',
+					}).appendTo('.task#'+task.id);
+					$('<span/>', {
+						text: task.id+' / '+task.process_percent +' / '+task.filename,
+					}).appendTo('.task#'+task.id);
+					if (task.seps) {
+						$('<div/>', {
+							'class': 'seps',
+						}).appendTo('.task#'+task.id);
+					};
+				} else {
+					$('.task#'+task.id+' > .bar').animate({
+						width:task.process_percent +'%',
+					});
+					$('.task#'+task.id+' span').html('<b>' + task.process_percent + '%</b><br> Page: ' + task.pdf_current_pos + '/' + task.span + ' - File: ' + task.filename + ' - ID: ' + task.id);					
+					
+					if (task.seps_name) {
+						$('.task#'+task.id+' span').append(' '+task.sep_name);
+					};
 				};
-				setTimeout(PollState(task_id), 3000);
-			});	
-		};
+			};
+			PollState();
+		});	
+	};
 	
-		$('#submit').click(function(){
-			var formData = new FormData($('form')[0]);
-			$.ajax({
-				url: '/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/uploader',
-				type: 'POST',
-				data: formData,
-				cache: false,
-				// jQuery must not process data or AJAX data gets malformed.
-				contentType: false,
-				processData: false,
-				}).done(function(task_id){
-					alert(task_id);
-					PollState(task_id);
-				});
-		});		
+	$('#submit').click(function(){
+		var formData = new FormData($('form')[0]);
+		$.ajax({
+			url: '/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/uploader',
+			type: 'POST',
+			data: formData,
+			cache: false,
+			// jQuery must not process data or AJAX data gets malformed.
+			contentType: false,
+			processData: false,
+			}).done(function(){
+				alert('File(s) sent.');
+				PollState();
+			});
+	});		
 	</script>
 </body>
 </html>

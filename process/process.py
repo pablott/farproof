@@ -99,9 +99,8 @@ def process(dpi, pdf, client_pk, job_pk, item_pk, SEPS):
 		pdf_current_pos = i+1 			# PDF page position
 	
 		process_percent = int(100 * float(i) / float(span))
-		sleep(0.5)
-		current_task.update_state(state='PROGRESS', 
-			meta={'process_percent': process_percent, 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span})
+		current_task.update_state(state='IN PROGRESS', 
+			meta={'process_percent': process_percent, 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'seps': SEPS})
 		
 		# Extract prefix from NamedTemporaryFile:
 		tiff_file = NamedTemporaryFile(suffix='-'+str(pdf_current_pos)+'.tiff', dir=TEMP_PATH)
@@ -153,9 +152,13 @@ def process(dpi, pdf, client_pk, job_pk, item_pk, SEPS):
 		sep_list = glob.glob(os.path.join(TEMP_PATH, (prefix + '-' + str(pdf_current_pos) + '.tiff*.tif')))
 		if SEPS:
 			print('Processing separations into PNGs...')
-			for tif_sep_file in sep_list:
+			for i, tif_sep_file in enumerate(sep_list):
 				suffix = re.search('\((.*?)\)', tif_sep_file).group(1).lower()
 				png_sep_filename = str(page_current_pos) +'-'+ suffix +'.png'
+
+				sleep(0.5)
+				current_task.update_state(state='IN PROGRESS', 
+					meta={'process_percent': process_percent, 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'sep_name': suffix, 'seps': SEPS})
 				
 				# # http://www.imagemagick.org/Usage/color_mods/#linear
 				# # TODO: Tint seps before saving. Suggestions: -map palette or -fx as follows:
@@ -180,4 +183,8 @@ def process(dpi, pdf, client_pk, job_pk, item_pk, SEPS):
 			for sep_file in sep_list:
 				print("Removing unused separation file... \n\t" + os.path.join(TEMP_PATH, sep_file))
 				os.remove(os.path.join(TEMP_PATH, sep_file))
+				
+	current_task.update_state(state='IN PROGRESS', 
+		meta={'process_percent': 100, 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'seps': SEPS})
+	sleep(1000)
 	print('Render of ' + pdf.f.path + ' done!')
