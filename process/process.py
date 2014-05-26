@@ -81,7 +81,7 @@ PRESERVE_K = '-dKPreserve=0' # 0:No preservation, 1:PRESERVE K ONLY (littleCMS),
 from time import sleep
 
 @task
-def process(dpi, pdf, client_pk, job_pk, item_pk, SEPS): 
+def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False): 
 	client = Client.objects.get(pk=client_pk)
 	job = Job.objects.get(pk=job_pk, client=client)
 	item = Item.objects.get(pk=item_pk, job=job)
@@ -107,7 +107,7 @@ def process(dpi, pdf, client_pk, job_pk, item_pk, SEPS):
 		prefix = os.path.basename(os.path.normpath(tiff_file.name)).split('-')[0]
 		print('Prefix: ' + str(prefix))
 		
-		cmd1 = [gs, DEVICE, '-r'+str(dpi), '-dFirstPage='+str(pdf_current_pos), '-dLastPage='+str(pdf_current_pos), '-dNOPAUSE', '-dBATCH', '-q', '-dUseCIEColor', '-dDOINTERPOLATE', GRAPHICS, TEXT_ALPHA_BITS, TEXT_ALIGN_TO_PIXELS, RENDER_INTENT, OVERPRINT, '-sOUTPUTFILE='+tiff_file.name, pdf.f.path]
+		cmd1 = [gs, DEVICE, '-r'+str(DPI), '-dFirstPage='+str(pdf_current_pos), '-dLastPage='+str(pdf_current_pos), '-dNOPAUSE', '-dBATCH', '-q', '-dUseCIEColor', '-dDOINTERPOLATE', GRAPHICS, TEXT_ALPHA_BITS, TEXT_ALIGN_TO_PIXELS, RENDER_INTENT, OVERPRINT, '-sOUTPUTFILE='+tiff_file.name, pdf.f.path]
 		print(cmd1)
 		tiff_render_proc = subprocess.Popen(cmd1)
 		tiff_render_proc.communicate()
