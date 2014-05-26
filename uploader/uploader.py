@@ -16,8 +16,7 @@ from farproof.process.process import process
 	
 @csrf_exempt
 def uploader(request, client_pk, job_pk, item_pk):
-	data = 'empty'
-	if request.is_ajax():
+	if request.is_ajax() and request.FILES:
 		uploads = request.FILES.getlist('uploads') # this is a MultiValueDict 
 		for f in uploads:
 			print('Saving file: '+f.name)
@@ -26,7 +25,7 @@ def uploader(request, client_pk, job_pk, item_pk):
 			pdf.f = File(f)
 			pdf.save()
 			
-			task = process.delay(32, pdf, client_pk, job_pk, item_pk, SEPS=True)
+			task = process.delay(pdf, client_pk, job_pk, item_pk, SEPS=True)
 			request.session['task_id'] = task.id
 			data = task.id
 	else:
@@ -41,12 +40,13 @@ def queue_poll(request):
 	task_list = []
 	if request.is_ajax():
 		# Query active tasks:
-		active_tasks = inspect().active()
+		active_tasks = inspect().active() or inspect().scheduled()
+		print active_tasks
 		for t in active_tasks['celery@pc-PC']: # TODO: get queue name dynamically.
 			task_id = t.get('id')
 			task = AsyncResult(task_id)
 			
-			# Associate UUID to task_state so the client end of the polling
+			# Associate ID to task_state so the client end of the polling
 			# mechanism can identify task one by one, like this:
 			# [{task_id, task_state}]
 			state = task.result or task.state
@@ -57,7 +57,7 @@ def queue_poll(request):
 		task_list = 'Not an AJAXed task list.'
 			
 	json_data = json.dumps(task_list)
-	print json_data
+	# print json_data
 	return HttpResponse(json_data, content_type='application/json')		
 
 	

@@ -48,6 +48,7 @@
 			// Update process bar with progress:
 			for(e in task_list) {
 				task = task_list[e]
+				// Create the task structure only once per task ID:
 				if ($('.task#'+task.id).length < 1) {
 					$('<div/>', {
 						id: task.id,
@@ -57,24 +58,33 @@
 						'class': 'bar',
 					}).appendTo('.task#'+task.id);
 					$('<span/>', {
-						text: task.id+' / '+task.process_percent +' / '+task.filename,
+						text: '<b> 0% </b><br>' + task.filename
 					}).appendTo('.task#'+task.id);
 					if (task.seps) {
 						$('<div/>', {
 							'class': 'seps',
 						}).appendTo('.task#'+task.id);
+						$('<div/>', {
+							'class': 'sep_name',
+						}).appendTo('.task#'+task.id+' .seps');
 					};
+					$('<div/>', {
+						'class': 'processing',
+					}).appendTo('.task#'+task.id+' .seps');
+				};
+				// Populate tasks with data:
+				$('.task#'+task.id+' > .bar').animate({width:task.process_percent +'%'});
+				$('.task#'+task.id+' span').html('<b>' + task.process_percent + '%</b><br> Page: ' + task.pdf_current_pos + '/' + task.span + ' - File: ' + task.filename + ' - ID: ' + task.id);					
+				if (task.sep_name) {
+					$('.task#'+task.id+' .seps .processing').css({'display': 'block'});
+					$('.task#'+task.id+' .seps .sep_name').html(task.sep_name);
 				} else {
-					$('.task#'+task.id+' > .bar').animate({
-						width:task.process_percent +'%',
-					});
-					$('.task#'+task.id+' span').html('<b>' + task.process_percent + '%</b><br> Page: ' + task.pdf_current_pos + '/' + task.span + ' - File: ' + task.filename + ' - ID: ' + task.id);					
-					
-					if (task.seps_name) {
-						$('.task#'+task.id+' span').append(' '+task.sep_name);
-					};
+					$('.task#'+task.id+' .seps .processing').css({'display': 'none'});
+					$('.task#'+task.id+' .seps .sep_name').html('');
 				};
 			};
+			// setInterval(PollState(), 2000);
+			// var myVar = setInterval(function(){PollState()}, 2000);
 			PollState();
 		});	
 	};
@@ -90,8 +100,8 @@
 			contentType: false,
 			processData: false,
 			}).done(function(){
-				alert('File(s) sent.');
 				PollState();
+				alert('File(s) sent.');
 			});
 	});		
 	</script>
