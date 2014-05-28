@@ -102,9 +102,9 @@ def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False):
 		page_current_pos = i+start_pos 	# Item's page position 
 		pdf_current_pos = i+1 			# PDF page position
 	
-		process_percent = int(100 * float(i) / float(span))
+		percent = int(100 * float(i) / float(span))
 		current_task.update_state(state='IN PROGRESS', 
-			meta={'process_percent': process_percent, 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'seps': SEPS})
+			meta={'percent': percent, 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'seps': SEPS})
 		
 		# Extract prefix from NamedTemporaryFile:
 		tiff_file = NamedTemporaryFile(suffix='-'+str(pdf_current_pos)+'.tiff', dir=TEMP_PATH)
@@ -163,7 +163,7 @@ def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False):
 
 				sleep(0.5)
 				current_task.update_state(state='IN PROGRESS', 
-					meta={'process_percent': process_percent, 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'sep_name': suffix, 'seps': SEPS})
+					meta={'percent': percent, 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'sep_name': suffix, 'seps': SEPS})
 				
 				# # http://www.imagemagick.org/Usage/color_mods/#linear
 				# # TODO: Tint seps before saving. Suggestions: -map palette or -fx as follows:
@@ -190,6 +190,6 @@ def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False):
 				os.remove(os.path.join(TEMP_PATH, sep_file))
 				
 	current_task.update_state(state='IN PROGRESS', 
-		meta={'process_percent': 100, 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'seps': SEPS})
+		meta={'percent': 100, 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'seps': SEPS})
 	sleep(1000)
 	print('Render of ' + pdf.f.path + ' done!')

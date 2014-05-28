@@ -73,8 +73,8 @@
 					}).appendTo('.task#'+task.id+' .seps');
 				};
 				// Populate tasks with data:
-				$('.task#'+task.id+' > .bar').animate({width:task.process_percent +'%'});
-				$('.task#'+task.id+' span').html('<b>' + task.process_percent + '%</b><br> Page: ' + task.pdf_current_pos + '/' + task.span + ' - File: ' + task.filename + ' - ID: ' + task.id);					
+				$('.task#'+task.id+' > .bar').animate({width:task.percent +'%'});
+				$('.task#'+task.id+' span').html('<b>' + task.percent + '%</b><br> Page: ' + task.pdf_current_pos + '/' + task.span + ' - File: ' + task.filename + ' - ID: ' + task.id);					
 				if (task.sep_name) {
 					$('.task#'+task.id+' .seps .processing').css({'display': 'block'});
 					$('.task#'+task.id+' .seps .sep_name').html(task.sep_name);
