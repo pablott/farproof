@@ -23,6 +23,7 @@ def uploader(request, client_pk, job_pk, item_pk):
 			pdf = PDFFile()
 			pdf.save()
 			pdf.f = File(f)
+			pdf.title = f.name
 			pdf.save()
 			
 			task = process.delay(pdf, client_pk, job_pk, item_pk, SEPS=True)

@@ -87,10 +87,14 @@ def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False):
 	item = Item.objects.get(pk=item_pk, job=job)
 
 	# Check for page range in filename:
-	filename = os.path.basename(os.path.normpath(pdf.f.path))
+	filename = pdf.title
 	seq = re.findall('(\d+)', filename)
 	start_pos = int(seq[0])
-	end_pos = int(seq[1])
+	print len(seq)
+	if len(seq) > 1:
+		end_pos = int(seq[1])
+	else:
+		end_pos = start_pos
 	span = (end_pos-start_pos)+1 # sum +1 because the range includes both extremes.
 
 	# Render page by page and send them to their proper folder:
