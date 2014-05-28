@@ -110,8 +110,9 @@ def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False):
 		tiff_file = NamedTemporaryFile(suffix='-'+str(pdf_current_pos)+'.tiff', dir=TEMP_PATH)
 		prefix = os.path.basename(os.path.normpath(tiff_file.name)).split('-')[0]
 		print('Prefix: ' + str(prefix))
+		print pdf.f.path.encode('cp1252')
 		
-		cmd1 = [gs, DEVICE, '-r'+str(DPI), '-dFirstPage='+str(pdf_current_pos), '-dLastPage='+str(pdf_current_pos), '-dNOPAUSE', '-dBATCH', '-q', '-dUseCIEColor', '-dDOINTERPOLATE', GRAPHICS, TEXT_ALPHA_BITS, TEXT_ALIGN_TO_PIXELS, RENDER_INTENT, OVERPRINT, '-sOUTPUTFILE='+tiff_file.name, pdf.f.path]
+		cmd1 = [gs, DEVICE, '-r'+str(DPI), '-dFirstPage='+str(pdf_current_pos), '-dLastPage='+str(pdf_current_pos), '-dNOPAUSE', '-dBATCH', '-q', '-dUseCIEColor', '-dDOINTERPOLATE', GRAPHICS, TEXT_ALPHA_BITS, TEXT_ALIGN_TO_PIXELS, RENDER_INTENT, OVERPRINT, '-sOUTPUTFILE='+tiff_file.name, pdf.f.path.encode('cp1252')]
 		print(cmd1)
 		tiff_render_proc = subprocess.Popen(cmd1)
 		tiff_render_proc.communicate()
