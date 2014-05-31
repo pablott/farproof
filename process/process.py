@@ -82,6 +82,15 @@ from time import sleep
 
 @task
 def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False): 
+	n = 1
+	def percent():
+		# TODO: This functions doesn't know the number of separations:
+		if SEPS:
+			print int(100 * float(i+(n/4)) / float(span))
+			return int(100 * float(i+(n/4)) / float(span))
+		else:
+			return int(100 * float(i) / float(span))
+		
 	client = Client.objects.get(pk=client_pk)
 	job = Job.objects.get(pk=job_pk, client=client)
 	item = Item.objects.get(pk=item_pk, job=job)
@@ -89,6 +98,7 @@ def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False):
 	# Check for page range in filename:
 	filename = pdf.title
 	seq = re.findall('(\d+)', filename)
+	print filename
 	start_pos = int(seq[0])
 	print len(seq)
 	if len(seq) > 1:
@@ -102,9 +112,9 @@ def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False):
 		page_current_pos = i+start_pos 	# Item's page position 
 		pdf_current_pos = i+1 			# PDF page position
 	
-		percent = int(100 * float(i) / float(span))
+		# percent = int(100 * float(i) / float(span))
 		current_task.update_state(state='IN PROGRESS', 
-			meta={'percent': percent, 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'seps': SEPS})
+			meta={'percent': percent(), 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'seps': SEPS})
 		
 		# Extract prefix from NamedTemporaryFile:
 		tiff_file = NamedTemporaryFile(suffix='-'+str(pdf_current_pos)+'.tiff', dir=TEMP_PATH)
@@ -157,13 +167,14 @@ def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False):
 		sep_list = glob.glob(os.path.join(TEMP_PATH, (prefix + '-' + str(pdf_current_pos) + '.tiff*.tif')))
 		if SEPS:
 			print('Processing separations into PNGs...')
-			for i, tif_sep_file in enumerate(sep_list):
+			for n, tif_sep_file in enumerate(sep_list):
 				suffix = re.search('\((.*?)\)', tif_sep_file).group(1).lower()
+				print 'suffix: '+suffix
 				png_sep_filename = str(page_current_pos) +'-'+ suffix +'.png'
 
 				sleep(0.5)
 				current_task.update_state(state='IN PROGRESS', 
-					meta={'percent': percent, 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'sep_name': suffix, 'seps': SEPS})
+					meta={'percent': percent(), 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'sep_name': suffix, 'seps': SEPS})
 				
 				# # http://www.imagemagick.org/Usage/color_mods/#linear
 				# # TODO: Tint seps before saving. Suggestions: -map palette or -fx as follows:
