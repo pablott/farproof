@@ -27,8 +27,7 @@ def uploader(request, client_pk, job_pk, item_pk):
 			pdf.save()
 			
 			task = process.delay(pdf, client_pk, job_pk, item_pk, SEPS=True)
-			request.session['task_id'] = task.id
-			data = task.id
+			data = 'Tasks started...'
 	else:
 		data = 'No file list in AJAX request.'
 		
@@ -49,16 +48,20 @@ def queue_poll(request):
 			
 			# Associate ID to task_state so the client end of the polling
 			# mechanism can identify task one by one, like this:
-			# [{task_id, task_state}]
+			# [{task_stateN('task_idN')}]
 			state = task.result or task.state
-			state.update({'id': task_id})
+			if active_tasks:
+				state.update({'id': task_id})
 			task_list.append(state)
-		# print task_list
+		print 'TASK_LIST'
+		print task_list
 	else:
 		task_list = 'Not an AJAXed task list.'
 			
-	json_data = json.dumps(task_list)
-	# print json_data
-	return HttpResponse(json_data, content_type='application/json')		
+	json_data = json.dumps(task_list, ensure_ascii=False, encoding='utf-8')
+	print '\nJSON_DATA'
+	print json_data
+	print '\n'
+	return HttpResponse(json_data, content_type='application/json')
 
 	

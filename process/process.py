@@ -1,6 +1,5 @@
 # Required by celery:
 from __future__ import absolute_import 
-# from farproof.celery import app
 from celery import task, current_task
 
 import os, sys, subprocess, re, shutil, glob
@@ -84,10 +83,10 @@ from time import sleep
 def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False): 
 	n = 1
 	def percent():
-		# TODO: This functions doesn't know the number of separations:
+		# TODO: This functions doesn't know the number of separations.
 		if SEPS:
-			print int(100 * float(i+(n/4)) / float(span))
-			return int(100 * float(i+(n/4)) / float(span))
+			# print int(float(i+((1-n)/4))) / float(span)) * 100
+			return int(float(i+(n/4)) / float(span*4)) * 100
 		else:
 			return int(100 * float(i) / float(span))
 		
@@ -112,15 +111,13 @@ def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False):
 		page_current_pos = i+start_pos 	# Item's page position 
 		pdf_current_pos = i+1 			# PDF page position
 	
-		# percent = int(100 * float(i) / float(span))
 		current_task.update_state(state='IN PROGRESS', 
-			meta={'percent': percent(), 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'seps': SEPS})
+			meta={'percent': percent(), u'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'seps': SEPS})
 		
 		# Extract prefix from NamedTemporaryFile:
 		tiff_file = NamedTemporaryFile(suffix='-'+str(pdf_current_pos)+'.tiff', dir=TEMP_PATH)
 		prefix = os.path.basename(os.path.normpath(tiff_file.name)).split('-')[0]
 		print('Prefix: ' + str(prefix))
-		print pdf.f.path.encode(sys.getfilesystemencoding())
 		
 		cmd1 = [gs, DEVICE, '-r'+str(DPI), '-dFirstPage='+str(pdf_current_pos), '-dLastPage='+str(pdf_current_pos), '-dNOPAUSE', '-dBATCH', '-q', '-dUseCIEColor', '-dDOINTERPOLATE', GRAPHICS, TEXT_ALPHA_BITS, TEXT_ALIGN_TO_PIXELS, RENDER_INTENT, OVERPRINT, '-sOUTPUTFILE='+tiff_file.name, pdf.f.path.encode(sys.getfilesystemencoding())]
 		print(cmd1)
@@ -168,13 +165,18 @@ def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False):
 		if SEPS:
 			print('Processing separations into PNGs...')
 			for n, tif_sep_file in enumerate(sep_list):
-				suffix = re.search('\((.*?)\)', tif_sep_file).group(1).lower()
-				print 'suffix: '+suffix
-				png_sep_filename = str(page_current_pos) +'-'+ suffix +'.png'
+				# Get sep_name form filename and transcode it into unicode,
+				# it has to find out the FS encoding to get right chars.
+				sep_name = re.search('\((.*?)\)', tif_sep_file.decode(sys.getfilesystemencoding())).group(1).lower()
+				print 'tif_sep_file: '+tif_sep_file+'\t'+str(type(tif_sep_file))
+				print 'sep_name: '+sep_name+'\t'+str(type(sep_name))
 
-				sleep(0.5)
+				# Construct png_sep_filename:
+				png_sep_filename = str(page_current_pos) +'-'+ sep_name +'.png'
+				
 				current_task.update_state(state='IN PROGRESS', 
-					meta={'percent': percent(), 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'sep_name': suffix, 'seps': SEPS})
+					meta={'percent': percent(), u'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, u'sep_name': sep_name, 'seps': SEPS})
+				sleep(.5)
 				
 				# # http://www.imagemagick.org/Usage/color_mods/#linear
 				# # TODO: Tint seps before saving. Suggestions: -map palette or -fx as follows:
@@ -187,20 +189,22 @@ def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False):
 				# '-size', '100x100',
 				# 'canvas:rgb(0,158,224)',
 				# '-fx', '1-(1-v.p{0,0})*(1-u)',
-				cmd3 = [convert, str(os.path.join(TEMP_PATH, tif_sep_file)), str(os.path.join(page_dir, png_sep_filename))]
+				
+				# The png_sep_filename needs to be saved.
+				cmd3 = [convert, tif_sep_file, os.path.join(page_dir, png_sep_filename.encode(sys.getfilesystemencoding()))]
 				print(cmd3)
 				sep_render_proc = subprocess.Popen(cmd3)
 				sep_render_proc.communicate()
 				
 				# Finally, move rendered separations to the proper item's subfolder:
-				print("Removing separation file... \n\t" + os.path.join(TEMP_PATH, tif_sep_file))
-				os.remove(os.path.join(TEMP_PATH, tif_sep_file))
+				print "Removing separation file... \n\t" + tif_sep_file
+				os.remove(tif_sep_file)
 		else:
 			for sep_file in sep_list:
 				print("Removing unused separation file... \n\t" + os.path.join(TEMP_PATH, sep_file))
 				os.remove(os.path.join(TEMP_PATH, sep_file))
 				
 	current_task.update_state(state='IN PROGRESS', 
-		meta={'percent': 100, 'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'seps': SEPS})
-	sleep(1000)
+		meta={'percent': 100, u'filename': filename, 'pdf_current_pos': pdf_current_pos, 'span': span, 'seps': SEPS})
 	print('Render of ' + pdf.f.path + ' done!')
+	sleep(10)
