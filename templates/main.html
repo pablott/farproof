@@ -23,17 +23,15 @@
 		</ul>
 	</div>
 
-	<div id="sidebar">
-		<div class="btn_box_top">
-			<div class="btn btnM btnV top pushed"> Client List </div>
-			<div class="btn btnM btnV bottom"> <div class="btn_icon btn_icon2">G</div> Configure FP </div>
-			<a href="/client_add/"><div class="btn btnM"> <div class="btn_icon btn_icon2"> + </div> Add Client </div></a>
+	<div id="control_bar">
+		<div class="btn_box_center">
+			<div class="btn btnM btnH left pushed"> Client List </div>
+			<div class="btn btnM btnH right"> <div class="btn_icon btn_icon2">G</div> Configure FP </div>
+			<a href="/client_add/"><div class="btn btnM btnH"> <div class="btn_icon btn_icon2"> + </div> Add Client </div></a>
+			{% if clients %}
+				<div class="btn btnM btnH delete"> <div class="btn_icon btn_icon1">X</div> Delete Client </div>
+			{% endif %}
 		</div>
-		{% if clients %}
-		<div class="btn_box_bottom">
-			<div class="btn btnM delete"> <div class="btn_icon btn_icon1">X</div> Delete Client </div>
-		</div>
-		{% endif %}
 	</div>
 	
 	<div id="view">

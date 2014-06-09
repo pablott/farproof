@@ -13,28 +13,33 @@
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
 	<script src="/media/js/jquery-1.8.1.js"></script>
 	<link href="/media/favicon.ico" rel="shortcut icon">
-	<title>FP - File Upload</title>
+	<title>FP - File upload</title>
 </head>
 	
 <body>
 	<div id="topbar">
 		<ul>
-			<li> FP </li>
-			<li> Upload a file </li>
+			<li> <a href="/{{ client.pk }}/">{{ client.name }}</a> </li>
+			<li> <a href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a> </li>
+			<li> {{ item.name }} </li>
+			<li> File upload </li>
 		</ul>
 	</div>
 
-	<div id="sidebar">
-		<div class="btn_box_top">
-			<a href="/"><div class="btn btnM btnV"> Client List </div></a>
+	<div id="control_bar">
+		<div class="btn_box_center">
+			<form enctype="multipart/form-data">
+				<div class="btn_box_left">
+					<input id="fileinput" name="uploads" type=file multiple>
+				</div>
+				<div class="btn_box_right">
+					<input id="submit" class="btn btnM btnH" type="button" value="Submit"> 
+				</div>
+			</form>
 		</div>
 	</div>
 	
 	<div id="view">
-		<form enctype="multipart/form-data">
-			<input id="fileinput" name="uploads" type=file multiple>
-			<input id="submit" class="btn btnM btnV" type="button" value="Submit"> 
-		</form>
 		<div id="queue_container"> </div> 
 	</div>
 	
