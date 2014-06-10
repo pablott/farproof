@@ -24,16 +24,16 @@
 	</div>
 
 	<div id="control_bar">
-		<div class="btn_box_left">
+		<div class="btn_box_center">
 			<a href="/"><div class="btn btnM btnH left"> Client List </div></a>
-			<div class="btn btnM btnH"> <div class="btn_icon btn_icon2">G</div> Configure FP </div>
+			<div class="btn btnM btnH right"> <div class="btn_icon btn_icon2">G</div> Configure FP </div>
 		</div>
 	</div>
 	
 	<div id="view">
 		<form action="/client_search/" method="get">
 			<input type="text" name="name">
-			<input type="submit" value="Search">
+			<input class="btn btnM btnH" type="submit" value="Search">
 		</form>
 		<ul>
 			<li>{{message}}</li>

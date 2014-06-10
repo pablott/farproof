@@ -3,14 +3,11 @@
 
 <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.rel_num }}/">
 	<div class="page_thumb even">
-		<div class="page_number">{{ page.rel_num }}<br>PK:{{ page.pk }}</div>
-			{# get all comments associated with last revision: #}
-			<div class="page_status {{ page.last_rev.status|lower }}" title="Last comments: {% for comment in page.last_rev.comment_set.all %} --{{ comment.comment }}<br>{% endfor %}"> 
-				{{ page.last_rev.status }}
-			</div>
-			<div class="page_info">
-				{{ page.last_rev.comment_set.count }} last comment{{ page.last_rev.comment_set.count|pluralize }} on {{ page.last_rev.creation|date:"j M, H:i" }}  <br>
-				{{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }}
-			</div>
+		<div class="page_number {{ page.last_rev.status|lower }}">{{ page.rel_num }}</div>
+		<div class="page_info">
+			{{ page.last_rev.comment_set.count }} comment{{ page.last_rev.comment_set.count|pluralize }} <br>
+			on {{ page.last_rev.creation|date:"j M, H:i" }} <br>
+			({{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }})
+		</div>
 	</div>
 </a>

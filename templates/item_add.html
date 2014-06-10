@@ -34,13 +34,12 @@
 	</div>
 	
 	<div id="view">
-	
 		<form action="/{{ client.pk }}/{{ job.pk }}/item_add/" method="post">
 			{% csrf_token %}
 			<label>Nr. of pages: </label><input type="number" name="num_pages">
 			<label>Starting from: </label><input type="number" name="start_page">
 			{{ form.as_ul }}
-			<input type="submit" value="Add Item">
+			<input class="btn btnM btnH" type="submit" value="Add Item">
 		</form>
 		{{ message }}
 
