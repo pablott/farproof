@@ -98,6 +98,36 @@ class Item(models.Model):
 			return True
 		else:
 			return False
+		
+	def approved(self):
+		approved_pages = 0
+		pages = self.page_set.all()
+		if pages:
+			for page in pages:
+				last_rev = page.last_rev()
+				if last_rev.status == 'OK':
+					approved_pages = approved_pages+1
+		return approved_pages
+	
+	def rejected(self):
+		rejected_pages = 0
+		pages = self.page_set.all()
+		if pages:
+			for page in pages:
+				last_rev = page.last_rev()
+				if last_rev.status == 'REJECTED':
+					rejected_pages = rejected_pages+1
+		return rejected_pages
+	
+	def pending(self):
+		pending_pages = 0
+		pages = self.page_set.all()
+		if pages:
+			for page in pages:
+				last_rev = page.last_rev()
+				if last_rev.status == 'PENDING':
+					pending_pages = pending_pages+1
+		return pending_pages
 	
 	def __unicode__(self):
 		return str(self.pk)+":"+self.name + " - " + self.job.name + " - " + self.job.client.name + " - " + str(self.modified)

@@ -37,7 +37,10 @@
 		</div>
 		
 		<div class="help">
-			Legend: approved <span class="legend ok"> </span> pending <span class="legend pending"> </span> rejected <span class="legend rejected"> </span>
+			{{ item.page_set.count }} total pages:
+			<span class="legend ok"> </span> {{ item.approved }} pages approved
+			<span class="legend pending"> </span> {{ item.pending }} pages pending
+			<span class="legend rejected"> </span> {{ item.rejected }} pages rejected
 		</div>
 	</div>
 	
@@ -55,7 +58,12 @@
 			<div class="thumb_container">
 				{% for page in pages %}
 					{% if page.rel_num|divisibleby:2 %}
-						{% page_thumb_even page item job client %}
+						{% if forloop.last %}
+							{% page_thumb_even page item job client %}
+							<div class="page_thumb odd dummy"></div>
+						{% else %}
+							{% page_thumb_even page item job client %}
+						{% endif %}
 					{% else %}
 						{% if forloop.counter == 1 %}
 							<div class="page_thumb even dummy"></div>
@@ -73,7 +81,6 @@
 		{% else %}
 			<p>No pages are available.</p>
 		{% endif %}
-
 	</div>
 </body>
 </html>
