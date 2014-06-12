@@ -183,6 +183,7 @@ INSTALLED_APPS = (
 	# Uncomment the next line to enable admin documentation:
 	'django.contrib.admindocs',
 	'farproof.client_list',
+	'django.contrib.humanize',
 	'django_extensions',
 	'debug_toolbar',
 	'djcelery',

@@ -37,10 +37,10 @@
 		</div>
 		
 		<div class="help">
-			{{ item.page_set.count }} total pages:
-			<span class="legend ok"> </span> {{ item.approved }} pages approved
-			<span class="legend pending"> </span> {{ item.pending }} pages pending
-			<span class="legend rejected"> </span> {{ item.rejected }} pages rejected
+			{{ item.page_set.count }} total page{{ item.page_set.count|pluralize }}:
+			<span class="legend ok"> </span> {{ item.approved }} page{{ item.approved|pluralize }} approved
+			<span class="legend pending"> </span> {{ item.pending }} page{{ item.pending|pluralize }} pending
+			<span class="legend rejected"> </span> {{ item.rejected }} page{{ item.rejected|pluralize }} rejected
 		</div>
 	</div>
 	

@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load humanize %}
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
@@ -40,9 +41,10 @@
 		</div>
 		
 		<div class="help">
-			<span class="legend ok"> </span> approved
-			<span class="legend pending"> </span> pending
-			<span class="legend rejected"> </span> rejected
+			{{ item.page_set.count }} total page{{ item.page_set.count|pluralize }}:
+			<span class="legend ok"> </span> {{ item.approved }} page{{ item.approved|pluralize }} approved
+			<span class="legend pending"> </span> {{ item.pending }} page{{ item.pending|pluralize }} pending
+			<span class="legend rejected"> </span> {{ item.rejected }} page{{ item.rejected|pluralize }} rejected
 		</div>
 	</div>
 	
@@ -68,8 +70,8 @@
 					<li class="comments">{{ page.last_rev.comment_set.count }}</li>
 					<li class="revisions">{{ page.revision_set.count }}</li>
 					<li class="status {{ page.last_rev.status|lower }}">{{ page.last_rev.status }}</li>
-					<li class="updated">{{ page.last_rev.creation|date:"D j M y, H:i" }}</li>
-					<li class="added">{{ job.creation|date:"D j M y, H:i" }}</li>
+					<li class="updated twolines">{{ page.last_rev.creation|naturaltime }}<br>{{ page.last_rev.creation|date:"D j M y, H:i" }}</li>
+					<li class="added twolines">{{ job.creation|naturaltime }}<br>{{ job.creation|date:"D j M y, H:i" }}</li>
 				</ul>
 			{% endfor %}
 			{% else %}
