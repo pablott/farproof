@@ -52,9 +52,9 @@
 		<div class="list_header">
 			<ul>  
 				<li class="checkbox"><input type="checkbox" class="checkall" name="option1" value="ALL"></li>
-				<li class="page">Page</li>
-				<li class="comments">Last comments</li>
-				<li class="revisions">Total revisions</li>
+				<li class="page twolines">Page <br>(absolute)</li>
+				<li class="comments">Comments</li>
+				<li class="revisions">Revisions</li>
 				<li class="status">Status</li>
 				<li class="updated">Last review</li>
 				<li class="added">First added</li>
@@ -66,12 +66,12 @@
 				{% for page in pages %}
 				<ul>
 					<li class="checkbox"><input type="checkbox" name="option1" value="page1"></li>
-					<li class="page"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.rel_num }}/">{{ page.rel_num }}</a> </li>
+					<li class="page"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.rel_num }}/">{{ page.rel_num }} ({{ page.abs_num }})</a> </li>
 					<li class="comments">{{ page.last_rev.comment_set.count }}</li>
 					<li class="revisions">{{ page.revision_set.count }}</li>
 					<li class="status {{ page.last_rev.status|lower }}">{{ page.last_rev.status }}</li>
-					<li class="updated twolines">{{ page.last_rev.creation|naturaltime }}<br>{{ page.last_rev.creation|date:"D j M y, H:i" }}</li>
-					<li class="added twolines">{{ job.creation|naturaltime }}<br>{{ job.creation|date:"D j M y, H:i" }}</li>
+					<li class="updated twolines">{{ page.last_rev.creation|naturaltime }}<br>(on {{ page.last_rev.creation|date:"D j M y, H:i" }})</li>
+					<li class="added twolines">{{ job.creation|naturaltime }}<br>(on {{ job.creation|date:"D j M y, H:i" }})</li>
 				</ul>
 			{% endfor %}
 			{% else %}
