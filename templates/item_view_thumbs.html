@@ -46,10 +46,12 @@
 	
 	<div id="view">
 <!--Each page of pages[] gets evaluated differently:
-	1) if page is even numbered, then use "page_thumb even"
+	1) if page is even numbered, then use "page_thumb even", but:
+		1a) if this happens in the last iteration, add a dummy odd page too, else
+		1b) any other iteration gets only an even page (no dummy)
 	2) if page is odd numbered, then use "page_thumb odd", but:
 		2a) if this happens in the first iteration, add a dummy odd page too, else
-		2b) following iterations get only an odd page (no dummy)
+		2b) any other iteration gets only an odd page (no dummy)
 	At the same time (in a separate loop), it checks where to group pages 
 	in pairs based on "page.rel_num".
 	Thanks to: http://stackoverflow.com/questions/11964972/django-template-for-tag-add-li-every-4th-element
