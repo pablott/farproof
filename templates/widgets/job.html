@@ -2,22 +2,27 @@
 {% load widgets %}
 
 <div class="container job">
-	<div class="icon">  </div>
-	<div class="body">
-		<div class="mini_summary"> 
-			PK: {{ job.pk }}/ID: {{ job.id }} <br>
-			{% if job.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">Not approved</b> {% endif %}<br>
+	<div class="folder">
+		<div class="tab"> </div>
+		<div class="totals">
+			{{ job.item_set.count }} items <br>
+			{{ job.total_pages }} pages
 		</div>
-		
+		<div class="mini_summary"> 
+			{% if job.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">Not approved</b> {% endif %} <br>
+			PK: {{ job.pk }} / ID: {{ job.id }} <br>
+		</div>
+	</div>
+
+	<div class="body">
 		<a class="title" href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a>
 		<div class="summary">
-			<b>Added on:</b> {{ job.creation|date:"D j M y, H:i" }} <br>
+			Added on {{ job.creation|date:"D j M y, H:i" }} <br>
 			{% if job.desc %}
-				<b>Description:</b> {{ job.desc }} <br>
+				{{ job.desc }} <br>
 			{% endif %}
 			
 			{% item_list item job client %}
-			
 		</div>
 		
 		{% if job.item_set.all %}

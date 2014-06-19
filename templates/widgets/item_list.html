@@ -1,9 +1,8 @@
 ﻿{% load i18n %}
 {% load widgets %}
 
-
 {% if job.item_set.all %}
-	<b>{{ job.item_set.count }} items, {{ job.total_pages }} pages inside:</b> <br>
+	<b>{{ job.item_set.count }} items, {{ job.total_pages }} total pages:</b> <br>
 	
 	{% for item in job.item_set.all %}
 		{% if item.is_ready %} 
