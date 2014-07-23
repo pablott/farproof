@@ -86,7 +86,8 @@ def process(pdf, client_pk, job_pk, item_pk, DPI=32, SEPS=False):
 		# TODO: This functions doesn't know the number of separations.
 		if SEPS:
 			# print int(float(i+((1-n)/4))) / float(span)) * 100
-			return int(float(i+(n/4)) / float(span*4)) * 100
+			# return int(float(i+(n/4)) / float(span*4)) * 100
+			return int(100 * float(i) / float(span))
 		else:
 			return int(100 * float(i) / float(span))
 		
