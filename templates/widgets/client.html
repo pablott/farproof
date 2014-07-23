@@ -1,16 +1,15 @@
 {% load i18n %}
 
 <div class="container client">
-	<div class="icon">  </div>
-	<div class="body">
+	<div class="icon"> 
 		<div class="mini_summary">
 			PK: {{ client.pk }}/ID: {{ client.id }} <br>
 			{{ client.job_set.count }} total jobs </br>
 			<span class="shaded">({{ client.job_set.count }} hidden jobs)</span> <br>
 		</div>
-		
+	</div>
+	<div class="body">
 		<a class="title" href="/{{ client.pk }}/">{{ client.name }}</a>
-		
 		<div class="summary">
 			{{ client.user_set.count }} person(s) will get notified <br>
 			{% if client.desc %}
