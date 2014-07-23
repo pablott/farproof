@@ -1,0 +1,19 @@
+{% load i18n %}
+
+<div class="item_thumb">
+	<a class="" href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list">{{ item.name }}</a> <br>
+
+		<div class="totals">
+			{{ item.page_set.count }} pages <br>
+			{% if item.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">Not approved</b> {% endif %} <br>
+			PK: {{ item.pk }} / ID: {{ item.id }} <br>
+		</div>
+	
+		Added {{ item.creation|date:"D j M y, H:i" }} <br>
+		{% if item.desc %}
+			{{ item.desc }}
+		{% else %}
+			<br>
+		{% endif %}
+</div>
+

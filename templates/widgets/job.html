@@ -15,20 +15,15 @@
 	</div>
 
 	<div class="body">
-		<a class="title" href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a>
-		<div class="summary">
-			Added on {{ job.creation|date:"D j M y, H:i" }} <br>
-			{% if job.desc %}
-				{{ job.desc }} <br>
-			{% endif %}
-			
-			{% item_list item job client %}
+		<div class="">
+			<a class="title" href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a>
+			<div class="summary">
+				Added on {{ job.creation|date:"D j M y, H:i" }} <br>
+				{% if job.desc %}
+					{{ job.desc }} <br>
+				{% endif %}
+				
+			</div>
 		</div>
-		
-		{% if job.item_set.all %}
-			{% for item in job.item_set.all %}
-				{% show_item item job client %}
-			{% endfor %} 
-		{% endif %}
 	</div>
 </div>

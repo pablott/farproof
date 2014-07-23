@@ -22,6 +22,13 @@ def show_job(job, client):
 		'client': client
 	}
 
+@register.inclusion_tag('widgets/job_thumb.html')
+def show_job_thumb(job, client):
+	return {
+		'job': job, 
+		'client': client
+	}
+
 @register.inclusion_tag('widgets/job_unactive.html')
 def show_job_unactive(job, client):
 	return {
@@ -31,6 +38,14 @@ def show_job_unactive(job, client):
 	
 @register.inclusion_tag('widgets/item.html')
 def show_item(item, job, client):
+	return {
+		'item': item,
+		'job': job, 
+		'client': client
+	}
+	
+@register.inclusion_tag('widgets/item_thumb.html')
+def show_item_thumb(item, job, client):
 	return {
 		'item': item,
 		'job': job, 
