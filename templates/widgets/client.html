@@ -1,20 +1,23 @@
 {% load i18n %}
+{% load humanize %}
 
 <div class="container client">
 	<div class="icon"> 
 		<div class="mini_summary">
-			PK: {{ client.pk }}/ID: {{ client.id }} <br>
-			{{ client.job_set.count }} total jobs </br>
-			<span class="shaded">({{ client.job_set.count }} hidden jobs)</span> <br>
+			{{ client.job_set.count }} job{{ client.job_set.count|pluralize }} <br>
+			<span class="shaded">({{ client.job_set.count }} hidden job{{ client.job_set.count|pluralize }})</span> <br>
+			PK: {{ client.pk }}/ID: {{ client.id }}
 		</div>
 	</div>
+	
 	<div class="body">
 		<a class="title" href="/{{ client.pk }}/">{{ client.name }}</a>
 		<div class="summary">
-			{{ client.user_set.count }} person(s) will get notified <br>
+			{{ client.user_set.count }} person{{ client.user_set.count|pluralize }} will get notified <br>
 			{% if client.desc %}
-				<b>Description:</b> {{ client.desc }} 
+				{{ client.desc }} <br>
 			{% endif %} 
+			Added {{ client.creation|naturaltime }} ({{ client.creation|date:"D j M y, H:i" }})
 		</div>
 	</div>
 </div>

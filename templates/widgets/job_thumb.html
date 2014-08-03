@@ -1,22 +1,27 @@
 {% load i18n %}
-{% load widgets %}
-
+{% load humanize %}
 
 <div class="job_thumb">
-	<div class="folder">
-		<div class="tab"> </div>
-		<div class="totals">
-			{% if job.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">Not approved</b> {% endif %} <br>
-		</div>
+	<div class="title">
+		{{ job.name }}
 	</div>
-	<a class="title" href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a>
+	
 	<div class="summary"> 
-		{% if job.desc %}
-			{{ job.desc }} <br>
-		{% endif %}
-		Added on {{ job.creation|date:"D j M y, H:i" }} <br>
-		{{ job.item_set.count }} items, {{ job.total_pages }} pages <br>
-		PK: {{ job.pk }} / ID: {{ job.id }} <br>
+		<div class="pk">
+			PK: {{ job.pk }} / ID: {{ job.id }}
+		</div>
+		<div class="date"> 
+			Added {{job.creation|naturaltime}} ({{ job.creation|date:"D j M y, H:i" }})
+		</div>
+		<div class="count"> 
+			{{ job.item_set.count }} item{{ job.item_set.count|pluralize }}, {{ job.total_pages }} page{{ job.total_pages|pluralize }} in total
+		</div>
+	
+		<div class="desc"> 
+			{% if job.desc %}
+				{{ job.desc }}
+			{% endif %}
+		</div>
 	</div>
 </div>
 

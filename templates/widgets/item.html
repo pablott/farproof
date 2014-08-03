@@ -1,9 +1,10 @@
 {% load i18n %}
+{% load humanize %}
 
 <div class="container item">
 	<div class="icon"> 
 		<div class="totals">
-			{{ item.page_set.count }} pages
+			{{ item.page_set.count }} page{{ item.page_set.count|pluralize }}
 		</div>
 		<div class="mini_summary"> 
 			{% if item.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">Not approved</b> {% endif %} <br>
@@ -14,7 +15,7 @@
 	<div class="body">
 		<a class="title" href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list">{{ item.name }}</a> <br>
 			<div class="summary">
-			Added on {{ item.creation|date:"D j M y, H:i" }} <br>
+			Added {{ item.creation|naturaltime }} ({{ item.creation|date:"D j M y, H:i" }}) <br>
 			{% if item.desc %}
 				{{ item.desc }}
 			{% else %}
