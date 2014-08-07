@@ -51,7 +51,10 @@
 	<div id="view">
 		<div class="list_header">
 			<ul>  
-				<li class="checkbox"><input type="checkbox" class="checkall" name="option1" value="ALL"></li>
+				<li class="checkbox">
+					<input type="checkbox" class="checkall" id="master_bookmark">
+					<label class="bookmark" for="master_bookmark"></label>
+				</li>
 				<li class="page twolines">Page <br>(absolute)</li>
 				<li class="comments">Comments</li>
 				<li class="revisions">Revisions</li>
@@ -65,7 +68,10 @@
 			{% if pages %}
 				{% for page in pages %}
 				<ul>
-					<li class="checkbox"><input type="checkbox" name="option1" value="page1"></li>
+					<li class="checkbox">
+						<input type="checkbox" name="{{ page.abs_num }}" value="{{ page.abs_num }}" id="{{ page.abs_num }}"/>
+						<label class="bookmark" for="{{ page.abs_num }}">mark</label>
+					</li>
 					<li class="page"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.rel_num }}/">{{ page.rel_num }} ({{ page.abs_num }})</a> </li>
 					<li class="comments">{{ page.last_rev.comment_set.count }}</li>
 					<li class="revisions">{{ page.revision_set.count }}</li>
