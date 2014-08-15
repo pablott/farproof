@@ -53,7 +53,7 @@
 			<ul>  
 				<li class="checkbox">
 					<input type="checkbox" class="checkall" id="master_bookmark">
-					<label class="bookmark" for="master_bookmark"></label>
+					<label class="bookmark" for="master_bookmark">Selection</label>
 				</li>
 				<li class="page twolines">Page <br>(absolute)</li>
 				<li class="comments">Comments</li>
@@ -73,7 +73,7 @@
 						<label class="bookmark" for="{{ page.abs_num }}">mark page</label>
 					</li>
 					<li class="page"> 
-						<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.rel_num }}/"><span class="btn_inline btn_icon1">V</span> {{ page.rel_num }} ({{ page.abs_num }})</a> 
+						<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.rel_num }}/"><span class="eye">V</span> {{ page.rel_num }} ({{ page.abs_num }})</a> 
 					</li>
 					<li class="comments">{{ page.last_rev.comment_set.count }}</li>
 					<li class="revisions">{{ page.revision_set.count }}</li>
