@@ -4,7 +4,7 @@
 <div class="container item">
 	<div class="icon"> 
 		<div class="totals">
-			{{ item.page_set.count }} page{{ item.page_set.count|pluralize }}
+			{{ item.pages.count }} page{{ item.pages.count|pluralize }}
 		</div>
 		<div class="mini_summary"> 
 			{% if item.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">Not approved</b> {% endif %} <br>

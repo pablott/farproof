@@ -5,10 +5,9 @@
 	{% if current_revisions %}
 		<h4>Also affecting right now: </h4>
 		{% for revision in current_revisions %}
-			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.rel_num }}/">
-				page {{ revision.page.rel_num }}</a>{% if not forloop.last %}, {% endif %}
+			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.version_set.count }}/">
+				page {{ revision.page.version.rel_num }}</a>{% if not forloop.last %}, {% endif %}
 		{% endfor %}
-		
 	{% endif %}
 		
 	{% if past_revisions %}

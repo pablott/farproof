@@ -13,7 +13,7 @@
 
 
 <div class="comment_add">
-	Add comment to page {{page.rel_num}}
+	Add comment to page {{version.rel_num}}
 	<form id="comment_form" method="POST">
 		{% csrf_token %}
 		<textarea maxlength="256" name="comment" value="" placeholder="Write comment here..."></textarea>
@@ -25,8 +25,8 @@
 		</label>
 		<div class="page_selection">
 			Also affects page(s)... <br>
-			{% for this_page in item.page_set.all %}
-				{% if this_page.rel_num == page.rel_num %}
+			{% for this_page in item.version_set.all %}
+				{% if this_page.rel_num == version.rel_num %}
 					<label for="{{ this_page.rel_num }}">
 						<input type="checkbox" checked="checked" disabled="disabled" id="{{ this_page.rel_num }}"> {{ this_page.rel_num }}
 						<input type="hidden" checked="checked" name="pages[]" value="{{ this_page.rel_num }}">
@@ -38,7 +38,7 @@
 				{% endif %}
 			{% endfor %}
 		</div>
-		<button class="btn btnH" onsubmit="return false;" name="from_page" value="{{ page.rel_num }}">Add Comment</button>
+		<button class="btn btnH" onsubmit="return false;" name="from_page" value="{{ version.rel_num }}">Add Comment</button>
 	</form>
 </div>	
 

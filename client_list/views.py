@@ -1,6 +1,6 @@
 ﻿from django.shortcuts import render_to_response # Add get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from farproof.client_list.models import Client, Job, Item, Page, Revision, Comment, PDFFile, RenderFile
+from farproof.client_list.models import Client, Job, Item, Version, Page, Revision, Comment, PDFFile, RenderFile
 from farproof.client_list.models import ClientAddForm, JobAddForm, ItemAddForm
 from django.template import RequestContext
 
@@ -150,31 +150,36 @@ def item_add(request, client_pk, job_pk):
 	job = Job.objects.get(pk=job_pk, client=client) # Check if Job exists
 	if job:
 		if request.method == 'POST': 
-			post = request.POST.copy() 
+			post = request.POST.copy()
 			num_pages = int(post['num_pages'])
 			start_page = int(post['start_page'])
+			name = str(post['name'])
+			desc = str(post['desc'])
 			post['job'] = job.pk
-			form = ItemAddForm(post)
-			if form.is_valid(): 
-				# Save Item
-				last_item = form.save() 
-				# Create all the neccesary pages:
-				i = 0
-				for i in range(i, num_pages):
-					page = Page(abs_num=i+1, rel_num=i+start_page, item=last_item)
-					page.save()
-				# Add a initial PENDING Revision to each new page:
-				last_pages = Page.objects.filter(item=last_item)
-				for page in last_pages:
-					revision = Revision(rev_number=0, page=page)
-					revision.save()
-				message = 'You added Item: %r' % str(request.POST['name']) + ' - %r' % str(request.POST['desc']) + ' - %r' % str(request.POST['num_pages'])
-				return render_to_response('item_add.html',
-					{'form': form, 'message': message, 'client': client, 'job': job,})
-		else:
-			form = ItemAddForm()
+
+			# Save Item:
+			item = Item.objects.create(name=name, desc=desc, job=job)
+			print('\n\n\n'+str(item))
+			# Create all the neccesary pages:
+			i = 0
+			for i in range(i, num_pages):
+				page = Page.objects.create()
+				page.save()
+				# Create relationship to Version:
+				base = Version.objects.create(
+					abs_num=i+1, rel_num=i+start_page, item=item, page=page,
+				)
+				base.save()
+				
+			# Add a initial PENDING Revision to each new page:
+			last_pages = Page.objects.filter(item=item)
+			for page in last_pages:
+				revision = Revision(rev_number=0, page=page)
+				revision.save()
+			message = 'You added Item: %r' % name + ' - %r' % desc + ' - %r' % num_pages
+			return render_to_response('item_add.html',
+				{'message': message, 'client': client, 'job': job,})
 		return render_to_response('item_add.html', {
-			'form': form,
 			'client': client,
 			'job': job,
 		})
@@ -182,91 +187,95 @@ def item_add(request, client_pk, job_pk):
 		raise Http404
 	
 
-def item_view_list(request, client_pk, job_pk, item_pk):
+def item_view_list(request, client_pk, job_pk, item_pk, version):
 	client = Client.objects.get(pk=client_pk)
 	job = Job.objects.get(pk=job_pk, client=client)
 	item = Item.objects.get(pk=item_pk, job=job)
-	pages = Page.objects.filter(item=item).order_by('abs_num')
+	versions = Version.objects.filter(item=item, name=version).order_by('abs_num')
+	print('\n\n\n'+str(versions))
 	if item:
 		return render_to_response('item_view_list.html', {
 			'client': client,
 			'job': job, 
 			'item': item,
-			'pages': pages,
+			'version': version,
+			'versions': versions,
 		})
 	else:
 		raise Http404
 		
 		
-def item_view_thumbs(request, client_pk, job_pk, item_pk):
+def item_view_thumbs(request, client_pk, job_pk, item_pk, version):
 	client = Client.objects.get(pk=client_pk)
 	job = Job.objects.get(pk=job_pk, client=client)
 	item = Item.objects.get(pk=item_pk, job=job)
 	revisions = Revision.objects.all().order_by('-pk')
-	pages = Page.objects.filter(item=item).order_by('abs_num')
-	if pages:
-		first_page = pages[0]
+	versions = Version.objects.filter(item=item, name=version).order_by('abs_num')
+	if versions:
+		first_page = versions[0]
 	else:
-		first_page = 0 # Initialize variable in case 'pages' doesn't exist or it crashes (has to be an int)
+		first_page = 0 # Initialize variable in case 'versions' doesn't exist or it crashes (has to be an int)
 	if item:
 		return render_to_response('item_view_thumbs.html', {
 			'client': client,
 			'job': job, 
 			'item': item,
-			'pages': pages,
+			'versions': versions,
+			'version': version,
 			'first_page': first_page,
 		})
 	else:
 		raise Http404
 
 
-# Gets page.abs_num and decides how to fill odd and even pages.
+# Gets version.abs_num and decides how to fill odd and even pages.
 # Uses inclusion_tags in the template. These get a page_even or page_odd
 # and get all the information from the database.
-def page_view(request, client_pk, job_pk, item_pk, page_num):
+def page_view(request, client_pk, job_pk, item_pk, version, page_num):
 	client = Client.objects.get(pk=client_pk)
 	job = Job.objects.get(pk=job_pk, client=client)
 	item = Item.objects.get(pk=item_pk, job=job)
-	page = Page.objects.get(rel_num=page_num, item=item)
-	pages = Page.objects.filter(item=item).order_by('abs_num')
+	version = Version.objects.get(rel_num=page_num, item=item, name=version)
+	# page = Page.objects.get(rel_num=page_num, item=item)
+	versions = Version.objects.filter(item=item, name=version.name).order_by('abs_num')
 	# Order by inverted creation date and get first (which is the last created for that page):
-	revisions = Revision.objects.filter(page=page).order_by('-creation') 
+	revisions = Revision.objects.filter(page=version.page).order_by('-creation') 
 	
-	# Get first and last pages of query
+	# Get first and last versions of query
 	# last_page counts one form end of query (this is because django doesn't support negative indexing)
-	first_page = pages[0]
-	last_page = pages[pages.count()-1] 
+	first_page = versions[0]
+	last_page = versions[versions.count()-1] 
 		
 	# Logic for even pages:
-	if page.rel_num%2==0:
+	if version.rel_num%2==0:
 		# Logic for LAST even page
 		# (because it has to initialize page_odd or it crashes):
-		if page == last_page:
-			page_even = page
+		if version == last_page:
+			page_even = version
 			page_odd = 0
-		# Otherwise page is assigned to even and the odd is calculated by adding 1 to page.rel_num
+		# Otherwise page is assigned to even and the odd is calculated by adding 1 to version.rel_num
 		else:
-			page_even = page
-			page_odd = Page.objects.get(rel_num=page.rel_num+1, item=item)
+			page_even = version
+			page_odd = Version.objects.get(rel_num=version.rel_num+1, item=item, name=version.name)
 	# Logic for odd pages:
 	else:
-		# Logic for odd page ONLY if it is the first
+		# Logic for FIRST odd page
 		# (because it has to initialize page_even or it crashes):
-		if page == first_page:
-			page_odd = page
+		if version == first_page:
 			page_even = 0
-		# Otherwise page is assigned to odd and the even is calculated by substracting 1 to page.rel_num
+			page_odd = version
+		# Otherwise page is assigned to odd and the even is calculated by substracting 1 to version.rel_num
 		else:
-			page_odd = page
-			page_even = Page.objects.get(rel_num=page.rel_num-1, item=item)
+			page_even = Version.objects.get(rel_num=version.rel_num-1, item=item, name=version.name)
+			page_odd = version
 
-	if page:
+	if version:
 		return render_to_response('page_view.html', {
 			'client': client,
 			'job': job, 
 			'item': item,
-			'page': page,
-			'pages': pages,
+			'version': version,
+			'versions': versions,
 			'page_even': page_even,
 			'page_odd': page_odd,
 			'first_page': first_page,
@@ -296,7 +305,7 @@ def page_info(request, client_pk, job_pk, item_pk, page_num):
 		raise Http404
 	
 	
-def file_upload(request, client_pk, job_pk, item_pk):
+def file_upload(request, client_pk, job_pk, item_pk, version):
 	client = Client.objects.get(pk=client_pk)
 	job = Job.objects.get(pk=job_pk, client=client)
 	item = Item.objects.get(pk=item_pk, job=job)

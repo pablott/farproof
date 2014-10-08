@@ -28,7 +28,7 @@
 <body>
 	<div class="debug"></div>
 	<div id="toolbar">
-			<div class="btn_black btn_icon1"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list/"><</a></div>
+			<div class="btn_black btn_icon1"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/base/list/"><</a></div>
 			<div class="btn_black vertical">
 					<div class=""> View </div>
 					<div id="zoomIn" class="btn_icon1"> + </div>
@@ -58,25 +58,25 @@
 		<div id="toggle_index" class="btn_black btn_icon2"> d </div>
 		<div id="toggle_list" class="btn_black">
 			<div id="list">
-			{% if pages %}
+			{% if versions %}
 			<div class="">
-				{% for page in pages %}
-					{% if page.rel_num|divisibleby:2 %}
+				{% for version in versions %}
+					{% if version.rel_num|divisibleby:2 %}
 						{% if forloop.last %}
-							<div style="margin-left:-50%">{{ page.rel_num }}  </div>
+							<div style="margin-left:-50%">{{ version.rel_num }}  </div>
 						{% else %}
-							{{ page.rel_num }}
+							{{ version.rel_num }}
 						{% endif %}
 					{% else %}
 						{% if forloop.counter == 1 %}
-							* - {{ page.rel_num }}
+							* - {{ version.rel_num }}
 						{% else %}
-							 - {{ page.rel_num }}
+							 - {{ version.rel_num }}
 						{% endif %}
 					{% endif %}
 					
 					{# if the the forloop counter is divisible by 2, close the thumb container tag and open a new one #}
-					{% if not page.rel_num|divisibleby:2 %}</div><div class="">{% endif %}
+					{% if not version.rel_num|divisibleby:2 %}</div><div class="">{% endif %}
 					
 				{% endfor %}
 				</div>
@@ -98,22 +98,22 @@
 	
 	<div id="index">
 		<div id="inner-wrap">
-			{% if pages %}
+			{% if versions %}
 			<div class="thumb_container">
-				{% for page in pages %}
-					{% if page.rel_num|divisibleby:2 %}
-						{% page_thumb_even page item job client %}
+				{% for version in versions %}
+					{% if version.rel_num|divisibleby:2 %}
+						{% page_thumb_even version item job client %}
 					{% else %}
 						{% if forloop.counter == 1 %}
 							<div class="page_thumb even dummy"></div>
-							{% page_thumb_odd page item job client %}
+							{% page_thumb_odd version item job client %}
 						{% else %}
-							{% page_thumb_odd page item job client %}
+							{% page_thumb_odd version item job client %}
 						{% endif %}
 					{% endif %}
 					
 					{# if the the forloop counter is divisible by 2, close the thumb container tag and open a new one #}
-					{% if not page.rel_num|divisibleby:2 %}</div><div class="thumb_container">{% endif %}
+					{% if not version.rel_num|divisibleby:2 %}</div><div class="thumb_container">{% endif %}
 					
 				{% endfor %}
 				</div>
@@ -148,10 +148,10 @@ function navLeft () {
 		// next_page is calculated checking if current page is even or odd,
 		// depending on that it skips 1 or 2 pages so it always jumps to 
 		// the next diptych 
-		if ( {{page.rel_num}}%2 == 0 ) {
-			next_page = {{page.rel_num}}-1;
+		if ( {{version.rel_num}}%2 == 0 ) {
+			next_page = {{version.rel_num}}-1;
 		}else{
-			next_page = {{page.rel_num}}-2;
+			next_page = {{version.rel_num}}-2;
 		};
 		
 		// Then it is sanitized so it doesn't exceed the page range:
@@ -170,10 +170,10 @@ function navRight () {
 		// next_page is calculated checking if current page is even or odd,
 		// depending on that it skips 1 or 2 pages so it always jumps to 
 		// the next diptych 
-		if ( {{page.rel_num}}%2 == 0 ) {
-			next_page = {{page.rel_num}}+2;
+		if ( {{version.rel_num}}%2 == 0 ) {
+			next_page = {{version.rel_num}}+2;
 		}else{
-			next_page = {{page.rel_num}}+1;
+			next_page = {{version.rel_num}}+1;
 		};
 		
 		// Then it is sanitized so it doesn't exceed the page range:

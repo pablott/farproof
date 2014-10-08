@@ -1,13 +1,13 @@
 {% load i18n %}
 
 
-<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.rel_num }}/">
+<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}:{{ version.name }}/{{ version.rel_num }}/">
 	<div class="page_thumb odd">
-		<div class="page_number {{ page.last_rev.status|lower }}">{{ page.rel_num }}</div>
+		<div class="page_number {{ version.page.last_rev.status|lower }}">{{ version.rel_num }}</div>
 		<div class="page_info">
-			{{ page.last_rev.comment_set.count }} comment{{ page.last_rev.comment_set.count|pluralize }} <br>
-			on {{ page.last_rev.creation|date:"j M, H:i" }} <br>
-			({{ page.revision_set.count }} revision{{ page.revision_set.count|pluralize }})
+			{{ version.page.last_rev.comment_set.count }} comment{{ version.page.last_rev.comment_set.count|pluralize }} <br>
+			on {{ version.page.last_rev.creation|date:"j M, H:i" }} <br>
+			({{ version.page.revision_set.count }} revision{{ version.page.revision_set.count|pluralize }})
 		</div>
 	</div>
 </a>

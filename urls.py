@@ -30,13 +30,13 @@ urlpatterns = patterns('',
 	(r'^(\d+)/(\d+)/$', job_view),
 	
 	(r'^(\d+)/(\d+)/item_add/$', item_add),
-    (r'^(\d+)/(\d+)/(\d+)/list/$', item_view_list),
-    (r'^(\d+)/(\d+)/(\d+)/thumbs/$', item_view_thumbs),
-    (r'^(\d+)/(\d+)/(\d+)/(\d+)/$', page_view),
-    (r'^(\d+)/(\d+)/(\d+)/file_upload/$', file_upload),
+    (r'^(\d+)/(\d+)/(\d+):(\w+)/list/$', item_view_list),
+    (r'^(\d+)/(\d+)/(\d+):(\w+)/thumbs/$', item_view_thumbs),
+    (r'^(\d+)/(\d+)/(\d+):(\w+)/(\d+)/$', page_view),
     (r'^(\d+)/(\d+)/(\d+)/(\d+)/page_info/$', page_info),
-	(r'^uploads/$', uploads),
-    (r'^(\d+)/(\d+)/(\d+)/uploader$', uploader),
+    (r'^(\d+)/(\d+)/(\d+):(\w+)/file_upload/$', file_upload), # URL for file uploader page
+    (r'^(\d+)/(\d+)/(\d+)/uploader$', uploader), # URL for AJAX file catcher
+	(r'^uploads/$', uploads), # URL for uploads list
     (r'^queue_poll$', queue_poll),
 )
 #(r'^(?P<category>\w+)/feedback/$', 'my_view') # Might be useful as wildcard capture method

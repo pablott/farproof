@@ -14,7 +14,7 @@
 	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
 	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
 	<link href="/media/favicon.ico" rel="shortcut icon">
-	<title>FP - {{ client.name }} - {{ job.name}} - {{item.name}} - Page List</title>
+	<title>FP - {{ client.name }} - {{ job.name}} - {{item.name}} - Page List for {{version}} version</title>
 </head>
 
 
@@ -25,23 +25,23 @@
 			<li> <a href="/{{ client.pk }}/">{{ client.name }}</a> </li>
 			<li> <a href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a> </li>
 			<li> {{ item.name }} </li>
-			<li> Page List </li>
+			<li> Page List for {{version}} version </li>
 		</ul>
 	</div>
 
 	<div id="control_bar">
 		<div class="btn_box_center">
-			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/thumbs/"><div class="btn btnM btnH left"> <div class="btn_icon btn_icon2">k</div> Thumbs </div></a>
+			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}:{{ version }}/thumbs/"><div class="btn btnM btnH left"> <div class="btn_icon btn_icon2">k</div> Thumbs </div></a>
 			<div class="btn btnM btnH middle pushed"> <div class="btn_icon btn_icon1">5</div> List </div>
 			<div class="btn btnM btnH right"> <div class="btn_icon btn_icon2">G</div> Configure </div>
-			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/file_upload/"><div class="btn btnM btnH add"> <div class="btn_icon btn_icon2">+</div> Upload Pages </div></a>
+			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}:{{ version }}/file_upload/"><div class="btn btnM btnH add"> <div class="btn_icon btn_icon2">+</div> Upload Pages </div></a>
 			{% if pages %}
 				<div class="btn btnM btnH delete"> <div class="btn_icon btn_icon1">X</div> Delete Pages </div>
 			{% endif %}
 		</div>
 		
 		<div class="help">
-			{{ item.page_set.count }} total page{{ item.page_set.count|pluralize }}:
+			{{ item.pages.count }} total page{{ item.pages.count|pluralize }} for {{version}} version:
 			<span class="legend ok"> </span> {{ item.approved }} page{{ item.approved|pluralize }} approved
 			<span class="legend pending"> </span> {{ item.pending }} page{{ item.pending|pluralize }} pending
 			<span class="legend rejected"> </span> {{ item.rejected }} page{{ item.rejected|pluralize }} rejected
@@ -52,7 +52,7 @@
 		<div class="list_header">
 			<ul>  
 				<li class="checkbox">
-					<input type="checkbox" class="checkall" id="master_bookmark">
+					<input class="hidden" type="checkbox" class="checkall" id="master_bookmark">
 					<label class="bookmark" for="master_bookmark">Selection</label>
 				</li>
 				<li class="page twolines">Page <br>(absolute)</li>
@@ -65,23 +65,25 @@
 		</div>
 		
 		<div class="list_container">
-			{% if pages %}
-				{% for page in pages %}
-				<ul>
-					<li class="checkbox">
-						<input type="checkbox" name="{{ page.abs_num }}" value="{{ page.abs_num }}" id="{{ page.abs_num }}"/>
-						<label class="bookmark" for="{{ page.abs_num }}">mark page</label>
-					</li>
-					<li class="page"> 
-						<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ page.rel_num }}/"><span class="eye">V</span> {{ page.rel_num }} ({{ page.abs_num }})</a> 
-					</li>
-					<li class="comments">{{ page.last_rev.comment_set.count }}</li>
-					<li class="revisions">{{ page.revision_set.count }}</li>
-					<li class="status {{ page.last_rev.status|lower }}">{{ page.last_rev.status }}</li>
-					<li class="updated twolines">{{ page.last_rev.creation|naturaltime }}<br>(on {{ page.last_rev.creation|date:"D j M y, H:i" }})</li>
-					<li class="added twolines">{{ job.creation|naturaltime }}<br>(on {{ job.creation|date:"D j M y, H:i" }})</li>
-				</ul>
-			{% endfor %}
+			{% if versions %}
+				{% for version in versions %}
+					<ul>
+						<li class="checkbox">
+							<input class="hidden" type="checkbox" id="{{ version.abs_num }}"/>
+							<label class="bookmark legend_shaded" for="{{ version.abs_num }}">Mark page</label>
+						</li>
+						<li class="page"> 
+							<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}:{{ version.name }}/{{ version.rel_num }}/"><span class="eye">V</span> 
+								{{ version.rel_num }} ({{ version.abs_num }})
+							</a> 
+						</li>
+						<li class="comments">{{ version.page.last_rev.comment_set.count }}</li>
+						<li class="revisions">{{ version.page.revision_set.count }}</li>
+						<li class="status {{ version.page.last_rev.status|lower }}">{{ version.page.last_rev.status }}</li>
+						<li class="updated twolines">{{ version.page.last_rev.creation|naturaltime }}<br>(on {{ version.page.last_rev.creation|date:"D j M y, H:i" }})</li>
+						<li class="added twolines">{{ item.creation|naturaltime }}<br>(on {{ item.creation|date:"D j M y, H:i" }})</li>
+					</ul>
+				{% endfor %}
 			{% else %}
 				<p>No pages are available.</p>
 			{% endif %}

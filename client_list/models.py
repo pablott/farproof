@@ -42,7 +42,7 @@ class Job(models.Model):
 	def total_pages(self):
 		count = 0
 		for item in self.item_set.all():
-			for page in item.page_set.all():
+			for page in item.pages.all():
 				count = count+1
 		return count
 	
@@ -77,9 +77,20 @@ class JobAddForm(ModelForm):
 		widgets = {
             'client': HiddenInput(),
         }
-		
+
+
+class Page(models.Model):
+	def last_rev(self):
+		revisions = self.revision_set.filter(page=self).order_by('-creation')
+		if revisions:
+			last_rev = revisions[0]
+		else:
+			last_rev = 0
+		return last_rev
+
 		
 class Item(models.Model):
+	pages = models.ManyToManyField(Page, through='Version')	
 	job = models.ForeignKey(Job)
 	name = models.CharField(max_length=256)
 	desc = models.CharField(max_length=256, blank=True, null=True)
@@ -89,7 +100,7 @@ class Item(models.Model):
 	def is_ready(self):
 		total_pages = 0
 		approved_pages = 0
-		for page in self.page_set.all():
+		for page in self.pages.all():
 			total_pages = total_pages+1
 			last_rev = page.last_rev()
 			if last_rev.status == 'OK':
@@ -101,7 +112,7 @@ class Item(models.Model):
 		
 	def approved(self):
 		approved_pages = 0
-		pages = self.page_set.all()
+		pages = self.pages.all()
 		if pages:
 			for page in pages:
 				last_rev = page.last_rev()
@@ -111,7 +122,7 @@ class Item(models.Model):
 	
 	def rejected(self):
 		rejected_pages = 0
-		pages = self.page_set.all()
+		pages = self.pages.all()
 		if pages:
 			for page in pages:
 				last_rev = page.last_rev()
@@ -121,7 +132,7 @@ class Item(models.Model):
 	
 	def pending(self):
 		pending_pages = 0
-		pages = self.page_set.all()
+		pages = self.pages.all()
 		if pages:
 			for page in pages:
 				last_rev = page.last_rev()
@@ -141,28 +152,35 @@ class ItemAddForm(ModelForm):
 		model = Item				
 		widgets = {
            'job': HiddenInput(),
+		   'pages': HiddenInput(),
 		}
-	  
 		
-class Page(models.Model):
-	item = models.ForeignKey(Item)
+
+class Version(models.Model):
 	abs_num = models.IntegerField(default="1")
 	rel_num = models.IntegerField(default="1")
-	def last_rev(self):
-		revisions = self.revision_set.filter(page=self).order_by('-creation')
-		if revisions:
-			last_rev = revisions[0]
-		else:
-			last_rev = 0
-		return last_rev
-		
-	def __unicode__(self):
-		return "page:"+str(self.abs_num) + "/pk:"+str(self.pk) + " - " + self.item.name + " - " + self.item.job.name + " - " + self.item.job.client.name
-
+	item = models.ForeignKey(Item)
+	page = models.ForeignKey(Page)
+	name = models.CharField(max_length=256, default="base")
+	desc = models.CharField(max_length=256, blank=True, null=True)
+	CHANGES_CHOICES = (
+		('ALL', 'All (CMYK and any possible spot color)'), 
+		('CMYK', 'CMYK'), 
+		('C', 'C only'),
+		('M', 'M only'),
+		('Y', 'Y only'),
+		('K', 'K only'),
+		('NAMED_INK', 'Spot color'),
+	)
+	changes = models.CharField(max_length=16, choices=CHANGES_CHOICES, default='ALL')
+	
 	class Meta(object):
 		unique_together = ("abs_num", "item")
 
-	
+	def __unicode__(self):
+		return "page:"+str(self.abs_num) + "/pk:"+str(self.pk) + " - " + self.item.name + " - " + self.item.job.name + " - " + self.item.job.client.name
+		
+		
 class Revision(models.Model):
 	page = models.ForeignKey(Page)
 	rev_number = models.IntegerField()
@@ -175,7 +193,7 @@ class Revision(models.Model):
 	)
 	status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='PENDING')
 	def __unicode__(self):
-		return "rev:"+str(self.rev_number)+"/pk:"+str(self.pk) + " - " + "page:"+ str(self.page.abs_num) + " - " + self.page.item.name + " - " + self.page.item.job.name + " - " + self.page.item.job.client.name
+		return "rev:"+str(self.rev_number)+"/pk:"+str(self.pk) #+ " - " + "page:"+ str(self.page.version.abs_num) + " - " + self.page.version.item.name + " - " + self.page.version.item.job.name + " - " + self.page.version.item.job.client.name
 
 	class Meta(object):
 		unique_together = ("rev_number", "page")		

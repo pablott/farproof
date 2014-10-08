@@ -64,50 +64,50 @@ def item_list(item, job, client):
 # like comment_add() template tag. I suspect this is caused by linking two 
 # template tags, one inside the other, and calling them from a parent view 
 @register.inclusion_tag('widgets/page_odd.html', takes_context=True)
-def page_odd(context, page, item, job, client):
+def page_odd(context, version, item, job, client):
 	context = context['request']
 	return {
 		'context': context,
-		'page': page,
+		'version': version,
 		'item': item,
 		'job': job, 
 		'client': client
 	}
 
 @register.inclusion_tag('widgets/page_even.html', takes_context=True)
-def page_even(context, page, item, job, client):
+def page_even(context, version, item, job, client):
 	context = context['request']
 	return {
 		'context': context,
-		'page': page,
+		'version': version,
 		'item': item,
 		'job': job, 
 		'client': client
 	}
 	
 @register.inclusion_tag('widgets/page_thumb_odd.html')
-def page_thumb_odd(page, item, job, client):
+def page_thumb_odd(version, item, job, client):
 	return {
-		'page': page,
+		'version': version,
 		'item': item,
 		'job': job, 
 		'client': client
 	}
 
 @register.inclusion_tag('widgets/page_thumb_even.html')
-def page_thumb_even(page, item, job, client):
+def page_thumb_even(version, item, job, client):
 	return {
-		'page': page,
+		'version': version,
 		'item': item,
 		'job': job, 
 		'client': client
 	}
 	
 @register.inclusion_tag('widgets/comment.html')
-def show_comment(comment, page, item, job, client):
+def show_comment(comment, version, item, job, client):
 	return {
 		'comment': comment,
-		'page': page,
+		'version': version,
 		'item': item,
 		'job': job, 
 		'client': client,

@@ -34,15 +34,15 @@
 	</div>
 	
 	<div id="view">
-		<form action="/{{ client.pk }}/{{ job.pk }}/item_add/" method="post">
+		<form action="/{{ client.pk }}/{{ job.pk }}/item_add/" method="POST">
 			{% csrf_token %}
 			<label>Nr. of pages: </label><input type="number" name="num_pages">
 			<label>Starting from: </label><input type="number" name="start_page">
-			{{ form.as_ul }}
+			<textarea maxlength="256" name="name" value="" placeholder="Title"></textarea>
+			<textarea maxlength="256" name="desc" value="" placeholder="Description"></textarea>
 			<input class="btn btnM btnH" type="submit" value="Submit">
 		</form>
 		{{ message }}
-
 	</div>	
 </body>
 </html>
