@@ -72,7 +72,7 @@ def comment_add(request, version, item, job, client):
 def affects_too(comment, version, item, job, client):
 	revisions = comment.revision.all() # Get all revisions with that associated comment
 	last_rev = version.page.last_rev() # Get last revision for current page
-	current_revisions = revisions.exclude(pk=last_rev.pk) # This excludes  exclude last_rev itself from list
+	current_revisions = revisions.exclude(pk=last_rev.pk) # This excludes last_rev itself from list
 	
 	# To query current revisions we need to go through the queryset
 	# and discard past revisions (those which are NOT the last_rev() of its own page)
