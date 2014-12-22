@@ -1,10 +1,13 @@
 celery
-django_evolution
+django-celery
+flower
 runserver_plus
+Werkzeug
 django-debug-toolbar
-dajax
-dajaxice
+django-extensions
 
-jquery
-ghostscript
-imagemagick
+# No longer necessary:
+#dajax
+#dajaxice
+#south
+#django_evolution
