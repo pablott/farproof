@@ -1,7 +1,7 @@
-
-
 # Django settings for farproof project.
 import os
+from os.path import join
+
 
 FARPROOF_VERSION = '0.1alpha'
 
@@ -81,19 +81,16 @@ SECRET_KEY = 'u%8g^o)8b+%xxa-1j^8i@zkv!&0(a8h!pg7j(8lrlc-n1t88dz'
 ROOT_URLCONF = 'farproof.urls'
 
 # Folder where PDFs and rendered files are stored.
-CONTENTS_PATH = os.path.abspath('D:/contents')
+CONTENTS_PATH = os.path.abspath('/home/user/farproof/contents')
 
 # Folder for temporary render files.
-TEMP_PATH = os.path.abspath('D:/tmp/render/')
+TEMP_PATH = os.path.abspath('/tmp/render/')
 
 # Folder where ICC profiles are stored.
 PROFILES_PATH = os.path.join(CONTENTS_PATH, 'profiles')
 
 TEMPLATE_DIRS = (
-	os.path.join(FARPROOF_DIR, 'templates')#.replace('\\', '/'),
-	# Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-	# Always use forward slashes, even on Windows.
-	# Don't forget to use absolute paths, not relative paths.
+    join(FARPROOF_DIR,  'templates'),
 )
 
 # List of callables that know how to import templates from various sources.
@@ -139,6 +136,8 @@ STATICFILES_DIRS = (
 )
 
 STATIC_URL = '/static/'
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 LOGGING = {
 	'version': 1,
@@ -188,11 +187,11 @@ INSTALLED_APPS = (
 	'debug_toolbar',
 	'djcelery',
 	'celery',
-	'south',
+	#'south',
 )
 
-import djcelery
-djcelery.setup_loader()
+# import djcelery
+# djcelery.setup_loader()
 BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 CELERY_BACKEND = 'amqp'
 CELERY_RESULT_EXCHANGE = 'amqp'

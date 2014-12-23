@@ -2,9 +2,6 @@ from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.forms import ModelForm, forms
 from django.forms.widgets import HiddenInput
-#from datetime import datetime
-#from django.forms.models import inlineformset_factory
-#from django.forms.formsets import BaseFormSet
 from farproof.settings import CONTENTS_PATH
 	
 	
@@ -24,7 +21,7 @@ class User(models.Model):
 	desc = models.CharField(max_length=256)
 	admin = models.BooleanField(default=False)
 	def __unicode__(self):
-		return self.name + self.email		
+		return self.name + self.email
 
 class ClientAddForm(ModelForm):
 	class Meta:
@@ -67,7 +64,7 @@ class Job(models.Model):
 		
 class JobAddForm(ModelForm):
 	class Meta:
-		model = Job	
+		model = Job 
 		# "exclude" won't allow JobAddForm to render a 'client' field
 		# in the template (because it's a FK), thus it will throw an error beacause view function 'job_add'
 		# won't be able to assign the current Client object to 'client' in the processed POST.
@@ -75,8 +72,8 @@ class JobAddForm(ModelForm):
 		# to POST but is hidden in the template.
 		exclude = ('active',)
 		widgets = {
-            'client': HiddenInput(),
-        }
+			'client': HiddenInput(),
+		}
 
 
 class Page(models.Model):
@@ -90,7 +87,7 @@ class Page(models.Model):
 
 		
 class Item(models.Model):
-	pages = models.ManyToManyField(Page, through='Version')	
+	pages = models.ManyToManyField(Page, through='Version')
 	job = models.ForeignKey(Job)
 	name = models.CharField(max_length=256)
 	desc = models.CharField(max_length=256, blank=True, null=True)
@@ -149,9 +146,10 @@ class Item(models.Model):
 
 class ItemAddForm(ModelForm):
 	class Meta:
-		model = Item				
+		model = Item    
+		exclude = ('job','pages')
 		widgets = {
-           'job': HiddenInput(),
+		   'job': HiddenInput(),
 		   'pages': HiddenInput(),
 		}
 		
@@ -196,7 +194,7 @@ class Revision(models.Model):
 		return "rev:"+str(self.rev_number)+"/pk:"+str(self.pk) #+ " - " + "page:"+ str(self.page.version.abs_num) + " - " + self.page.version.item.name + " - " + self.page.version.item.job.name + " - " + self.page.version.item.job.client.name
 
 	class Meta(object):
-		unique_together = ("rev_number", "page")		
+		unique_together = ("rev_number", "page")        
 		
 		
 class Comment(models.Model):
@@ -213,7 +211,7 @@ class CommonFile(models.Model):
 	f = models.FileField(upload_to='uploads', storage=fs, default="")
 	
 	class Meta:
-		abstract = True	
+		abstract = True 
 
 
 class PDFFile(CommonFile):
@@ -232,7 +230,7 @@ class RenderFile(CommonFile):
 	# Set these options when processing file
 	# color_space = RGB or CMYK
 	# channel = RGB or CMYK or seps C|M|Y|K|named_color
-	# options = {
+    # options = {
 				# in_profile,
 				# rgb_outprofile,
 				# cmyk_outprofile,
@@ -249,4 +247,4 @@ class RenderFile(CommonFile):
 	# revision = models.ForeignKey(Revision)
 	# curve = models.CharField(max_length=200)
 	# def __unicode__(self):
-		# return self.comment	+ " - " + self.page.item.client.name + "rev pk:"+str(self.revision.pk)
+		# return self.comment   + " - " + self.page.item.client.name + "rev pk:"+str(self.revision.pk)
