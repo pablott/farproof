@@ -15,10 +15,10 @@
 	{% if version.page.last_rev.comment_set.all %}
 		<div class="comment_array">
 			{% for comment in version.page.last_rev.comment_set.all %}
-				{% show_comment comment version item job client %}
+				{% comment_show comment version item job client %}
 			{% endfor %}
 		</div>
 	{% endif %}
 	
-	<img style="z-index:-10;" src="/media/{{ client.pk }}/{{ job.pk}}/{{ item.pk }}/pages/{{ version.abs_num }}/{{ version.page.last_rev.rev_number }}/{{ version.abs_num }}.jpg"></img>
+	<img style="z-index:-10;" src="/media/{{ client.pk }}/{{ job.pk}}/{{ item.pk }}/pages/{{ version.abs_num }}/{{ version.page.last_rev.rev_number }}/{{ version.abs_num }}.jpg"/>
 </div>
