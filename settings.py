@@ -7,7 +7,7 @@ FARPROOF_VERSION = '0.1alpha'
 
 FARPROOF_DIR = os.path.abspath(os.path.dirname(__file__))
 ROOT_DIR = os.path.dirname(FARPROOF_DIR)
-STATIC_ROOT = os.path.join(ROOT_DIR, 'static') 
+STATIC_ROOT = os.path.join(ROOT_DIR, 'static')
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -21,21 +21,20 @@ MANAGERS = ADMINS
 
 DATABASES = {
 	'default': {
-		'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-		'NAME': 'jobs.sqlite',					# Or path to database file if using sqlite3.
-		'USER': '',								# Not used with sqlite3.
-		'PASSWORD': '',							# Not used with sqlite3.
-		'HOST': '',								# Set to empty string for localhost. Not used with sqlite3.
-		'PORT': '',								# Set to empty string for default. Not used with sqlite3.
-	},
-	# 'users': {
-		# 'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-		# 'NAME': 'users.sqlite',          # Or path to database file if using sqlite3.
-		# 'USER': '',                      # Not used with sqlite3.
-		# 'PASSWORD': '',                  # Not used with sqlite3.
-		# 'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-		# 'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-	# }
+		'ENGINE': 'django.db.backends.sqlite3',
+		# Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+		'NAME': 'jobs.sqlite',  # Or path to database file if using sqlite3.
+		'USER': '',  # Not used with sqlite3.
+		'PASSWORD': '',  # Not used with sqlite3.
+		'HOST': '',  # Set to empty string for localhost. Not used with sqlite3.
+		'PORT': '',  # Set to empty string for default. Not used with sqlite3.
+	},  # 'users': {
+	# 'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+	# 'NAME': 'users.sqlite',          # Or path to database file if using sqlite3.
+	# 'USER': '',                      # Not used with sqlite3.
+	# 'PASSWORD': '',                  # Not used with sqlite3.
+	# 'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+	# 'PORT': '',                      # Set to empty string for default. Not used with sqlite3.  # }
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -63,7 +62,7 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(ROOT_DIR, 'farproof-html') #.replace('\\', '/'),
+MEDIA_ROOT = os.path.join(ROOT_DIR, 'farproof-html')  # .replace('\\', '/'),
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -90,7 +89,7 @@ TEMP_PATH = os.path.abspath('/tmp/render/')
 PROFILES_PATH = os.path.join(CONTENTS_PATH, 'profiles')
 
 TEMPLATE_DIRS = (
-    join(FARPROOF_DIR,  'templates'),
+    join(FARPROOF_DIR, 'templates'),
 )
 
 # List of callables that know how to import templates from various sources.
@@ -98,32 +97,31 @@ TEMPLATE_LOADERS = (
 	'django.template.loaders.filesystem.Loader',
 	'django.template.loaders.app_directories.Loader',
 	'django.template.loaders.eggs.Loader',
-	#Deprecated for Django 1.5:
-	#'django.template.loaders.app_directories.load_template_source',
-   )
+	# Deprecated for Django 1.5:
+	# 'django.template.loaders.app_directories.load_template_source',
+)
 
 MIDDLEWARE_CLASSES = (
 	'django.middleware.common.CommonMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	# DEPRECATED: https://docs.djangoproject.com/en/1.3/ref/contrib/csrf/#legacy-method
-	#'django.middleware.csrf.CsrfViewMiddleware',
+	# 'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 # https://docs.djangoproject.com/en/1.3/howto/static-files/#with-a-context-processor
-TEMPLATE_CONTEXT_PROCESSORS = (
-	# 'django.contrib.auth.context_processors.auth',
-	'django.core.context_processors.debug',
-	'django.core.context_processors.i18n',
-	'django.core.context_processors.media',
-	'django.core.context_processors.static',
-	'django.core.context_processors.request',
-	'django.contrib.auth.context_processors.auth',
-	'django.contrib.messages.context_processors.messages',
-	#'django.contrib.messages.context_processors.request',
-	#'djangoapp.app.context_processors.media_url',
+TEMPLATE_CONTEXT_PROCESSORS = (  # 'django.contrib.auth.context_processors.auth',
+								 'django.core.context_processors.debug',
+								 'django.core.context_processors.i18n',
+								 'django.core.context_processors.media',
+								 'django.core.context_processors.static',
+								 'django.core.context_processors.request',
+								 'django.contrib.auth.context_processors.auth',
+								 'django.contrib.messages.context_processors.messages',
+								 # 'django.contrib.messages.context_processors.request',
+								 # 'djangoapp.app.context_processors.media_url',
 )
 
 STATICFILES_FINDERS = (
@@ -131,8 +129,7 @@ STATICFILES_FINDERS = (
 	'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-STATICFILES_DIRS = (
-	#os.path.join(ROOT_DIR, 'static'),
+STATICFILES_DIRS = (  # os.path.join(ROOT_DIR, 'static'),
 )
 
 STATIC_URL = '/static/'
@@ -142,13 +139,13 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 LOGGING = {
 	'version': 1,
 	'disable_existing_loggers': False,
-	
+
 	'filters': {
-	 'require_debug_false': {
-		 '()': 'django.utils.log.RequireDebugFalse'
+		'require_debug_false': {
+			'()': 'django.utils.log.RequireDebugFalse'
 		}
 	},
-	
+
 	'handlers': {
 		'mail_admins': {
 			'level': 'ERROR',
@@ -160,7 +157,7 @@ LOGGING = {
 			'class': 'logging.StreamHandler'
 		}
 	},
-	
+
 	'loggers': {
 		'django.request': {
 			'handlers': ['mail_admins'],
@@ -176,18 +173,15 @@ INSTALLED_APPS = (
 	'django.contrib.sessions',
 	'django.contrib.sites',
 	'django.contrib.messages',
-	'django.contrib.staticfiles',
-	# Uncomment the next line to enable the admin:
-	'django.contrib.admin',
-	# Uncomment the next line to enable admin documentation:
+	'django.contrib.staticfiles',  # Uncomment the next line to enable the admin:
+	'django.contrib.admin',  # Uncomment the next line to enable admin documentation:
 	'django.contrib.admindocs',
 	'farproof.client_list',
 	'django.contrib.humanize',
 	'django_extensions',
 	'debug_toolbar',
 	'djcelery',
-	'celery',
-	#'south',
+	'celery',  # 'south',
 )
 
 # import djcelery

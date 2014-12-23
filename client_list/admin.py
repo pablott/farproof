@@ -1,12 +1,14 @@
 ﻿from django.contrib import admin
 from farproof.client_list.models import Client, User, Job, Item, Page, Revision, Comment, PDFFile, RenderFile
 
+
 class ItemAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None,               {'fields': ['job']}),
-        (None,               {'fields': ['name']}),
-        (None,               {'fields': ['desc']}),
+        (None, {'fields': ['job']}),
+        (None, {'fields': ['name']}),
+        (None, {'fields': ['desc']}),
     ]
+
 
 admin.site.register(Client)
 admin.site.register(User)
