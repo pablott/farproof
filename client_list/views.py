@@ -314,5 +314,6 @@ def file_upload(request, client_pk, job_pk, item_pk, version):
 		'client': client,
 		'job': job,
 		'item': item,
+		'version': version,
 	})
 	
