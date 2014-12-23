@@ -1,10 +1,6 @@
-import os, subprocess
 import json
 from django.core.files import File
 from django.http import HttpResponse
-from django.shortcuts import render_to_response # Add get_object_or_404
-from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from celery.result import AsyncResult
 from celery.task.control import inspect
