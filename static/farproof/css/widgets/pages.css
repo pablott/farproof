@@ -92,11 +92,11 @@
 }
 
 .page_thumb.odd { margin: 0 20px 0 0;
-    background: url('../../img/256-67-6-monochrome.png'), url('../../img/page_shadow_odd.png') left;
+    background: url('../../img/256-67-6-monochrome.png'), url('../../img/page_shadow_odd.png') left no-repeat repeat;
 }
 
 .page_thumb.even { margin: 0 0 0 20px;
-    background: url('../../img/256-67-6-monochrome.png'), url('../../img/page_shadow_even.png') right;
+    background: url('../../img/256-67-6-monochrome.png'), url('../../img/page_shadow_even.png') right no-repeat repeat;
 }
 
 .thumb_container .odd > .page_number { border-top-right-radius: 3px; text-align: right; }
