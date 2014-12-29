@@ -2,7 +2,6 @@
 
 $(function () {
     $('.checkall').click(function () {
-<<<<<<< HEAD
         $('.list_container:eq(0)').find(':checkbox').prop('checked', this.checked);
         alert(page_set);
     });
@@ -23,9 +22,5 @@ $(function () {
         }
     });
 
-=======
-        $('.list_container:eq(0)').find(':checkbox').attr('checked', this.checked);
-    });
->>>>>>> 17b09ee... INITIAL COMMIT!!
 });
     
