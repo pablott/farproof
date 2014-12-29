@@ -1,0 +1,97 @@
+/* =============================================================================
+	  Comment add widget
+   ========================================================================== */
+.comment_add {
+    font-size: 11px;
+    position: absolute;
+    width: 140px;
+    bottom: 0;
+    line-height: 14px;
+    border: solid 1px rgba(255, 255, 255, .7); border-bottom: none; padding: 8px; border-radius: 3px 3px 0 0;
+    background-origin: content-box;
+}
+
+.comment_add textarea {
+    width: 100%; position: relative; right: 0; left: -4px; height: 64px; border: none; resize: none; font-size: 11px; padding: 4px; margin: 8px 0 4px 0;
+}
+
+.page.even > .comment_add {
+    right: 16px;
+}
+
+.page.odd > .comment_add {
+    left: 16px;
+}
+
+.comment_add button {
+    width: 100%;
+}
+
+/*   List for adding pages for multiple comment assignment   */
+.page_selection {
+    margin: 18px 0 8px 0;
+    max-height: 80px; overflow-y: scroll;
+}
+
+.page_selection input {
+    width: 10px;
+}
+
+.page_selection label {
+    width: 18px; text-align: center;
+    display: inline-block; margin: 4px;
+}
+
+/* =============================================================================
+	  Widget showing added comments
+   ========================================================================== */
+.comment_array {
+    position: absolute; z-index: 1500; top: 32px; bottom: 0;
+    width: 170px; overflow-y: auto;
+}
+
+.page.odd > .comment_array {
+    right: 38px;
+}
+
+.page.even > .comment_array {
+    left: 38px;
+}
+
+.comment_box {
+    font-size: 11px;
+    padding: 0; border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .5);
+    text-shadow: 0 -1px 0 rgba(250, 250, 250, .6), 0 1px 0 rgba(250, 250, 250, .6), 1px 0 0 rgba(250, 250, 250, .6), -1px 0 0 rgba(250, 250, 250, .6);
+    margin-bottom: 2px;
+    border: solid rgb(255, 255, 255) 2px;
+    position: relative;
+}
+
+.comment_box a {
+    /* Do not allow links to other pages to be split between page_num and rev_num.
+       Do not use 'white-space:nowrap' as this does allow the text to overflow.
+    */
+    display: inline-block;
+}
+
+.comment_box h3, h4 {
+}
+
+.comment_box h3 {
+    color: rgb(23, 185, 247); padding: 4px 6px 4px 6px; background: rgba(212, 196, 196, .9);
+    text-shadow: 0 -1px 0 rgba(10, 70, 100, .6), 0 1px 0 rgba(10, 70, 100, .6), 1px 0 0 rgba(10, 70, 100, .6), -1px 0 0 rgba(10, 70, 100, .6);
+    max-height: 86px; overflow-y: auto;
+    word-break: break-all; white-space: pre-wrap;
+}
+
+.comment_box h4 {
+    margin: 5px 0 2px 0;
+}
+
+.affects_too {
+    background-color: rgba(238, 238, 244, .8); max-height: 32px; overflow-y: auto;
+    padding: 1px 6px 8px 6px;
+    position: relative;
+}
+

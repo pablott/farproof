@@ -1,0 +1,66 @@
+/* =============================================================================
+	  Item Contents (shows the Pages inside an Item in
+	  two forms: thumbs and list)
+   ============================================================================= */
+#view ul { min-width: 600px; height: 40px; line-height: 40px;
+    clear: both;
+    font-size: 12px; text-align: center;
+    list-style: none;
+    border-bottom: none;
+    padding: 0 40px 0 40px;
+    -moz-user-select: none; -khtml-user-select: none; -webkit-user-select: none; -o-user-select: none;
+}
+
+#view li { float: left; box-sizing: padding-box; }
+
+li.checkbox { width: 12%; text-align: left; padding-left: 8px; }
+
+li.page { width: 13%; }
+
+#view .list_container li.page { text-align: right; padding-right: 30px; }
+
+li.comments { width: 12%; }
+
+li.revisions { width: 12%; }
+
+li.status { width: 15%; }
+
+li.updated { width: 19%; }
+
+li.added { width: 17%; text-align: right; padding-right: 8px; }
+
+li.twolines { padding-top: 4px; padding-bottom: 4px; line-height: 16px; font-size: 11px; }
+
+/* Half the line-height to fit two lines.*/
+
+.list_header { text-overflow: ellipsis; white-space: nowrap;
+    z-index: 100;
+    position: absolute; top: 0; left: 0; right: 0; font-weight: bold;
+    background-color: rgb(216, 216, 216); box-shadow: 0 0 7px 3px rgba(0, 0, 0, 0);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.list_header li:hover { background-color: rgba(143, 196, 200, 0.2);
+    box-shadow: inset 0 0 3px 2px rgba(143, 196, 200, .4);
+    border-radius: 3px;
+}
+
+.list_header.scrolled {
+    box-shadow: 0 0 10px 5px rgba(71, 71, 105, 0.3);
+    transition-property: box-shadow;
+    transition-duration: .7s;
+    transition-delay: 0s;
+}
+
+.list_container {
+    position: absolute; top: 41px; left: 0; right: 0; bottom: 0;
+    text-overflow: ellipsis; white-space: nowrap;
+}
+
+.list_container ul:nth-child(odd) { background-color: rgba(174, 176, 191, 0.1); }
+
+.list_container ul:hover { background-color: rgba(143, 196, 200, 0.2); box-shadow: inset 0 0 3px 2px rgba(143, 196, 200, .4); }
+
+.eye { float: left; margin-left: 25px; margin-top: -3px;
+    color: rgba(255, 255, 255, 1); font-size: 1.3em; font-family: 'HeydingsControlsRegular', sans-serif;
+}

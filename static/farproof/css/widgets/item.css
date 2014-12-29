@@ -1,0 +1,21 @@
+/* =============================================================================
+	  Item widget
+   ============================================================================= */
+.item_list { position: absolute; top: 0;
+    left: 0; right: 0;
+    overflow-x: scroll;
+}
+
+.item_thumb { display: inline-block; text-align: center; font-size: 10px;
+    background: url('../../img/folder.png') top center no-repeat;
+}
+
+/* Inner wrap neccesary to arrange thumbs horizontally */
+.item_list > .inner-wrap { margin-right: -9999em; float: left;
+    padding: 8px 40px 0 14px; display: inline-block;
+}
+
+.item > .icon {
+    background: rgba(201, 137, 64, 0.4) url('../../img/folder.png');
+}
+  

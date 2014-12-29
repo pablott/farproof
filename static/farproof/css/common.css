@@ -1,0 +1,206 @@
+/* ===== ALL STYLES ========================================================
+   Author: Pablo Trabajos Tamayo
+   ========================================================================== */
+/* =============================================================================
+	  Font families
+   ========================================================================== */
+@font-face {
+    font-family: Open Sans;
+    src: url('../fonts/open-sans/OpenSans-Regular.ttf');
+}
+
+@font-face {
+    font-family: Open Sans;
+    src: url('../fonts/open-sans/OpenSans-Italic.ttf');
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Open Sans;
+    src: url('../fonts/open-sans/OpenSans-Bold.ttf');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: Open Sans Condensed;
+    src: url('../fonts/open-sans-condensed/OpenSans-CondLight.ttf');
+}
+
+@font-face {
+    font-family: Open Sans Condensed;
+    src: url('../fonts/open-sans-condensed/OpenSans-CondLightItalic.ttf');
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Open Sans Condensed;
+    src: url('../fonts/open-sans-condensed/OpenSans-CondBold.ttf');
+    font-weight: bold;
+}
+
+/* =============================================================================
+	  Reset
+   ========================================================================== */
+html, body, div, h3, h4, span, p, a, ul, li, button, input, label, textarea {
+    padding: 0; margin: 0;
+    font-family: 'Open Sans', sans-serif; color: rgb(53, 53, 53);
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* http://stackoverflow.com/questions/3975769/disable-webkits-spin-buttons-on-input-type-number */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* =============================================================================
+	  Primary Styles
+   ========================================================================== */
+body { background: rgb(216, 216, 216) -moz-linear-gradient(center bottom, rgba(29, 29, 44, 0) 100%, rgba(71, 71, 105, 0.4) 0%) fixed;
+    overflow: hidden;
+}
+
+/* =============================================================================
+	  Reusable elements
+   ========================================================================== */
+.debug {
+    background-color: rgba(255, 255, 255, .7); border: solid 2px rgb(255, 255, 255);
+    width: 150px;
+    height: 24px; line-height: 24px; border-radius: 3px; font-size: 12px; font-family: monospace;
+    position: fixed; bottom: 18px; right: 36px;
+    z-index: 3000;
+    text-align: center;
+}
+
+.container {
+    margin: 0 0 45px 0;
+    width: 600px;
+    overflow: visible; display: inline-block;
+    border-bottom: solid 1px rgba(255, 255, 255, .7);
+}
+
+.body { margin-left: 90px; text-align: right; }
+
+.icon {
+    background: no-repeat top left;
+    position: relative; top: 0; height: 60px; width: 60px; left: 0;
+}
+
+.title { color: rgb(23, 185, 247); font-size: 16px; border-bottom: dashed 1px rgb(23, 185, 247); }
+
+.summary { font-size: 12px; line-height: 15px;
+    margin: 10px 0 24px 0;
+}
+
+.mini_summary { font-size: 8px; text-align: center; position: relative; top: 15px; }
+
+.totals { font-size: 11px; text-align: center; line-height: 14px; font-family: 'Open Sans Condensed', sans-serif; }
+
+.unactive { opacity: 0.65; }
+
+.tooltip { border: solid 1px rgb(255, 255, 255); background-color: rgb(0, 0, 0); color: rgb(255, 255, 255); }
+
+.hidden { visibility: hidden; }
+
+.help { font-size: 12px; line-height: 14px; font-style: italic; text-align: center;
+    top: 8px; height: 30px;
+    position: relative;
+}
+
+.ok { color: rgb(0, 157, 0); }
+
+.rejected { color: rgb(214, 3, 3); }
+
+.pending { color: rgb(166, 133, 0); }
+
+.comment { color: rgb(23, 185, 247); }
+
+.shaded { color: rgba(0, 0, 0, 0.4); font-style: italic; }
+
+.black { text-shadow: 0 1px 0 rgba(250, 250, 250, .4); }
+
+/* =============================================================================
+	  Topbar
+   ============================================================================= */
+#header { padding-right: 8px; text-align: right; font-size: 10px; color: rgb(128, 128, 128); letter-spacing: 1px; font-weight: bold;
+    background-color: rgba(255, 255, 255, .6); left: 40px; right: 40px; top: 0; height: 16px; position: absolute;
+}
+
+#topbar { font-size: 1.2em; font-weight: bold; line-height: 50px;
+    text-shadow: 0 2px 2px rgba(118, 118, 163, 0.8); color: rgb(255, 255, 255);
+    white-space: nowrap;
+    background-image: -moz-linear-gradient(center bottom, rgba(29, 29, 44, 0) 0%, rgba(71, 71, 105, 0.3) 100%);
+    padding: 0 40px 0 40px;
+    height: 58px;
+    top: 0; right: 0; left: 0; z-index: 1000;
+    position: fixed; overflow: hidden;
+}
+
+#topbar ul { list-style: none; }
+
+#topbar li { float: left; padding-left: 2%; padding-right: 4%; color: rgba(255, 255, 255, .8);
+    background: url('../img/arrow.png') no-repeat center right;
+}
+
+#topbar li a:hover { text-shadow: 0 3px 2px rgb(23, 185, 247); }
+
+#topbar li:first-child { padding-left: 0; }
+
+#topbar li:last-child { font-size: 12px; margin-top: 3px; }
+
+#topbar li:nth-last-child(-n+2) { background: none; padding-right: 0; color: rgb(255, 255, 255); }
+
+/* =============================================================================
+	  View
+   ============================================================================= */
+#view {
+    position: fixed; top: 150px; right: 0; bottom: 0; left: 0; padding: 0 40px;
+    overflow: auto; text-align: center;
+}
+
+/* =============================================================================
+	  Uploads
+   ============================================================================= */
+#queue_container { width: auto; }
+
+.task { line-height: 18px; font-size: 13px;
+    text-align: center;
+    background-color: rgba(15, 15, 255, 0); border-radius: 2px;
+    height: 40px; margin-top: 2px; position: relative; border: solid 1px rgba(255, 255, 255, .7);
+    box-shadow: inset 0 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.task:nth-child(even) { background-color: rgba(143, 196, 200, .1); }
+
+.bar {
+    background: url('../img/bar2.png') center right;
+    position: relative; width: 0; border-radius: 3px; height: 100%; overflow: hidden;
+}
+
+.task span { position: relative; top: -38px; }
+
+.task .seps { background-image: url('../img/seps.png'); width: 16px; height: 16px;
+    position: absolute; right: 13px; top: 12px; z-index: 1; border: 2px solid transparent, 1px solid rgb(23, 185, 247);
+    border-radius: 8px;
+}
+
+.task .seps .processing { top: -5px; bottom: -5px; right: -5px; left: -5px; position: absolute; border: 2px solid rgb(23, 185, 247); border-radius: 12px; display: none; }
+
+.task .seps .sep_name { height: 16px; position: relative; right: 50px; font-size: 10px; text-align: right; }
+
+/* =============================================================================
+   Media Queries
+   ========================================================================== */
+@media screen and (max-width: 555px) {
+    footer { display: none; }
+
+    #topbar { font-size: 18px; }
+}
+
+@media screen and (max-width: 460px) {
+    footer { display: none; }
+
+    #topbar { font-size: 14px; }
+}

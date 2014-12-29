@@ -1,0 +1,166 @@
+/* =============================================================================
+	  Checkboxes & Bookmarks
+   ============================================================================= */
+input[type='checkbox'].hidden {
+    display: none;
+}
+
+input[type='checkbox'] + label {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+input[type='checkbox'] + label.bookmark {
+    width: 21px;
+    height: 21px;
+    padding-left: 14px;
+    line-height: 20px;
+    background: url('../../img/bookmark-off.png') -3px center no-repeat padding-box;
+}
+
+.legend_shaded {
+    font-family: 'Open Sans Condensed', sans-serif; color: rgb(128, 128, 128); font-size: 13px; letter-spacing: 1px; font-style: italic;
+}
+
+input[type='checkbox']:checked + label.bookmark {
+    background: url('../../img/bookmark-on.png') -3px center no-repeat padding-box;
+}
+
+input[type='checkbox'] + label.checkbox {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 4px 1px rgba(0, 0, 0, .1);
+}
+
+input[type='checkbox']:checked + label.checkbox {
+    background: rgba(143, 196, 200, .4) url('../../img/check-on.png') center center no-repeat;
+    box-shadow: inset 0 2px 4px 1px rgba(0, 0, 0, .2);
+}
+
+input[type='checkbox'] + label.checkbox:hover {
+    box-shadow: inset 0 0 6px 1px rgba(0, 0, 0, .1);
+}
+
+/* =============================================================================
+	  Control bar & Sidebar
+   ============================================================================= */
+#control_bar {
+    z-index: 50; position: relative; top: 74px;
+    text-align: center; padding: 0 40px;
+}
+
+#sidebar { min-height: 220px; width: 180px;
+    z-index: 50; position: fixed; top: 110px; bottom: 0; left: 40px;
+}
+
+.btn_box_top { position: absolute; right: 0; left: 0; top: 0; }
+
+.btn_box_bottom { position: absolute; right: 0; left: 0; bottom: 40px; }
+
+.btn_box_left { position: absolute; left: 0; top: 0; bottom: 0; }
+
+.btn_box_center { display: inline-block; }
+
+.btn_box_right { position: absolute; right: 0; top: 0; bottom: 0; }
+
+/* =============================================================================
+	  Button icons
+   ========================================================================== */
+.btn_icon { margin: 0; float: left; padding-left: 2px;
+    font-size: inherit; line-height: inherit;
+    top: -1px; position: relative; text-transform: none;
+}
+
+.btn_icon1 { font-family: 'HeydingsControlsRegular', sans-serif; color: inherit; }
+
+.btn_icon2 { font-family: 'HeydingsCommonIconsRegular', sans-serif; color: inherit; }
+
+/* =============================================================================
+	  Controls
+   ========================================================================== */
+.header {
+    border-bottom: solid 1px rgb(190, 190, 190); margin-bottom: 15px; padding-top: 24px; margin-right: 12px;
+    clear: both;
+}
+
+/* =============================================================================
+	  Buttons
+   ========================================================================== */
+.btn { -moz-user-select: none; -khtml-user-select: none; -webkit-user-select: none; -o-user-select: none;
+    cursor: pointer;
+    margin: auto;
+    font-weight: normal; text-transform: uppercase; letter-spacing: 1px;
+    text-align: center; font-size: 11px;
+    border-radius: 3px;
+    border: solid 1px rgba(255, 255, 255, .7);
+    background-origin: content-box; background-color: rgb(216, 216, 216);
+}
+
+.btnM { margin-bottom: 8px; padding: 2px 5px; height: 26px; width: 120px; line-height: 26px; }
+
+.btnM.btnV { clear: both; margin: 14px 0 14px 0; }
+
+.btnM.btnV.top { border-radius: 3px 3px 0 0; margin-bottom: 0; }
+
+.btnM.btnV.middle { border-radius: 0; border-top-width: 0; margin: 0; }
+
+.btnM.btnV.bottom { border-top-width: 0; border-radius: 0 0 3px 3px; margin-top: 0; }
+
+.btnM.btnH { float: left; margin: 0 14px 0 14px; }
+
+.btnM.btnH.left { border-radius: 3px 0 0 3px; margin-right: 0; }
+
+.btnM.btnH.middle { border-radius: 0; border-left-width: 0; margin: 0; }
+
+.btnM.btnH.right { border-left-width: 0; border-radius: 0 3px 3px 0; margin-left: 0; }
+
+.btnM.pushed { padding-top: 3px; padding-bottom: 1px; background-color: rgba(143, 196, 200, .4);
+    box-shadow: inset 0 0 6px 1px rgba(0, 0, 0, .4); color: rgb(255, 255, 255);
+}
+
+.btnM.pushed:hover {
+    box-shadow: inset 0 0 7px 1px rgba(0, 0, 0, .5);
+    background-color: rgba(143, 196, 200, .4);
+}
+
+.btnM:hover { background-color: rgba(143, 196, 200, .1);
+    box-shadow: 0 0 3px 2px rgba(143, 196, 200, .6);
+}
+
+.btnM:active {
+    padding-top: 3px; padding-bottom: 1px;
+    box-shadow: inset 0 0 6px 1px rgba(0, 0, 0, .5);
+}
+
+.btnM.delete:hover { background-color: rgba(255, 31, 52, .2);
+    box-shadow: 0 0 6px rgb(143, 61, 255);
+}
+
+.btnM.delete:active, .btnM.pushed.delete { background-color: rgba(255, 31, 52, .5); color: rgb(255, 255, 255);
+    box-shadow: 0 0 6px rgb(255, 31, 52), inset 0 0 6px 1px rgba(0, 0, 0, .5);
+}
+
+.btnM.featured:hover { background-color: rgba(23, 185, 247, .2);
+    box-shadow: 0 0 6px rgb(23, 185, 247);
+}
+
+.btnM.featured:active, .btnM.pushed.featured { background-color: rgba(23, 185, 247, .5); color: rgb(255, 255, 255);
+    box-shadow: 0 0 6px rgb(23, 185, 247), inset 0 0 6px 1px rgba(0, 0, 0, .5);
+}
+
+.btnM.add:hover { background-color: rgba(92, 247, 23, 0.2);
+    box-shadow: 0 0 6px rgb(23, 247, 97);
+}
+
+.btnM.add:active, .btnM.pushed.add { background-color: rgba(92, 247, 23, 0.4); color: rgb(255, 255, 255);
+    box-shadow: 0 0 6px rgb(23, 247, 97), inset 0 0 6px 1px rgba(0, 0, 0, .5);
+}
+
+.legend { width: 12px; height: 12px; display: inline-block; border-radius: 6px; position: relative; top: 1px; margin-left: 12px; }
+
+.legend.ok { background: rgba(0, 157, 0, .8); }
+
+.legend.rejected { background: rgba(214, 3, 3, .8); }
+
+.legend.pending { background: rgba(213, 186, 36, .8); }

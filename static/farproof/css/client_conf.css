@@ -1,0 +1,34 @@
+.wrapper_1col {
+    clear: both;
+    position: relative; margin-left: 10px;
+}
+
+.wrapper_2col {
+    width: 47%; float: left; height: 100px;
+    position: relative; margin-left: 10px; margin-right: 10px; min-width: 263px;
+}
+
+/*
+##### (Smaller) Lists ####
+*/
+.list_container { width: 100%;
+    position: absolute; top: 32px; left: 0; right: 0; bottom: 0; overflow-y: auto;
+}
+
+.list_header {
+}
+
+li.checkbox { width: 24%; }
+
+li.user { width: 24%; }
+
+li.email { width: 24%; }
+
+li.password { width: 24%; }
+
+/*
+##### Options ####
+*/
+
+.opt { clear: both;
+}
