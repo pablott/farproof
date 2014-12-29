@@ -7,9 +7,9 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'farproof.settings')
 app = Celery('farproof')
 
 # Optional configuration, see the application user guide.
-app.conf.update(
-    CELERY_TASK_RESULT_EXPIRES=3600,
-)
+# app.conf.update(
+#     CELERY_TASK_RESULT_EXPIRES=3600,
+# )
 
 if __name__ == '__main__':
     app.start()
