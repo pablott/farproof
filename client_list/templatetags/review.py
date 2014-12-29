@@ -59,7 +59,7 @@ def comment_add(request, version, item, job, client):
 
             # Associate new_comment to revision
             new_comment.revision.add(revision)
-            c = c + 1
+            c += 1
 
         print(
             '\nNew Comment \"' + str(new_comment.comment) + '\" added to pages ' + str(pages) + ' inside ' + '\"' + str(
