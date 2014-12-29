@@ -28,7 +28,6 @@ STATIC_URL = '/static/'
 
 ADMIN_MEDIA_PREFIX = '/media/admin/'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -148,8 +147,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'farproof.client_list',
     'django.contrib.humanize',
+    'farproof.client_list',
     'django_extensions',
     'debug_toolbar',
     'djcelery',
@@ -172,8 +171,8 @@ CELERY_TASK_RESULT_EXPIRES = 3600
 # DEBUG_TOOLBAR_PANELS = [
 # 'debug_toolbar.panels.versions.VersionsPanel',
 # 'debug_toolbar.panels.timer.TimerPanel',
-#     'debug_toolbar.panels.settings.SettingsPanel',
-#     'debug_toolbar.panels.headers.HeadersPanel',
+# 'debug_toolbar.panels.settings.SettingsPanel',
+# 'debug_toolbar.panels.headers.HeadersPanel',
 #     'debug_toolbar.panels.request.RequestPanel',
 #     'debug_toolbar.panels.sql.SQLPanel',
 #     'debug_toolbar.panels.staticfiles.StaticFilesPanel',
