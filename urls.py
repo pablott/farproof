@@ -1,4 +1,6 @@
 ﻿from django.contrib import admin
+
+
 admin.autodiscover()
 from django.conf import settings
 from django.conf.urls.static import static

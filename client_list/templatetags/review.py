@@ -6,7 +6,7 @@ register = template.Library()
 
 
 @register.inclusion_tag('widgets/comment_add.html')
-def comment_add(request, version, item, job, client):
+def comment_add (request, version, item, job, client):
     # This conditions also checks that POST data comes from the same page
     # where the send button was hit. Avoids accidentally adding comments
     # from a different form and receiving POST twice from different forms
@@ -73,7 +73,7 @@ def comment_add(request, version, item, job, client):
 
 
 @register.inclusion_tag('widgets/affects_too.html')
-def affects_too(comment, version, item, job, client):
+def affects_too (comment, version, item, job, client):
     revisions = comment.revision.all()  # Get all revisions with that associated comment
     last_rev = version.page.last_rev()  # Get last revision for current page
     current_revisions = revisions.exclude(pk=last_rev.pk)  # This excludes last_rev itself from list
