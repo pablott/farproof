@@ -3,6 +3,7 @@
 *.pyc
 local_settings.py
 .gitignore
+fonts/
 x no/
 
 
