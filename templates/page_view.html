@@ -6,98 +6,105 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>FP - {{ client.name }} - {{ job.name}} - {{item.name}} - Page spread </title>
+	<title>FP - {{ client.name }} - {{ job.name }} - {{ item.name }} - Page spread </title>
 	<meta name="description" content="">
 	<meta name="author" content="">
-	<link rel="stylesheet" href="/media/css/common.css">
-	<link rel="stylesheet" href="/media/css/widgets/buttons.css">
-	<link rel="stylesheet" href="/media/css/widgets/pages.css">
-	<link rel="stylesheet" href="/media/css/widgets/comments.css">
-	<link rel="stylesheet" href="/media/css/item_view_pages.css">
-	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
-	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
-	<script src="/media/js/jquery-1.8.1.js"></script>
-	<script src="/media/js/index.js"></script>
-	<script src="/media/js/page.js"></script>
-	<script src="/media/js/toolbar.js"></script>
-	<script src="/media/js/XXzoom.js"></script>
-	<script src="/media/js/nav.js"></script>
+	<link rel="stylesheet" href="{% static "farproof/css/common.css" %}">
+	<link rel="stylesheet" href="{% static "farproof/css/widgets/buttons.css" %}">
+	<link rel="stylesheet" href="{% static "farproof/css/widgets/pages.css" %}">
+	<link rel="stylesheet" href="{% static "farproof/css/widgets/comments.css" %}">
+	<link rel="stylesheet" href="{% static "farproof/css/item_view_pages.css" %}">
+	<link rel="stylesheet" href="{% static "farproof/fonts/heydings-controls/stylesheet.css" %}" type="text/css"
+		  charset="utf-8">
+	<link rel="stylesheet" href="{% static "farproof/fonts/heydings-commons-icons/stylesheet.css" %}" type="text/css"
+		  charset="utf-8">
+	<script src="{% static "farproof/js/jquery-1.8.1.js" %}"></script>
+	<script src="{% static "farproof/js/index.js" %}"></script>
+	<script src="{% static "farproof/js/page.js" %}"></script>
+	<script src="{% static "farproof/js/toolbar.js" %}"></script>
+	<script src="{% static "farproof/js/XXzoom.js" %}"></script>
+	<script src="{% static "farproof/js/nav.js" %}"></script>
 </head>
 
 
 <body>
-	<div class="debug"></div>
-	<div id="toolbar">
-		<div class="btn_black btn_icon1"> <a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/base/list/"><</a></div>
-		<div class="btn_black vertical">
-				<div class=""> View </div>
-				<div id="zoomIn" class="btn_icon1"> + </div>
-				<div id="zoomOut" class="btn_icon1"> - </div>
-				<div> 1:1 </div>
-				<div class="btn_icon1"> M </div>
-				<input type="number" value="100" max="500" min="10"> % <input>
-		</div>
-		<div class="btn_black horizontal">
-				<div> Tools </div>
-				<div class="btn_icon2"> b </div>
-				<div class="btn_icon1"> q </div>
-				<div class="btn_icon2"> C </div>
-				<div class="model"> 3D </div>
-		</div>
+<div class="debug"></div>
+<div id="toolbar">
+	<div class="btn_black btn_icon1"><a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/base/list/"><</a></div>
+	<div class="btn_black vertical">
+		<div class=""> View</div>
+		<div id="zoomIn" class="btn_icon1"> +</div>
+		<div id="zoomOut" class="btn_icon1"> -</div>
+		<div> 1:1</div>
+		<div class="btn_icon1"> M</div>
+		<label>
+			<input type="number" value="100" max="500" min="10">
+		</label> % <label>
+		<input>
+	</label>
 	</div>
+	<div class="btn_black horizontal">
+		<div> Tools</div>
+		<div class="btn_icon2"> b</div>
+		<div class="btn_icon1"> q</div>
+		<div class="btn_icon2"> C</div>
+		<div class="model"> 3D</div>
+	</div>
+</div>
 
-	<div id="view">
-		<div id="page_container">
-			{% page_even page_even item job client %}
-			{% page_odd page_odd item job client %}
-		</div>
+<div id="view">
+	<div id="page_container">
+		{% page_even page_even item job client %}
+		{% page_odd page_odd item job client %}
 	</div>
-	
-	<div id="index_toolbar">
-		<div id="toggle_index" class="btn_black btn_icon2"> d </div>
-		<div id="toggle_list" class="btn_black">
-			<div id="list">
+</div>
+
+<div id="index_toolbar">
+	<div id="toggle_index" class="btn_black btn_icon2"> d</div>
+	<div id="toggle_list" class="btn_black">
+		<div id="list">
 			{% if versions %}
-			<div class="">
-				{% for version in versions %}
-					{% if version.rel_num|divisibleby:2 %}
-						{% if forloop.last %}
-							<div style="margin-left:-50%">{{ version.rel_num }}  </div>
+				<div class="">
+					{% for version in versions %}
+						{% if version.rel_num|divisibleby:2 %}
+							{% if forloop.last %}
+								<div style="margin-left:-50%">{{ version.rel_num }}  </div>
+							{% else %}
+								{{ version.rel_num }}
+							{% endif %}
 						{% else %}
-							{{ version.rel_num }}
+							{% if forloop.counter == 1 %}
+								* - {{ version.rel_num }}
+							{% else %}
+								- {{ version.rel_num }}
+							{% endif %}
 						{% endif %}
-					{% else %}
-						{% if forloop.counter == 1 %}
-							* - {{ version.rel_num }}
-						{% else %}
-							 - {{ version.rel_num }}
-						{% endif %}
-					{% endif %}
-					
-					{# if the the forloop counter is divisible by 2, close the thumb container tag and open a new one #}
-					{% if not version.rel_num|divisibleby:2 %}</div><div class="">{% endif %}
-					
-				{% endfor %}
-				</div>
+
+						{# if the the forloop counter is divisible by 2, close the thumb container tag and open a new one #}
+						{% if not version.rel_num|divisibleby:2 %}</div>
+							<div class="">{% endif %}
+
+					{% endfor %}
+					</div>
 			{% else %}
 				<p>No pages are available.</p>
 			{% endif %}
-			</div>
-		</div>
-		
-		
-		<div id="nav" class="btn_black">
-			<div id="navFullLeft"> &larr; </div>
-			<div id="navLeft"> &larr; </div>
-			<div id="navRight"> &rarr; </div>
-			<div id="navFullRight"> &rarr; </div>
 		</div>
 	</div>
-	
-	
-	<div id="index">
-		<div id="inner-wrap">
-			{% if versions %}
+
+
+	<div id="nav" class="btn_black">
+		<div id="navFullLeft"> &larr; </div>
+		<div id="navLeft"> &larr; </div>
+		<div id="navRight"> &rarr; </div>
+		<div id="navFullRight"> &rarr; </div>
+	</div>
+</div>
+
+
+<div id="index">
+	<div id="inner-wrap">
+		{% if versions %}
 			<div class="thumb_container">
 				{% for version in versions %}
 					{% if version.rel_num|divisibleby:2 %}
@@ -110,81 +117,96 @@
 							{% page_thumb_odd version item job client %}
 						{% endif %}
 					{% endif %}
-					
+
 					{# if the the forloop counter is divisible by 2, close the thumb container tag and open a new one #}
-					{% if not version.rel_num|divisibleby:2 %}</div><div class="thumb_container">{% endif %}
-					
+					{% if not version.rel_num|divisibleby:2 %}</div>
+						<div class="thumb_container">{% endif %}
+
 				{% endfor %}
 				</div>
-			{% else %}
-				<p>No pages are available.</p>
-			{% endif %}
-		</div>
+		{% else %}
+			<p>No pages are available.</p>
+		{% endif %}
 	</div>
-	
-	
-<script type="text/javascript"> 
-function navFullLeft () {
-    $("#navFullLeft").click(function () {
-		next_page = {{first_page.rel_num}};
-		// Send request for next_page:
-		//$(".debug").html("next_page:"+next_page);
-		window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
-	});
-}
+</div>
 
-function navFullRight () {
-    $("#navFullRight").click(function () {
-		next_page = {{last_page.rel_num}};
-		// Send request for next_page:
-		//$(".debug").html("next_page:"+next_page);
-		window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
-	});
-}
 
-function navLeft () {
-    $("#navLeft").click(function () {
-		// next_page is calculated checking if current page is even or odd,
-		// depending on that it skips 1 or 2 pages so it always jumps to 
-		// the next diptych 
-		if ( {{version.rel_num}}%2 == 0 ) {
-			next_page = {{version.rel_num}}-1;
-		}else{
-			next_page = {{version.rel_num}}-2;
-		};
-		
-		// Then it is sanitized so it doesn't exceed the page range:
-		if ( next_page > {{last_page.rel_num}} | next_page < {{first_page.rel_num}} ) {
+<script type="text/javascript">
+	function navFullLeft() {
+		$("#navFullLeft").click(function () {
 			next_page = {{first_page.rel_num}};
-		};
-		
-		// Send request for next_page:
-		//$(".debug").html("next_page:"+next_page);
-		window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
-	});
-}
+			// Send request for next_page:
+			//$(".debug").html("next_page:"+next_page);
+			window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/" + next_page + "/";
+		});
+	}
 
-function navRight () {
-    $("#navRight").click(function () {
-		// next_page is calculated checking if current page is even or odd,
-		// depending on that it skips 1 or 2 pages so it always jumps to 
-		// the next diptych 
-		if ( {{version.rel_num}}%2 == 0 ) {
-			next_page = {{version.rel_num}}+2;
-		}else{
-			next_page = {{version.rel_num}}+1;
-		};
-		
-		// Then it is sanitized so it doesn't exceed the page range:
-		if ( next_page > {{last_page.rel_num}} | next_page < {{first_page.rel_num}} ) {
+	function navFullRight() {
+		$("#navFullRight").click(function () {
 			next_page = {{last_page.rel_num}};
-		};
-		
-		// Send request for next_page:
-		//$(".debug").html("next_page:"+next_page);
-		window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/"+next_page+"/";
-	});
-}
+			// Send request for next_page:
+			//$(".debug").html("next_page:"+next_page);
+			window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/" + next_page + "/";
+		});
+	}
+
+	function navLeft() {
+		$("#navLeft").click(function () {
+			// next_page is calculated checking if current page is even or odd,
+			// depending on that it skips 1 or 2 pages so it always jumps to
+			// the next diptych
+			if ({{version.rel_num}}%
+			2 == 0
+			)
+			{
+				next_page = {{version.rel_num}}-1;
+			}
+			else
+			{
+				next_page = {{version.rel_num}}-2;
+			}
+			;
+
+			// Then it is sanitized so it doesn't exceed the page range:
+			if (next_page > {{last_page.rel_num}} | next_page < {{first_page.rel_num}}) {
+				next_page = {{first_page.rel_num}};
+			}
+			;
+
+			// Send request for next_page:
+			//$(".debug").html("next_page:"+next_page);
+			window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/" + next_page + "/";
+		});
+	}
+
+	function navRight() {
+		$("#navRight").click(function () {
+			// next_page is calculated checking if current page is even or odd,
+			// depending on that it skips 1 or 2 pages so it always jumps to
+			// the next diptych
+			if ({{version.rel_num}}%
+			2 == 0
+			)
+			{
+				next_page = {{version.rel_num}}+2;
+			}
+			else
+			{
+				next_page = {{version.rel_num}}+1;
+			}
+			;
+
+			// Then it is sanitized so it doesn't exceed the page range:
+			if (next_page > {{last_page.rel_num}} | next_page < {{first_page.rel_num}}) {
+				next_page = {{last_page.rel_num}};
+			}
+			;
+
+			// Send request for next_page:
+			//$(".debug").html("next_page:"+next_page);
+			window.location = "/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/" + next_page + "/";
+		});
+	}
 </script>
 </body>
 </html>

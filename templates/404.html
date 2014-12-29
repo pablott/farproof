@@ -4,26 +4,28 @@
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
 	<meta charset="utf-8">
-	<link href="/media/css/common.css" rel="stylesheet" type="text/css">
-	<link href="/media/css/widgets/buttons.css" rel="stylesheet" type="text/css">
-	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
-	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
-	<link href="/media/favicon.ico" rel="shortcut btn_icon">
+	<link href="{% static "farproof/css/common.css" %}" rel="stylesheet" type="text/css">
+	<link href="{% static "farproof/css/widgets/buttons.css" %}" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="{% static "farproof/fonts/heydings-controls/stylesheet.css" %}" type="text/css"
+		  charset="utf-8">
+	<link rel="stylesheet" href="{% static "farproof/fonts/heydings-commons-icons/stylesheet.css" %}" type="text/css"
+		  charset="utf-8">
+	<link href="{% static "farproof/favicon.ico" %}" rel="shortcut btn_icon">
 	<title>404</title>
 </head>
 
-	
-<body>
-	<div id="topbar">
-		<ul>
-			
-			<li> 404! </li>
-		</ul>
-	</div>
 
-	<div id="view">
+<body>
+<div id="topbar">
+	<ul>
+
+		<li> 404!</li>
+	</ul>
+</div>
+
+<div id="view">
 	Not found here! <br>
 	Go back to <a href="/">Start</a>?
-	</div>	
+</div>
 </body>
 </html>

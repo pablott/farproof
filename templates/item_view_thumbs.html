@@ -5,83 +5,103 @@
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
 	<meta charset="utf-8">
-	<link href="/media/css/common.css" rel="stylesheet" type="text/css">
-	<link href="/media/css/widgets/buttons.css" rel="stylesheet" type="text/css">
-	<link href="/media/css/widgets/pages.css" rel="stylesheet" type="text/css">
-	<link href="/media/css/item_view_thumbs.css" rel="stylesheet" type="text/css">
-	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
-	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
-	<link href="/media/favicon.ico" rel="shortcut icon">
-	<title>FP - {{ client.name }} - {{ job.name }} - {{ item.name }} - Page Thumbs for {{version}} version</title>
+	<link href="{% static "farproof/css/common.css" %}" rel="stylesheet" type="text/css">
+	<link href="{% static "farproof/css/widgets/buttons.css" %}" rel="stylesheet" type="text/css">
+	<link href="{% static "farproof/css/widgets/pages.css" %}" rel="stylesheet" type="text/css">
+	<link href="{% static "farproof/css/item_view_thumbs.css" %}" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="{% static "farproof/fonts/heydings-controls/stylesheet.css" %}" type="text/css"
+		  charset="utf-8">
+	<link rel="stylesheet" href="{% static "farproof/fonts/heydings-commons-icons/stylesheet.css" %}" type="text/css"
+		  charset="utf-8">
+	<link href="{% static "farproof/favicon.ico" %}" rel="shortcut icon">
+	<title>FP - {{ client.name }} - {{ job.name }} - {{ item.name }} - Page Thumbs for {{ version }} version</title>
 </head>
 
 
 <body>
-	<div class="debug">--</div>
-	<div id="topbar">
-		<ul>
-			<li> <a href="/{{ client.pk }}/">{{ client.name }}</a> </li>
-			<li> <a href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a> </li>
-			<li> {{ item.name }} </li>
-			<li> Page Thumbs for {{version}} version </li>
-		</ul>
-	</div>
-	
-	<div id="control_bar">
-		<div class="btn_box_center">
-			<div class="btn btnM btnH left pushed"> <div class="btn_icon btn_icon2">k</div> Thumbs </div>
-			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}:{{ version }}/list/"><div class="btn btnM btnH middle"> <div class="btn_icon btn_icon1">5</div> List </div></a>
-			<div class="btn btnM btnH right"> <div class="btn_icon btn_icon2">G</div> Configure </div>
-			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}:{{ version }}/file_upload/"><div class="btn btnM btnH add"> <div class="btn_icon btn_icon2">+</div> Upload Pages </div></a>
+<div class="debug">--</div>
+<div id="topbar">
+	<ul>
+		<li><a href="/{{ client.pk }}/">{{ client.name }}</a></li>
+		<li><a href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a></li>
+		<li> {{ item.name }} </li>
+		<li> Page Thumbs for {{ version }} version</li>
+	</ul>
+</div>
+
+<div id="control_bar">
+	<div class="btn_box_center">
+		<div class="btn btnM btnH left pushed">
+			<div class="btn_icon btn_icon2">k</div>
+			Thumbs
 		</div>
-		
-		<div class="help">
-			{{ item.pages.count }} total page{{ item.pages.count|pluralize }} for {{version}} version:
-			<span class="legend ok"> </span> {{ item.approved }} page{{ item.approved|pluralize }} approved
-			<span class="legend pending"> </span> {{ item.pending }} page{{ item.pending|pluralize }} pending
-			<span class="legend rejected"> </span> {{ item.rejected }} page{{ item.rejected|pluralize }} rejected
-		</div>
-	</div>
-	
-	<div id="view">
-<!--Each version of versions[] gets evaluated differently:
-	1) if version is even numbered, then use "page_thumb even", but:
-		1a) if this happens in the last iteration, add a dummy odd page too, else
-		1b) any other iteration gets only an even page (no dummy)
-	2) if version is odd numbered, then use "page_thumb odd", but:
-		2a) if this happens in the first iteration, add a dummy odd page too, else
-		2b) any other iteration gets only an odd page (no dummy)
-	At the same time (in a separate loop), it checks where to group pages 
-	in pairs based on "version.rel_num".
-	Thanks to: http://stackoverflow.com/questions/11964972/django-template-for-tag-add-li-every-4th-element
-	-->
-		{% if versions %}
-			<div class="thumb_container">
-				{% for version in versions %}
-					{% if version.rel_num|divisibleby:2 %}
-						{% if forloop.last %}
-							{% page_thumb_even version item job client %}
-							<div class="page_thumb odd dummy"></div>
-						{% else %}
-							{% page_thumb_even version item job client %}
-						{% endif %}
-					{% else %}
-						{% if forloop.counter == 1 %}
-							<div class="page_thumb even dummy"></div>
-							{% page_thumb_odd version item job client %}
-						{% else %}
-							{% page_thumb_odd version item job client %}
-						{% endif %}
-					{% endif %}
-					
-					{# if the the forloop counter is divisible by 2, close the thumb container tag and open a new one #}
-					{% if not version.rel_num|divisibleby:2 %}</div><div class="thumb_container">{% endif %}
-					
-				{% endfor %}
+		<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}:{{ version }}/list/">
+			<div class="btn btnM btnH middle">
+				<div class="btn_icon btn_icon1">5</div>
+				List
 			</div>
-		{% else %}
-			<p>No pages are available.</p>
-		{% endif %}
+		</a>
+
+		<div class="btn btnM btnH right">
+			<div class="btn_icon btn_icon2">G</div>
+			Configure
+		</div>
+		<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}:{{ version }}/file_upload/">
+			<div class="btn btnM btnH add">
+				<div class="btn_icon btn_icon2">+</div>
+				Upload Pages
+			</div>
+		</a>
 	</div>
+
+	<div class="help">
+		{{ item.pages.count }} total page{{ item.pages.count|pluralize }} for {{ version }} version:
+		<span class="legend ok"> </span> {{ item.approved }} page{{ item.approved|pluralize }} approved
+		<span class="legend pending"> </span> {{ item.pending }} page{{ item.pending|pluralize }} pending
+		<span class="legend rejected"> </span> {{ item.rejected }} page{{ item.rejected|pluralize }} rejected
+	</div>
+</div>
+
+<div id="view">
+	<!--Each version of versions[] gets evaluated differently:
+        1) if version is even numbered, then use "page_thumb even", but:
+            1a) if this happens in the last iteration, add a dummy odd page too, else
+            1b) any other iteration gets only an even page (no dummy)
+        2) if version is odd numbered, then use "page_thumb odd", but:
+            2a) if this happens in the first iteration, add a dummy odd page too, else
+            2b) any other iteration gets only an odd page (no dummy)
+        At the same time (in a separate loop), it checks where to group pages
+        in pairs based on "version.rel_num".
+        Thanks to: http://stackoverflow.com/questions/11964972/django-template-for-tag-add-li-every-4th-element
+        -->
+	{% if versions %}
+		<div class="thumb_container">
+			{% for version in versions %}
+				{% if version.rel_num|divisibleby:2 %}
+					{% if forloop.last %}
+						{% page_thumb_even version item job client %}
+						<div class="page_thumb odd dummy"></div>
+					{% else %}
+						{% page_thumb_even version item job client %}
+					{% endif %}
+				{% else %}
+					{% if forloop.counter == 1 %}
+						<div class="page_thumb even dummy"></div>
+						{% page_thumb_odd version item job client %}
+					{% else %}
+						{% page_thumb_odd version item job client %}
+					{% endif %}
+				{% endif %}
+
+				{# if the the forloop counter is divisible by 2, close the thumb container tag and open a new one #}
+				{% if not version.rel_num|divisibleby:2 %}</div>
+					<div class="thumb_container">{% endif %}
+
+			{% endfor %}
+			</div>
+	{% else %}
+		<p>No pages are available.</p>
+	{% endif %}
+</div>
 </body>
 </html>

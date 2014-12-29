@@ -5,52 +5,54 @@
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
 	<meta charset="utf-8">
-	<link href="/media/css/common.css" rel="stylesheet" type="text/css">
-	<link href="/media/css/widgets/buttons.css" rel="stylesheet" type="text/css">
-	<link href="/media/css/widgets/client.css" rel="stylesheet" type="text/css">
-	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
-	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
-	<link href="/media/favicon.ico" rel="shortcut icon">
+	<link href="{% static "farproof/css/common.css" %}" rel="stylesheet" type="text/css">
+	<link href="{% static "farproof/css/widgets/buttons.css" %}" rel="stylesheet" type="text/css">
+	<link href="{% static "farproof/css/widgets/client.css" %}" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="{% static "farproof/fonts/heydings-controls/stylesheet.css" %}" type="text/css"
+		  charset="utf-8">
+	<link rel="stylesheet" href="{% static "farproof/fonts/heydings-commons-icons/stylesheet.css" %}" type="text/css"
+		  charset="utf-8">
+	<link href="{% static "farproof/favicon.ico" %}" rel="shortcut icon">
 	<title>FP - Uploads</title>
 </head>
 
-	
-<body>
-	<div id="topbar">
-		<ul>
-			<li> FP </li>
-			<li> Uploads </li>
-		</ul>
-	</div>
 
-	<div id="control_bar">
-		<div class="btn_box_center">
-			<div class="btn btnM btnH"> Client List </div>
-		</div>
+<body>
+<div id="topbar">
+	<ul>
+		<li> FP</li>
+		<li> Uploads</li>
+	</ul>
+</div>
+
+<div id="control_bar">
+	<div class="btn_box_center">
+		<div class="btn btnM btnH"> Client List</div>
 	</div>
-	
-	<div id="view">
-		<div class="summary">
-			{% if pdfs %}
-				{% for pdf in pdfs %}
-					pk: {{ pdf.pk }} <br>
-					url: {{ pdf.f.name }} <br>
-					file: <a href="{{ pdf.f.url }}">{{ pdf.f.url }}</a> <br><br>
-				{% endfor %}
-			{% else %}
-				<p>No PDF files.</p>
-			{% endif %}
-			<hr>
-			{% if renders %}
-				{% for render in renders %}
-					pk: {{ render.pk }} <br>
-					url: {{ render.f.name }} <br>
-					file: <a href="{{ render.f.url }}">{{ render.f.url }}</a> <br><br>
-				{% endfor %}
-			{% else %}
-				<p>No render files.</p>
-			{% endif %}
-		</div>	
-	</div>	
+</div>
+
+<div id="view">
+	<div class="summary">
+		{% if pdfs %}
+			{% for pdf in pdfs %}
+				pk: {{ pdf.pk }} <br>
+				url: {{ pdf.f.name }} <br>
+				file: <a href="{{ pdf.f.url }}">{{ pdf.f.url }}</a> <br><br>
+			{% endfor %}
+		{% else %}
+			<p>No PDF files.</p>
+		{% endif %}
+		<hr>
+		{% if renders %}
+			{% for render in renders %}
+				pk: {{ render.pk }} <br>
+				url: {{ render.f.name }} <br>
+				file: <a href="{{ render.f.url }}">{{ render.f.url }}</a> <br><br>
+			{% endfor %}
+		{% else %}
+			<p>No render files.</p>
+		{% endif %}
+	</div>
+</div>
 </body>
 </html>

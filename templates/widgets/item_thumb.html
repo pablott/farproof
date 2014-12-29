@@ -3,17 +3,18 @@
 
 <div class="item_thumb">
 	<a class="title" href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}:base/list">{{ item.name }}</a> <br>
-		{% if item.desc %}
-			{{ item.desc }}
-		{% else %}
-			<br>
-		{% endif %}
-		<div class="totals">
-			{{ item.pages.count }} page{{ item.pages.count|pluralize }} <br>
-			{% if item.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">Not approved</b> {% endif %} <br>
-			PK: {{ item.pk }} / ID: {{ item.id }} <br>
-		</div>
-	
-		Added {{item.creation|naturaltime}} <br>({{ item.creation|date:"D j M y, H:i" }})
+	{% if item.desc %}
+		{{ item.desc }}
+	{% else %}
+		<br>
+	{% endif %}
+	<div class="totals">
+		{{ item.pages.count }} page{{ item.pages.count|pluralize }} <br>
+		{% if item.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">Not approved</b> {% endif %}
+		<br>
+		PK: {{ item.pk }} / ID: {{ item.id }} <br>
+	</div>
+
+	Added {{ item.creation|naturaltime }} <br>({{ item.creation|date:"D j M y, H:i" }})
 </div>
 

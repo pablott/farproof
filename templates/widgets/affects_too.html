@@ -1,24 +1,47 @@
-{% load i18n %}
+﻿{% load i18n %}
 
 {% if current_revisions or past_revisions %}
-<div class="affects_too">
-	{% if current_revisions %}
-		<h4>Also affecting right now: </h4>
+	<div class="affects_too">
+
+
 		{% for revision in current_revisions %}
-			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.version_set.count }}/">
-				page {{ revision.page.version.rel_num }}</a>{% if not forloop.last %}, {% endif %}
+			{% for version in revision.page.version_set.all %}
+				On version <i>{{ version.name }}</i>:
+				{% for version in version.page_set.all %}
+					{{ revision.page.rel_num }}
+				{% endfor %}
+			{% endfor %}
 		{% endfor %}
-	{% endif %}
-		
-	{% if past_revisions %}
-		<h4>Used to affect: </h4>
-		{% for revision in past_revisions %}
-			<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/{{ revision.page.rel_num }}/">
-				{% if revision.page.rel_num = page.rel_num %}
-					this page <i>(on previous rev. {{ revision.rev_number }})</i></a>
-				{% else %}
-					page {{ revision.page.rel_num }} <i>(on rev. {{ revision.rev_number }})</i></a>{% endif %}{% if not forloop.last %}, {% endif %}
-		{% endfor %}
-	{% endif %}
-</div>
+
+
+
+
+
+
+		{% if current_revisions %}
+			<h4>Also affecting right now: </h4>
+			{% for revision in current_revisions %}
+				{% for version in revision.page.version_set.all %}
+					On version <i>{{ version.name }}</i>:
+					<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}:{{ version.name }}/{{ version.rel_num }}/">
+						page {{ version.rel_num }}
+					</a>{% if not forloop.last %}, {% endif %}
+				{% endfor %}
+				{% if not forloop.last %}<br> {% endif %}
+			{% endfor %}
+		{% endif %}
+
+		{% if past_revisions %}
+			<h4>Used to affect: </h4>
+			{% for revision in past_revisions %}
+				{% for version in revision.page.version_set.all %}
+					On version <i>{{ version.name }}</i>:
+					<a href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}:{{ version.name }}/{{ version.rel_num }}/">
+						page {{ version.rel_num }}
+					</a>{% if not forloop.last %}, {% endif %}
+				{% endfor %}
+				{% if not forloop.last %}<br> {% endif %}
+			{% endfor %}
+		{% endif %}
+	</div>
 {% endif %}

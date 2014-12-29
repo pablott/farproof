@@ -2,26 +2,28 @@
 {% load humanize %}
 
 <div class="container item">
-	<div class="icon"> 
+	<div class="icon">
 		<div class="totals">
 			{{ item.pages.count }} page{{ item.pages.count|pluralize }}
 		</div>
-		<div class="mini_summary"> 
-			{% if item.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">Not approved</b> {% endif %} <br>
+		<div class="mini_summary">
+			{% if item.is_ready %} <b class="ok">Approved</b> {% else %}
+				<b class="rejected">Not approved</b> {% endif %} <br>
 			PK: {{ item.pk }} / ID: {{ item.id }} <br>
 		</div>
 	</div>
-	
+
 	<div class="body">
 		<a class="title" href="/{{ client.pk }}/{{ job.pk }}/{{ item.pk }}/list">{{ item.name }}</a> <br>
-			<div class="summary">
+
+		<div class="summary">
 			Added {{ item.creation|naturaltime }} ({{ item.creation|date:"D j M y, H:i" }}) <br>
 			{% if item.desc %}
 				{{ item.desc }}
 			{% else %}
 				<br>
 			{% endif %}
-			</div>
+		</div>
 	</div>
 </div>
 

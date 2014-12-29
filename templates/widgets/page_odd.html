@@ -9,8 +9,8 @@
 		<h3 class="{{ version.page.last_rev.status|lower }}">{{ version.rel_num }}</h3>
 		Last comment on {{ version.page.last_rev.creation|date:"j M, H:i" }}
 	</div>
-	
-	{% comment_add context version item job client %}
+
+{% comment_add context version item job client %}
 	
 	{% if version.page.last_rev.comment_set.all %}
 		<div class="comment_array">

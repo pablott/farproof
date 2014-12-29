@@ -2,19 +2,20 @@
 {% load humanize %}
 
 <div class="container client unactive">
-	<div class="icon"> 
+	<div class="icon">
 		<div class="mini_summary">
 			{{ client.job_set.count }} job{{ client.job_set.count|pluralize }} <br>
 			PK: {{ client.pk }}/ID: {{ client.id }}
 		</div>
 	</div>
-	
+
 	<div class="body">
 		<a class="title" href="/{{ client.pk }}/">{{ client.name }}</a>
+
 		<div class="summary">
 			{% if client.desc %}
 				{{ client.desc }} <br>
-			{% endif %}	
+			{% endif %}
 			Added {{ client.creation|naturaltime }} ({{ client.creation|date:"D j M y, H:i" }})
 		</div>
 	</div>

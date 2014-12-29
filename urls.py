@@ -1,8 +1,7 @@
-﻿# Uncomment the next two lines to enable the admin:
-from django.contrib import admin
-
+﻿from django.contrib import admin
 admin.autodiscover()
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf import settings
+from django.conf.urls.static import static
 from django.conf.urls import *
 from farproof.client_list.views import *
 from farproof.uploader.uploader import *
@@ -10,9 +9,6 @@ from farproof.client_list.templatetags.review import *
 
 
 urlpatterns = patterns('',
-                       # Example:
-                       # (r'^farproof/', include('farproof.foo.urls')),
-
                        # Uncomment the admin/doc line below to enable admin documentation:
                        (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
@@ -38,20 +34,5 @@ urlpatterns = patterns('',
                        (r'^(\d+)/(\d+)/(\d+)/uploader$', uploader),  # URL for AJAX file catcher
                        (r'^uploads/$', uploads),  # URL for uploads list
                        (r'^queue_poll$', queue_poll),
-)
-# (r'^(?P<category>\w+)/feedback/$', 'my_view') # Might be useful as wildcard capture method
+) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-import settings
-
-if settings.DEBUG:
-    from django.views.static import serve
-
-    _media_url = settings.MEDIA_URL
-    if _media_url.startswith('/'):
-        _media_url = _media_url[1:]
-        urlpatterns += patterns('',
-                                (r'^%s(?P<path>.*)$' % _media_url, serve,
-                                 {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}))
-    del _media_url, serve
-
-urlpatterns += staticfiles_urlpatterns()

@@ -4,42 +4,58 @@
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
 	<meta charset="utf-8">
-	<link href="/media/css/common.css" rel="stylesheet" type="text/css">
-	<link href="/media/css/widgets/buttons.css" rel="stylesheet" type="text/css">
-	<link href="/media/css/client_conf.css" rel="stylesheet" type="text/css">
-	<link rel="stylesheet" href="/media/fonts/heydings-controls/stylesheet.css" type="text/css" charset="utf-8">
-	<link rel="stylesheet" href="/media/fonts/heydings-common-icons/stylesheet.css" type="text/css" charset="utf-8">
-	<link href="/media/favicon.ico" rel="shortcut icon">
+	<link href="{% static "farproof/css/common.css" %}" rel="stylesheet" type="text/css">
+	<link href="{% static "farproof/css/widgets/buttons.css" %}" rel="stylesheet" type="text/css">
+	<link href="{% static "farproof/css/client_conf.css" %}" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="{% static "farproof/fonts/heydings-controls/stylesheet.css" %}" type="text/css"
+		  charset="utf-8">
+	<link rel="stylesheet" href="{% static "farproof/fonts/heydings-commons-icons/stylesheet.css" %}" type="text/css"
+		  charset="utf-8">
+	<link href="{% static "farproof/favicon.ico" %}" rel="shortcut icon">
 	<title>FP - Add Client</title>
 </head>
 
-	
-<body>
-	<div id="topbar">
-		<ul>
-			<li> FARPROOF </li>
-			<li> Add Client </li>
-		</ul>
-	</div>
 
-	<div id="control_bar">
-		<div class="btn_box_center">
-			<a href="/"><div class="btn btnM btnH left"> Client List </div></a>
-			<div class="btn btnM btnH middle"> <div class="btn_icon btn_icon2">G</div> Configure FP </div>
-			<div class="btn btnM btnH right add pushed"> <div class="btn_icon btn_icon2"> + </div> Add Client </div>
-			<a href="/"><div class="btn btnM btnH delete"> <div class="btn_icon btn_icon1">X</div> Discard </div></a>
+<body>
+<div id="topbar">
+	<ul>
+		<li> FARPROOF</li>
+		<li> Add Client</li>
+	</ul>
+</div>
+
+<div id="control_bar">
+	<div class="btn_box_center">
+		<a href="/">
+			<div class="btn btnM btnH left"> Client List</div>
+		</a>
+
+		<div class="btn btnM btnH middle">
+			<div class="btn_icon btn_icon2">G</div>
+			Configure FP
 		</div>
+		<div class="btn btnM btnH right add pushed">
+			<div class="btn_icon btn_icon2"> +</div>
+			Add Client
+		</div>
+		<a href="/">
+			<div class="btn btnM btnH delete">
+				<div class="btn_icon btn_icon1">X</div>
+				Discard
+			</div>
+		</a>
 	</div>
-	
-	<div id="view">
-	
-		<form action="/client_add/" method="post">
-			{% csrf_token %}
-			{{ form.as_ul }}
-			<input class="btn btnM btnH"  type="submit" value="Submit">
-		</form>
-		{{ message }}
-		
-	</div>	
+</div>
+
+<div id="view">
+
+	<form action="/client_add/" method="post">
+		{% csrf_token %}
+		{{ form.as_ul }}
+		<input class="btn btnM btnH" type="submit" value="Submit">
+	</form>
+	{{ message }}
+
+</div>
 </body>
 </html>

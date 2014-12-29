@@ -4,18 +4,20 @@
 
 <div class="container job unactive">
 	<div class="folder">
-		<div class="tab"> </div>
+		<div class="tab"></div>
 		<div class="totals">
 			{{ job.item_set.count }} item{{ job.item_set.count|pluralize }}
 		</div>
-		<div class="mini_summary"> 
-			{% if job.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">Not approved</b> {% endif %} <br>
+		<div class="mini_summary">
+			{% if job.is_ready %} <b class="ok">Approved</b> {% else %} <b class="rejected">Not approved</b> {% endif %}
+			<br>
 			PK: {{ job.pk }} / ID: {{ job.id }} <br>
 		</div>
 	</div>
-	
+
 	<div class="body">
 		<a class="title" href="/{{ client.pk }}/{{ job.pk }}/">{{ job.name }}</a>
+
 		<div class="summary">
 			{% if job.desc %}
 				{{ job.desc }} <br>

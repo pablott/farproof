@@ -5,19 +5,20 @@
 	<div class="title">
 		{{ job.name }}
 	</div>
-	
-	<div class="summary"> 
+
+	<div class="summary">
 		<div class="pk">
 			PK: {{ job.pk }} / ID: {{ job.id }}
 		</div>
-		<div class="date"> 
-			Added {{job.creation|naturaltime}} ({{ job.creation|date:"D j M y, H:i" }})
+		<div class="date">
+			Added {{ job.creation|naturaltime }} ({{ job.creation|date:"D j M y, H:i" }})
 		</div>
-		<div class="count"> 
-			{{ job.item_set.count }} item{{ job.item_set.count|pluralize }}, {{ job.total_pages }} page{{ job.total_pages|pluralize }} in total
+		<div class="count">
+			{{ job.item_set.count }} item{{ job.item_set.count|pluralize }}, {{ job.total_pages }}
+			page{{ job.total_pages|pluralize }} in total
 		</div>
-	
-		<div class="desc"> 
+
+		<div class="desc">
 			{% if job.desc %}
 				{{ job.desc }}
 			{% endif %}

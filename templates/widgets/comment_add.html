@@ -3,58 +3,63 @@
 
 <script type="text/javascript">
 	// attach handler to form's submit event 
-	$('#comment_form').submit(function() { 
+	$("#comment_form").submit(function () {
 		// submit the form 
-		$(this).ajaxSubmit(); 
+		$(this).ajaxSubmit();
 		// return false to prevent normal browser submit and page navigation 
-		return false; 
+		return false;
 	});
 </script>
 
 
 <div class="comment_add">
-	Add comment to page {{version.rel_num}}
+	Add comment to page {{ version.rel_num }}
 	<form id="comment_form" method="POST">
 		{% csrf_token %}
-		<textarea maxlength="256" name="comment" value="" placeholder="Write comment here..."></textarea>
+		<textarea maxlength="256" name="comment" {% comment %}value=""{% endcomment %}
+				  placeholder="Write comment here..."></textarea>
 		<label class="ok" for="status_ok">
-			<input id="status_ok" type="radio" name="status" value="OK" > Approve
+			<input id="status_ok" type="radio" name="status" value="OK"> Approve
 		</label>
 		<label class="rejected" for="status_rejected">
 			<input id="status_rejected" type="radio" name="status" value="REJECTED"> Reject
 		</label>
+
 		<div class="page_selection">
 			Also affects page(s)... <br>
 			{% for this_page in item.version_set.all %}
 				{% if this_page.rel_num == version.rel_num %}
 					<label for="{{ this_page.rel_num }}">
-						<input type="checkbox" checked="checked" disabled="disabled" id="{{ this_page.rel_num }}"> {{ this_page.rel_num }}
+						<input type="checkbox" checked="checked" disabled="disabled"
+							   id="{{ this_page.rel_num }}"> {{ this_page.rel_num }}
 						<input type="hidden" checked="checked" name="pages[]" value="{{ this_page.rel_num }}">
 					</label>
 				{% else %}
 					<label for="{{ this_page.rel_num }}">
-						<input type="checkbox" name="pages[]" id="{{ this_page.rel_num }}" value="{{ this_page.rel_num }}"> {{ this_page.rel_num }}
+						<input type="checkbox" name="pages[]" id="{{ this_page.rel_num }}"
+							   value="{{ this_page.rel_num }}"> {{ this_page.rel_num }}
 					</label>
 				{% endif %}
 			{% endfor %}
 		</div>
-		<button class="btn btnH" onsubmit="return false;" name="from_page" value="{{ version.rel_num }}">Add Comment</button>
+		<button class="btn btnH" onsubmit="return false;" name="from_page" value="{{ version.rel_num }}">Add Comment
+		</button>
 	</form>
-</div>	
+</div>
 
 
-<script type="text/javascript"> 
-$('#submit').click(function(){
-	alert('btn pushed');
-    $.ajax({
-        type:'POST',
-        data: {
-            comment: comment,
-        },
-        success: function(msg){
-                alert('Email Sent');
-            }                   
-        });
-    });
+<script type="text/javascript">
+	$('#submit').click(function () {
+		alert('btn pushed');
+		$.ajax({
+			type: 'POST',
+			data: {
+				comment: comment
+			},
+			success: function (msg) {
+				alert('Email Sent');
+			}
+		});
+	});
 </script>
 
