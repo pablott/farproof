@@ -1,5 +1,5 @@
 ﻿from django import template
-from farproof.client_list.models import Version, Revision, Comment
+from farproof.core.models import Version, Revision, Comment
 
 
 register = template.Library()

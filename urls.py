@@ -5,9 +5,9 @@ admin.autodiscover()
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import *
-from farproof.client_list.views import *
+from farproof.core.views import *
 from farproof.uploader.uploader import *
-from farproof.client_list.templatetags.review import *
+from farproof.core.templatetags.review import *
 
 
 urlpatterns = patterns('',

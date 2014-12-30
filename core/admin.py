@@ -1,5 +1,5 @@
 ﻿from django.contrib import admin
-from farproof.client_list.models import Client, User, Job, Item, Page, Revision, Comment, PDFFile, RenderFile
+from farproof.core.models import Client, User, Job, Item, Page, Revision, Comment, PDFFile, RenderFile
 
 
 class ItemAdmin(admin.ModelAdmin):

@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from celery.result import AsyncResult
 from celery.task.control import inspect
-from farproof.client_list.models import PDFFile
+from farproof.core.models import PDFFile
 from farproof.process.process import process
 
 
