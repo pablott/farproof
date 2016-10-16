@@ -2,9 +2,7 @@
 import os
 from os.path import join
 
-
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (('Pablo Trabajos', 'pablo.trabajos.tamayo@gmail.com'),)
 MANAGERS = ADMINS
@@ -73,31 +71,33 @@ SECRET_KEY = 'u%8g^o)8b+%xxa-1j^8i@zkv!&0(a8h!pg7j(8lrlc-n1t88dz'
 
 ROOT_URLCONF = 'farproof.urls'
 
-TEMPLATE_DIRS = (join(FARPROOF_DIR, 'templates'),)
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-    'django.template.loaders.eggs.Loader',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(FARPROOF_DIR, 'templates')]
+        ,
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'debug': True,
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                # 'django.core.context_processors.i18n',
+                # 'django.core.context_processors.media',
+                # 'django.core.context_processors.static',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-)
-# https://docs.djangoproject.com/en/1.3/howto/static-files/#with-a-context-processor
-TEMPLATE_CONTEXT_PROCESSORS = (  # 'django.contrib.auth.context_processors.auth',
-                                 'django.core.context_processors.debug',
-                                 'django.core.context_processors.i18n',
-                                 'django.core.context_processors.media',
-                                 'django.core.context_processors.static',
-                                 'django.core.context_processors.request',
-                                 'django.contrib.auth.context_processors.auth',
-                                 'django.contrib.messages.context_processors.messages',
-                                 # 'django.contrib.messages.context_processors.request',
-                                 # 'djangoapp.app.context_processors.media_url',
 )
 
 STATICFILES_FINDERS = (
@@ -152,7 +152,6 @@ INSTALLED_APPS = (
     'celery',
 )
 
-
 ## Celery stuff:
 BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 CELERY_BACKEND = 'amqp'
@@ -180,4 +179,3 @@ CELERY_TASK_RESULT_EXPIRES = 3600
 #     'debug_toolbar.panels.redirects.RedirectsPanel',
 # ]
 # INTERNAL_IPS = ('127.0.0.1',)
-
