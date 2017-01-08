@@ -1,4 +1,4 @@
-FARPROOF (C) 2012-2016 Pablo Trabajos Tamayo
+FARPROOF (C) 2012-2017 Pablo Trabajos Tamayo
 --------------------------------------------
 
 A browser-based software for displaying book-like 
