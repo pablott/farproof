@@ -41,7 +41,7 @@ def queue_poll (request):
         # Query active tasks:
         active_tasks = inspect().active() or inspect().scheduled()
         print active_tasks
-        for t in active_tasks['celery@user-System-Product-Name']:  # TODO: get queue name dynamically.
+        for t in active_tasks['celery@solus']:  # TODO: get queue name dynamically.
             task_id = t.get('id')
             task = AsyncResult(task_id)
 
