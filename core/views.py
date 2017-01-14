@@ -1,4 +1,4 @@
-﻿from django.shortcuts import render_to_response  # Add get_object_or_404
+﻿from django.shortcuts import render_to_response, render  # Add get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from farproof.core.models import Client, Job, Item, Version, Page, Revision, Comment, PDFFile, RenderFile
 from farproof.core.models import ClientAddForm, JobAddForm, ItemAddForm
@@ -8,19 +8,21 @@ from django.template import RequestContext
 def uploads (request):
     pdfs = PDFFile.objects.all()
     renders = RenderFile.objects.all()
-    return render_to_response('uploads.html', {
-    'pdfs': pdfs,
-    'renders': renders,
-    })
+    context = {
+        'pdfs': pdfs,
+        'renders': renders,
+    }
+    return render(request, 'uploads.html', context)
 
 
 def main (request):
     clients = Client.objects.filter(active=True).order_by('name')  # TODO: make it case insensitive
     clients_unactive = Client.objects.filter(active=False).order_by('name')
-    return render_to_response('main.html', {
-    'clients': clients,
-    'clients_unactive': clients_unactive,
-    })
+    context = {
+        'clients': clients,
+        'clients_unactive': clients_unactive,
+    }
+    return render(request, 'main.html', context)
 
 
 def client_add (request):
@@ -29,15 +31,18 @@ def client_add (request):
         if form.is_valid():  # All validation rules pass
             # Process the data in form.cleaned_data
             form.save()
-            message = 'You added Client: %r' % str(request.POST['name'])  # + ' - %r' % str(request.POST['email'])
             form = ClientAddForm()  # Reset form after saving
-            return render_to_response('client_add.html',
-                                      {'form': form, 'message': message})
+            message = 'You added Client: %r' % str(request.POST['name'])  # + ' - %r' % str(request.POST['email'])
+        else:
+            message = 'You submitted an empty form.'
     else:
         form = ClientAddForm()  # An unbound form
-    return render_to_response('client_add.html', {
-    'form': form,
-    })
+        message = ''
+    context = {
+        'form': form,
+        'message': message,
+    }
+    return render(request, 'client_add.html', context)
 
 
 def client_search (request):  # TODO Consider using a ClientSearchForm or such
@@ -48,13 +53,16 @@ def client_search (request):  # TODO Consider using a ClientSearchForm or such
             name = request.GET['name']
             query = Client.objects.filter(name__icontains=name, active=True)
             query_unactive = Client.objects.filter(name__icontains=name, active=False)
-            message = 'You searched for: %r' % str(name)
+            message = 'Displaying results for search %r' % str(name)
+            # TODO: update 'message' to reflect no jobs found
         else:
-            message = 'You submitted an empty form.'
-        return render_to_response('client_search.html',
-                                  {'message': message, 'query': query, 'query_unactive': query_unactive})
-    else:  # If not, show empty form
-        return render_to_response('client_search.html', {'query': query, 'query_unactive': query_unactive})
+            message = ''
+    context = {
+        'message': message,
+        'query': query,
+        'query_unactive': query_unactive,
+    }
+    return render(request, 'client_search.html', context)
 
 
 def client_view (request, client_pk):
@@ -63,11 +71,12 @@ def client_view (request, client_pk):
     if client:
         jobs = Job.objects.filter(client=client, active=True).order_by('name')
         jobs_unactive = Job.objects.filter(client=client, active=False).order_by('name')
-        return render_to_response('client_view.html', {
-        'client': client,
-        'jobs': jobs,
-        'jobs_unactive': jobs_unactive,
-        })
+        context = {
+            'client': client,
+            'jobs': jobs,
+            'jobs_unactive': jobs_unactive,
+        }
+        return render(request, 'client_view.html', context)
     else:
         raise Http404
 
@@ -87,22 +96,20 @@ def job_add (request, client_pk):
                 if form_item.is_valid():
                     form_item.save()
                     message = 'You added Job: %r' % str(request.POST['job-name']) + ' - %r' % str(
-                        request.POST['job-desc']) + ', Item%r' % str(request.POST['item-name']) + ' - %r' % str(
-                        request.POST['item-desc'])
-            return render_to_response('job_add.html',
-                                      {'form_job': form_job, 'form_item': form_item, 'message': message,
-                                       'client': client, })
+                        request.POST['job-desc']) + ', with Item%r' % str(request.POST['item-name']) + ' - %r' % str(
+                        request.POST['item-desc']) + ' inside'
         else:
             # First time called: unbound forms
             form_job = JobAddForm(prefix="job")
             form_item = ItemAddForm(prefix="item")
-        return render_to_response('job_add.html', {
-        'form_job': form_job,
-        'form_item': form_item,
-        'client': client,
-        })
     else:
-        raise Http404
+        message = 'No client with ID %r' % str(client.id)
+    context = { 'form_job': form_job,
+                'form_item': form_item,
+                'message': message,
+                'client': client,
+    }
+    return render (request, 'job_add.html', context)
 
 
 def job_search (request, client_pk):
@@ -274,7 +281,7 @@ def page_view (request, client_pk, job_pk, item_pk, version, page_num):
             page_odd = version
 
     if version:
-        return render_to_response('page_view.html', {
+        context = {
         'client': client,
         'job': job,
         'item': item,
@@ -285,7 +292,8 @@ def page_view (request, client_pk, job_pk, item_pk, version, page_num):
         'first_page': first_page,
         'last_page': last_page,
         'revisions': revisions,
-        }, context_instance=RequestContext(request))
+        }
+        return render(request, 'page_view.html', context)
     else:
         raise Http404
 
