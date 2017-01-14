@@ -93,7 +93,7 @@ class Page(models.Model):
 
 class Item(models.Model):
     pages = models.ManyToManyField(Page, through='Version')
-    job = models.ForeignKey(Job)
+    job = models.ForeignKey(Job, null=True)
     name = models.CharField(max_length=256)
     desc = models.CharField(max_length=256, blank=True, null=True)
     creation = models.DateTimeField(auto_now_add=True)
