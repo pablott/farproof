@@ -1,12 +1,13 @@
+django
 celery
 django-celery
 flower
 
 # Development only:
-#runserver_plus
-#Werkzeug
-#django-debug-toolbar
-#django-extensions
+runserver_plus
+Werkzeug
+django-debug-toolbar
+django-extensions
 
 # No longer necessary:
 #dajax
