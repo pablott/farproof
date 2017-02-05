@@ -1,7 +1,5 @@
 from django.core.files.storage import FileSystemStorage
 from django.db import models
-from django.forms import ModelForm, forms
-from django.forms.widgets import HiddenInput
 from farproof.settings import CONTENTS_PATH
 
 
@@ -25,12 +23,6 @@ class User(models.Model):
 
     def __unicode__ (self):
         return self.name + self.email
-
-
-class ClientAddForm(ModelForm):
-    class Meta:
-        model = Client
-        fields = ('name', 'desc')
 
 
 class Job(models.Model):
@@ -65,20 +57,6 @@ class Job(models.Model):
 
     class Meta(object):
         unique_together = ("name", "client")
-
-
-class JobAddForm(ModelForm):
-    class Meta:
-        model = Job
-        # "exclude" won't allow JobAddForm to render a 'client' field
-        # in the template (because it's a FK), thus it will throw an error beacause view function 'job_add'
-        # won't be able to assign the current Client object to 'client' in the processed POST.
-        # The solution is using HiddenInput() widget for 'client' field. This way client name gets passed
-        # to POST but is hidden in the template.
-        exclude = ('active',)
-        widgets = {
-            'client': HiddenInput(),
-        }
 
 
 class Page(models.Model):
@@ -148,16 +126,6 @@ class Item(models.Model):
 
     class Meta(object):
         unique_together = ("name", "job")
-
-
-class ItemAddForm(ModelForm):
-    class Meta:
-        model = Item
-        exclude = ('job', 'pages')
-        widgets = {
-            'job': HiddenInput(),
-            'pages': HiddenInput(),
-        }
 
 
 class Version(models.Model):
@@ -252,8 +220,6 @@ class RenderFile(CommonFile):
     # }
     def __unicode__ (self):
         return "pk:" + str(self.pk) + " file:" + str(self.f.name)
-
-
         # class Curve(models.Model):
         # revision = models.ForeignKey(Revision)
         # curve = models.CharField(max_length=200)

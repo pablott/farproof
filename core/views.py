@@ -1,7 +1,7 @@
 ﻿from django.shortcuts import render_to_response, render  # Add get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from farproof.core.models import Client, Job, Item, Version, Page, Revision, Comment, PDFFile, RenderFile
-from farproof.core.models import ClientAddForm, JobAddForm, ItemAddForm
+from farproof.core.forms import ClientAddForm, JobAddForm, ItemAddForm
 from django.template import RequestContext
 
 
