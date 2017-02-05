@@ -1,5 +1,7 @@
 from django.forms import ModelForm, forms
 from django.forms.widgets import HiddenInput
+from farproof.core.models import Client, Job, Item
+
 
 
 class ClientAddForm(ModelForm):
