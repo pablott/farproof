@@ -8,7 +8,7 @@
 			{{ version.page.last_rev.comment_set.count }} comment{{ version.page.last_rev.comment_set.count|pluralize }}
 			<br>
 			on {{ version.page.last_rev.creation|date:"j M, H:i" }} <br>
-			({{ version.page.revision_set.count }} revision{{ version.page.revision_set.count|pluralize }})
+			({{ version.revision_set.count }} revision{{ version.revision_set.count|pluralize }})
 		</div>
 	</div>
 </a>
