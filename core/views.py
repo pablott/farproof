@@ -181,12 +181,10 @@ def item_add (request, client_pk, job_pk):
                     abs_num=i + 1, rel_num=i + start_page, item=item, page=page,
                 )
                 base.save()
-
-            # Add a initial PENDING Revision to each new page:
-            last_pages = Page.objects.filter(item=item)
-            for page in last_pages:
-                revision = Revision(rev_number=0, page=page)
+                # And add a Revision to the Version:
+                revision = Revision(rev_number=0, version=base)
                 revision.save()
+
             message = 'You added Item: %r' % name + ' - %r' % desc + ' - %r' % num_pages
             return render_to_response('item_add.html',
                                       {'message': message, 'client': client, 'job': job, })
@@ -246,46 +244,44 @@ def page_view (request, client_pk, job_pk, item_pk, version, page_num):
     client = Client.objects.get(pk=client_pk)
     job = Job.objects.get(pk=job_pk, client=client)
     item = Item.objects.get(pk=item_pk, job=job)
-    version = Version.objects.get(rel_num=page_num, item=item, name=version)
-    # page = Page.objects.get(rel_num=page_num, item=item)
-    versions = Version.objects.filter(item=item, name=version.name).order_by('abs_num')
-    # Order by inverted creation date and get first (which is the last created for that page):
-    revisions = Revision.objects.filter(page=version.page).order_by('-creation')
+    current_version = Version.objects.get(rel_num=page_num, item=item, name=version)
+    versions = Version.objects.filter(item=item, name=version).order_by('abs_num')
+    revisions = Revision.objects.filter(version=current_version).order_by('-creation')
 
     # Get first and last versions of query
-    # last_page counts one form end of query (this is because django doesn't support negative indexing)
+    # last_page counts one from end of query (this is because django doesn't support negative indexing)
     first_page = versions[0]
     last_page = versions[versions.count() - 1]
 
     # Logic for even pages:
-    if version.rel_num % 2 == 0:
+    if current_version.rel_num % 2 == 0:
         # Logic for LAST even page
         # (because it has to initialize page_odd or it crashes):
-        if version == last_page:
-            page_even = version
+        if current_version == last_page:
+            page_even = current_version
             page_odd = 0
         # Otherwise page is assigned to even and the odd is calculated by adding 1 to version.rel_num
         else:
-            page_even = version
-            page_odd = Version.objects.get(rel_num=version.rel_num + 1, item=item, name=version.name)
+            page_even = current_version
+            page_odd = Version.objects.get(rel_num=current_version.rel_num + 1, item=item, name=current_version.name)
     # Logic for odd pages:
     else:
         # Logic for FIRST odd page
         # (because it has to initialize page_even or it crashes):
-        if version == first_page:
+        if current_version == first_page:
             page_even = 0
-            page_odd = version
+            page_odd = current_version
         # Otherwise page is assigned to odd and the even is calculated by substracting 1 to version.rel_num
         else:
-            page_even = Version.objects.get(rel_num=version.rel_num - 1, item=item, name=version.name)
-            page_odd = version
+            page_even = Version.objects.get(rel_num=current_version.rel_num - 1, item=item, name=current_version.name)
+            page_odd = current_version
 
     if version:
         context = {
         'client': client,
         'job': job,
         'item': item,
-        'version': version,
+        'version': current_version,
         'versions': versions,
         'page_even': page_even,
         'page_odd': page_odd,
